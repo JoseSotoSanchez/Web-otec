@@ -2,11 +2,20 @@
     height: 350px;
   }
 
-  #navBarColor{
-     background: linear-gradient(to bottom, #cccccc 0%, #ffffff 100%);
+  #navBar{
+     background: whitesmoke;
      height: 100px;
      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
      font-size: unset;
+     font-variant: petite-caps;
+     font-weight: 500;
+   }
+
+   #colorFondo{
+      background:whitesmoke;
+   }
+   #menu{
+      text-align: center;
    }
 
   #logo{
@@ -16,11 +25,33 @@
   }
 
   .navbar-nav > .active > a {
-   color: aqua;
-   background-color: #d8d8d8;
+   color: rgb(214, 214, 214);
+   background-color: #ffe6b8;
    border-radius: 25% 10%;
-   box-shadow: 3px 3px 7px 1px rgba(0, 0, 0, 0.2);
+   box-shadow: 3px 3px 7px 1px rgb(151 100 47 / 91%);
  }
  .nav-item > a:hover {
-   color: aqua;
+   color: rgb(214, 214, 214);
  }
+
+.cursos{
+   font-size: small;
+}
+
+#ul{
+   margin: unset;
+}
+
+ 
+ .form-control::placeholder {
+   font-size: 0.95rem;
+   color: #aaa;
+   font-style: italic;
+ }
+ 
+ .form-control.shadow-0:focus {
+   box-shadow: none;
+ }
+
+ 
+ 

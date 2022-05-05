@@ -7,6 +7,11 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 page = Blueprint('page', __name__)
 
+@page.route('/home', methods=['GET', 'POST'])
+def home():
+    
+
+    return render_template("home.html", user=current_user)
 
 @page.route('/nosotros', methods=['GET', 'POST'])
 def nosotros():

@@ -18,54 +18,53 @@
       crossorigin="anonymous"
     />
 
-    <title>{% block title %}Home{% endblock %}</title>
-    
-    <nav class="navbar navbar-expand-lg navbar-light" id="navBarColor">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbar"
-      >
+    <title>{% block title %}Inicio{% endblock %}</title>
+
+    <nav class="navbar fixed-top fixed-bottom navbar-expand-lg navbar-light" id="navBar">
+      <img id="logo" src="static/imagenes/logo2.png" class="" alt="..."/>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      
-      <div class="collapse navbar-collapse" id="navbar">
-        <img id="logo" src="static/imagenes/logo2.png" class="" alt="..."/>
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-item nav-link" id="home" href="/">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="home" href="/nosotros">Nosotros</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="cursos" href="/cursos">Cursos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="sign-u" href="/sign-up">Contáctanos</a>
-          </li>
-        </ul>
-      </div>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="home" href="/aspirantes">Aspirantes por curso</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="logout" href="/logout">Cerrar Sesión</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-item nav-link float-end" id="login" href="/login">Entrar</a>
-          </li>
-          {% endif %}
-        </ul>
+      <div class="container-fluid" id="colorFondo" >
+        <div class="collapse navbar-collapse"  id="navbarSupportedContent">
+          <div id="navBarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-item nav-link" id="menu" href="/home">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-item nav-link" id="menu" href="/nosotros">Nosotros</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-item nav-link" id="menu" href="/cursos">Cursos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-item nav-link" id="menu" href="/sign-up">Contáctanos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto" >
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-item nav-link" id="menu" href="/aspirantes">Aspirantes por curso</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-item nav-link" id="menu" href="/logout">Cerrar Sesión</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-item nav-link" id="menu" href="/login">Entrar</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
     </nav>
+  
   </head>
-  <body>
+  <body style="margin-top:100px">
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
     'error' %}
@@ -104,79 +103,150 @@
     crossorigin="anonymous"
     ></script>
 
+    
     <script
       type="text/javascript"
       src="{{ url_for('static', filename='index.js') }}"
     ></script>
   </body>
 
-  <footer class="bg-light text-center text-white">
+
+
+  <!-- Footer -->
+  <footer
+          class="text-center text-lg-start text-muted bg-white"
+          >
     <!-- Grid container -->
     <div class="container p-4 pb-0">
-      <!-- Section: Social media -->
-      <section class="mb-4">
-        <!-- Facebook -->
+      <!-- Section: Links -->
+      <section class="">
+        <!--Grid row-->
+        <div class="row">
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">
+              IC Capacitación Laboral
+            </h6>
+            <ul id="ul">
+              <li class="text-muted cursos">Acceso aula virtual</li>
+            </ul>
+            <ul id="ul">
+              <li class="text-muted cursos">Verificar certificado</li>
+            </ul>
+            <ul id="ul">
+              <li class="text-muted cursos">Trabaja con nosotros</li>
+            </ul>
+            <ul id="ul">
+              <li class="text-muted cursos">¿Quienes Somos?</li>
+            </ul>
+            <ul id="ul">
+              <li class="text-muted cursos">Contáctanos</li>
+            </ul>
+          </div>
+          <!-- Grid column -->
+
+          <hr class="w-100 clearfix d-md-none" />
+
+          <!-- Grid column -->
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">Cursos</h6>
+            <ul id="ul">
+              <li class="text-muted cursos">Inspector educacional</li>
+            </ul id="ul">
+            <ul>
+              <li class="text-muted cursos">Asistente de aula</li>
+            </ul>
+            <!-- <p>
+              <a class="text-muted cursos">BrandFlow</a>
+            </p>
+            <p>
+              <a class="text-muted cursos">Bootstrap Angular</a>
+            </p> -->
+          </div>
+          <!-- Grid column -->
+
+          <hr class="w-100 clearfix d-md-none" />
+
+          <!-- Grid column -->
+          <hr class="w-100 clearfix d-md-none" />
+
+          <!-- Grid column -->
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">Contacto</h6>
+            <p><i class="fas fa fa-home mr-3"></i> Direccion 123</p>
+            <p><i class="fas fa fa-envelope mr-3"></i> iccapacitacionchile@gmail.com</p>
+            <p><i class="fas fa fa-phone mr-3"></i> + 56 9 7781 4386</p>
+            <!-- <p><i class="fas fa fa-print mr-3"></i> + 01 234 567 89</p> -->
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">Nuestras redes</h6>
+
+            <!-- Facebook -->
         <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #3b5998;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-facebook-square" aria-hidden="true"></i></i
-        ></a>
-  
-        <!-- Twitter -->
-        <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #55acee;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-twitter" aria-hidden="true"></i></i
-        ></a>
-  
-        <!-- Google -->
-        <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #dd4b39;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-google" aria-hidden="true"></i></i
-        ></a>
-  
-        <!-- Instagram -->
-        <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #ac2bac;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-instagram"></i
-        ></a>
-  
-        <!-- Linkedin -->
-        <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #0082ca;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-linkedin"></i
-        ></a>
-        <!-- Github -->
-        <a
-          class="btn btn-primary btn-floating m-1"
-          style="background-color: #333333;"
-          href="#!"
-          role="button"
-          ><i class="fab fa fa-github"></i
-        ></a>
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #3b5998;"
+        href="#!"
+        role="button"
+        ><i class="fab fa fa-facebook-square" aria-hidden="true"></i></i
+      ></a>
+
+      <!-- Twitter -->
+      <a
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #55acee;"
+        href="#!"
+        role="button"
+        ><i class="fab fa fa-twitter" aria-hidden="true"></i></i
+      ></a>
+
+      <!-- Google -->
+      <a
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #dd4b39;"
+        href="#!"
+        role="button"
+        ><i class="fab fa fa-google" aria-hidden="true"></i></i
+      ></a>
+
+      <!-- Instagram -->
+      <a
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #ac2bac;"
+        href="#!"
+        role="button"
+        ><i class="fab fa fa-instagram"></i
+      ></a>
+
+      <!-- Linkedin -->
+      <!-- <a
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #0082ca;"
+        href="#!"
+        role="button"
+        ><i class="fab fa fa-linkedin"></i
+      ></a> -->
+          </div>
+        </div>
+        <!--Grid row-->
       </section>
-      <!-- Section: Social media -->
+      <!-- Section: Links -->
     </div>
     <!-- Grid container -->
-  
-    <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+
+   <!-- Copyrights -->
+  <div class="bg-light py-4">
+    <div class="container text-center">
+    <div class="text-muted mb-0 py-2">
       © 2020 Copyright:
-      <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+      <a class="text-muted" >todos los derechos reservados</a>
     </div>
     <!-- Copyright -->
+    </div>
+  </div>
   </footer>
+  <!-- Footer -->
+
 </html>
