@@ -23,7 +23,7 @@ def nosotros():
 def cursos():
     
 
-    return render_template("cursos.html", user=current_user)
+    return render_template("cursos/cursos.html", user=current_user)
 
 @page.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
