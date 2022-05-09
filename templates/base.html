@@ -39,21 +39,20 @@
                 <div class="">
                   <a class="nav-item nav-link" id="menu" >Cursos</a>
                   <div class="dropdown-content">
-                    <a href="/cursos">Asistente de aula</a>
-                    <a href="#">Inspector educacional</a>
-                    <a href="#">Link 3</a>
+                    <a href="/asistente-aula">Asistente de aula</a>
+                    <a href="/inspector-educacional">Inspector educacional</a>
                   </div>
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-item nav-link" id="menu" href="/sign-up">Contáctanos</a>
+                <a class="nav-item nav-link" id="menu" href="/register">Contáctanos</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto" >
-            {% if user.is_authenticated %}
+            {% if 'loggedin' in session %}
             <li class="nav-item">
               <a class="nav-item nav-link" id="menu" href="/aspirantes">Aspirantes por curso</a>
             </li>

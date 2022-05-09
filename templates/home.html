@@ -60,27 +60,27 @@
     <!-- Three columns of text below the carousel -->
     <div class="row">
       <div class="col-lg-4">
-        <img class="bd-placeholder-img rounded-circle imagen" src="static/Imagenes/asistente_aula.jpg" 
-        width="200" height="200" role="img" style="margin: 20px;"/>
+        <a href="/asistente-aula"><img class="bd-placeholder-img rounded-circle imagen" src="static/Imagenes/asistente_aula.jpg" 
+        width="200" height="200" role="img" style="margin: 20px;" /></a>
 
         <h2>Asistente de aula</h2>
         <p>Apoyo en actividades pedagógicas de aula.</p>
-        <p><a class="btn btn-secondary" href="#">Ver detalles &raquo;</a></p>
+        <p><a class="btn btn-secondary" href="/asistente-aula">Ver detalles &raquo;</a></p>
       </div><!-- /.col-lg-4 -->
       <div class="col-lg-4">
+        <a href="/inspector-educacional"><img class="bd-placeholder-img rounded-circle imagen" src="static/Imagenes/inspector.jpg" 
+          width="200" height="200" role="img" style="margin: 20px;" /></a>
+        <h2>Inspector educacional</h2>
+        <p>Inspector educacional con mención en convivencia escolar.</p>
+        <p><a class="btn btn-secondary" href="/inspector-educacional">Ver detalles &raquo;</a></p>
+      </div><!-- /.col-lg-4 -->
+      <!-- <div class="col-lg-4">
         <img class="bd-placeholder-img rounded-circle imagen" src="static/Imagenes/inspector.jpg" 
         width="200" height="200" role="img" style="margin: 20px;"/>
         <h2>Inspector educacional</h2>
         <p>Inspector educacional con mención en convivencia escolar.</p>
         <p><a class="btn btn-secondary" href="#">Ver detalles &raquo;</a></p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4">
-        <img class="bd-placeholder-img rounded-circle imagen" src="static/Imagenes/inspector.jpg" 
-        width="200" height="200" role="img" style="margin: 20px;"/>
-        <h2>Inspector educacional</h2>
-        <p>Inspector educacional con mención en convivencia escolar.</p>
-        <p><a class="btn btn-secondary" href="#">Ver detalles &raquo;</a></p>
-      </div><!-- /.col-lg-4 -->
+      </div>/.col-lg-4 -->
     </div><!-- /.row -->
 
 
@@ -93,20 +93,5 @@
   </footer>
 </main>
 
-<ul class="list-group list-group-flush" id="notes">
-  {% for note in user.notes %}
-  <li class="list-group-item">
-    {{ note.data }}
-    <button type="button" class="btn-close float-end" aria-label="Close" onClick="deleteNote({{ note.id }})">
-    </button>
-  </li>
-  {% endfor %}
-</ul>
-<form method="POST">
-  <textarea name="note" id="note" class="form-control"></textarea>
-  <br />
-  <div align="center">
-    <button type="submit" class="btn btn-primary">Add Note</button>
-  </div>
-</form>
+
 {% endblock %}

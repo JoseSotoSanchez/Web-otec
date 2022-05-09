@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content  %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"> -->
+
+	<div style="margin-top: 200px;">
+		<div class="login">
+			<h1>Login</h1>
+			<div class="links">
+				<a href="{{ url_for('login') }}" class="active">Login</a>
+			</div>
+			<form action="{{ url_for('login') }}" method="post">
+				<label for="usuario">
+					<i class="fa fa-user"></i>
+				</label>
+				<input type="text" name="usuario" placeholder="usuario" id="usuario" required>
+				<label for="password">
+					<i class="fa fa-lock"></i>
+				</label>
+				<input type="password" name="clave" placeholder="Clave" id="clave" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Login">
+			</form>
+		</div>
+	</div>
+{% endblock %}
