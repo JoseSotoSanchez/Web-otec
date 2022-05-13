@@ -1,118 +1,360 @@
-#carouselImg{
-    height: 350px;
-  }
-
-  #navBar{
-     background: whitesmoke;
-     height: 100px;
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     font-size: unset;
-     font-variant: petite-caps;
-     font-weight: 500;
-   }
-
-   #colorFondo{
-      background:whitesmoke;
-   }
-   #menu{
-      text-align: center;
-   }
-
-  #logo{
-     width: 359px;
-     height: 93px;
-     margin-right: 30px;
-  }
-
-  .navbar-nav > .active > a {
-   color: rgb(214, 214, 214);
-   background-color: #ffe6b8;
-   border-radius: 25% 10%;
-   box-shadow: 3px 3px 7px 1px rgb(151 100 47 / 91%);
- }
- .nav-item > a:hover {
-   color: rgb(214, 214, 214);
- }
-
-.cursos{
-   font-size: small;
+#carouselImg {
+  height: 350px;
 }
 
-#ul{
-   margin: unset;
+#navBar {
+  background: whitesmoke;
+  height: 100px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: unset;
+  font-variant: petite-caps;
+  font-weight: 500;
 }
 
- 
- .form-control::placeholder {
-   font-size: 0.95rem;
-   color: #aaa;
-   font-style: italic;
- }
- 
- .form-control.shadow-0:focus {
-   box-shadow: none;
- }
+#colorFondo {
+  background: whitesmoke;
+}
 
- #textoAbout{
-   text-align: center;
-   width: 70%;
-   float: right;
-   margin-right: 18%;
-   margin-top: 5%;
- }
+#menu {
+  text-align: center;
+}
 
- .imagen:hover{
-   border-radius:50%;
-   -webkit-border-radius:50%;
-   box-shadow: 0px 0px 15px 15px #ec731e;
-   -webkit-box-shadow: 0px 0px 15px 15px #ec731e;
-   transform: rotate(360deg);
-   -webkit-transform: rotate(360deg);
-   }
+#logo {
+  width: 359px;
+  height: 93px;
+  margin-right: 30px;
+}
 
-   .nosotros-img {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 5px;
-    }
+.navbar-nav>.active>a {
+  color: rgb(214, 214, 214);
+  background-color: #ffe6b8;
+  border-radius: 25% 10%;
+  box-shadow: 3px 3px 7px 1px rgb(151 100 47 / 91%);
+}
+
+.nav-item>a:hover {
+  color: rgb(214, 214, 214);
+}
+
+.cursos {
+  font-size: small;
+}
+
+#ul {
+  margin: unset;
+}
+
+
+.form-control::placeholder {
+  font-size: 0.95rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.form-control.shadow-0:focus {
+  box-shadow: none;
+}
+
+#textoAbout {
+  text-align: center;
+  width: 70%;
+  float: right;
+  margin-right: 18%;
+  margin-top: 5%;
+}
+
+.imagen:hover {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  box-shadow: 0px 0px 15px 15px #ec731e;
+  -webkit-box-shadow: 0px 0px 15px 15px #ec731e;
+  transform: rotate(360deg);
+  -webkit-transform: rotate(360deg);
+}
+
+.nosotros-img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+}
+
 /* Dropdown Button */
 
- 
- /* The container <div> - needed to position the dropdown content */
- .dropdown {
-   position: relative;
-   display: inline-block;
- }
- 
- /* Dropdown Content (Hidden by Default) */
- .dropdown-content {
-   display: none;
-   position: absolute;
-   background-color: #f1f1f1;
-   min-width: 300px;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-   z-index: 1;
- }
- 
- /* Links inside the dropdown */
- .dropdown-content a {
-   color: black;
-   padding: 12px 16px;
-   text-decoration: none;
-   display: block;
- }
- 
- /* Change color of dropdown links on hover */
- .dropdown-content a:hover {background-color: #ddd;}
- 
- /* Show the dropdown menu on hover */
- .dropdown:hover .dropdown-content {display: block;}
- 
- /* Change the background color of the dropdown button when the dropdown content is shown */
- .dropdown:hover .dropbtn {background-color: #e4e4e4;}
-   
 
-.contenedor:hover .imagen {-webkit-transform:scale(1.3);transform:scale(1.3);}
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
 
- 
- 
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 300px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.col1 {
+  background: grey;
+  width: 50%;
+}
+
+.col2 {
+  border: white;
+  background: grey;
+  width: 50%;
+}
+
+.contact {
+  background: rgb(211, 211, 211);
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #e4e4e4;
+}
+
+
+.contenedor:hover .imagen {
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
+}
+
+
+
+#contact input[type="text"],
+#contact input[type="email"],
+#contact input[type="tel"],
+#contact input[type="url"],
+#contact textarea,
+#contact button[type="submit"] {
+  font: 400 12px/16px "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+#contact {
+  background: #F9F9F9;
+  padding: 25px;
+  margin: 50px 0;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15%;
+  box-shadow: 10px 10px 40px 1px rgba(241, 170, 93, 0.91);
+}
+
+#contact h3 {
+  color: #F96;
+  display: block;
+  font-size: 30px;
+  font-weight: 400;
+  text-align: center;
+}
+
+#contact h4 {
+  margin: 5px 0 15px;
+  display: block;
+  font-size: 13px;
+}
+
+fieldset {
+  border: medium none !important;
+  margin: 0 0 10px;
+  min-width: 100%;
+  padding: 0;
+  width: 100%;
+}
+
+#contact select[type="select"] {
+  width: 100%;
+  border: 1px solid #CCC;
+  background: #FFF;
+  margin: 0 0 5px;
+  padding: 10px;
+}
+
+#contact select[type="select"]:hover {
+  -webkit-transition: border-color 0.3s ease-in-out;
+  -moz-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
+  border: 1px solid #AAA;
+}
+
+#contact input[type="text"],
+#contact input[type="email"],
+#contact input[type="tel"],
+#contact input[type="url"],
+#contact textarea {
+  width: 100%;
+  border: 1px solid #CCC;
+  background: #FFF;
+  margin: 0 0 5px;
+  padding: 10px;
+}
+
+#contact input[type="text"]:hover,
+#contact input[type="email"]:hover,
+#contact input[type="tel"]:hover,
+#contact input[type="url"]:hover,
+#contact textarea:hover {
+  -webkit-transition: border-color 0.3s ease-in-out;
+  -moz-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
+  border: 1px solid #AAA;
+}
+
+#contact textarea {
+  height: 100px;
+  max-width: 100%;
+  resize: none;
+}
+
+#contact button[type="submit"] {
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  background: #0CF;
+  color: #FFF;
+  margin: 0 0 5px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+#contact button[type="submit"]:hover {
+  background: #09C;
+  -webkit-transition: background 0.3s ease-in-out;
+  -moz-transition: background 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#contact button[type="submit"]:active {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#contact input:focus,
+#contact textarea:focus {
+  outline: 0;
+  border: 1px solid #999;
+}
+
+::-webkit-input-placeholder {
+  color: #888;
+}
+
+:-moz-placeholder {
+  color: #888;
+}
+
+::-moz-placeholder {
+  color: #888;
+}
+
+:-ms-input-placeholder {
+  color: #888;
+}
+
+#contact input[type=submit] {
+  padding: 5px 15px;
+  background: #ccc;
+  border: 0 none;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+
+
+
+body {
+  color: #000;
+  overflow-x: hidden;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%
+}
+
+.card {
+  padding: 30px 40px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  border: none !important;
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2)
+}
+
+.blue-text {
+  color: #00BCD4
+}
+
+.form-control-label {
+  margin-bottom: 0
+}
+
+input,
+select,
+textarea,
+button {
+  padding: 8px 15px;
+  border-radius: 5px !important;
+  margin: 5px 0px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  font-size: 18px !important;
+  font-weight: 300
+}
+
+input:focus,
+textarea:focus {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: 1px solid #00BCD4;
+  outline-width: 0;
+  font-weight: 400
+}
+
+.btn-block {
+  text-transform: uppercase;
+  font-size: 15px !important;
+  font-weight: 400;
+  height: 43px;
+  cursor: pointer
+}
+
+.btn-block:hover {
+  color: #fff !important
+}
+
+button:focus {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  outline-width: 0
+}
+
+.dtalle{
+  background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;
+}

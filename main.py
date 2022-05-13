@@ -123,6 +123,27 @@ def inspectorEducacional():
 def sign_up():
     return render_template('sign_up.html')
 
+@app.route('/contactanos', methods=['GET', 'POST'])
+def contactanos():
+     # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'nombre' in request.form and 'correo' in request.form and 'telefono' in request.form and 'motivo' in request.form and 'mensaje' in request.form:
+    # Create variables for easy access
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        telefono = request.form['telefono']
+        motivo = request.form['motivo']
+        mensaje = request.form['mensaje']
+          # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('INSERT INTO contacto (nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
+        # Fetch one record and return result
+        mysql.connection.commit()
+        msg = 'Mensaje enviado'
+        #return render_template('contactanos.html', msg)
+    return render_template('contactanos.html')
+
 @app.route('/aspirantes')
 def aspirantes():
     # Check if user is loggedin
