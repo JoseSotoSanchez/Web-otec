@@ -111,12 +111,40 @@ def home():
 def nosotros():
     return render_template('nosotros.html')
 
-@app.route('/asistente-aula')
+@app.route('/asistente-aula', methods=['GET', 'POST'])
 def asistenteAula():
+     # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    # Create variables for easy access
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+          # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+        # Fetch one record and return result
+        mysql.connection.commit()
+        msg = 'postulación exitosa!'
+        #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-aula.html')
 
 @app.route('/inspector-educacional')
 def inspectorEducacional():
+     
     return render_template('cursos/inspector-educacional.html')
 
 @app.route('/sign_up')

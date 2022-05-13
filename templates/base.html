@@ -129,8 +129,11 @@
     v8 = document.getElementById("email");
     v9 = document.getElementById("telefono");
     v10 = document.getElementById("profesion");
-    v11 = document.getElementById("nestudio");
+    v11 = document.getElementById("nestudios");
     v12 = document.getElementById("slaboral");
+    v13 = document.getElementById("direccion");
+    v14 = document.getElementById("region");
+    v15 = document.getElementById("curso");
 
     flag1 = true;
     flag2 = true;
@@ -144,6 +147,9 @@
     flag10 = true;
     flag11 = true;
     flag12 = true;
+    flag13 = true;
+    flag14 = true;
+    flag15 = true;
 
     if(val>=1 || val==0) {
         if(v1.value == "") {
@@ -270,7 +276,40 @@
         }
     }
 
-    flag = flag1 && flag2 && flag3 && flag4 && flag5 && flag6&& flag7&& flag8&& flag9&& flag10&& flag11&& flag12;
+    if(val>=13 || val==0) {
+        if(v13.value == "") {
+            v13.style.borderColor = "red";
+            flag13 = false;
+        }
+        else {
+            v13.style.borderColor = "green";
+            flag13 = true;
+        }
+    }
+
+    if(val>=14 || val==0) {
+        if(v14.value == "") {
+            v14.style.borderColor = "red";
+            flag14 = false;
+        }
+        else {
+            v14.style.borderColor = "green";
+            flag14 = true;
+        }
+    }
+
+    if(val>=15 || val==0) {
+        if(v15.value == "") {
+            v15.style.borderColor = "red";
+            flag15 = false;
+        }
+        else {
+            v15.style.borderColor = "green";
+            flag15 = true;
+        }
+    }
+
+    flag = flag1 && flag2 && flag3 && flag4 && flag5 && flag6&& flag7&& flag8&& flag9&& flag10&& flag11&& flag12&& flag13&& flag14&& flag15;
 
     return flag;
 }
