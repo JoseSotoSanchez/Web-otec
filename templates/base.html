@@ -52,10 +52,18 @@
           </div>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto" >
+          <ul class="navbar-nav ms-auto  " >
             {% if 'loggedin' in session %}
-            <li class="nav-item">
-              <a class="nav-item nav-link" id="menu" href="/aspirantes">Aspirantes por curso</a>
+            <li class="nav-item dropdown">
+              <div class="">
+                <a class="nav-item nav-link " id="menu" >administración cursos</a>
+                <div class="dropdown-content ">
+                  <a href="/aspirantes-asistente-aula">Aspirantes Asistente de aula</a>
+                  <a href="/aspirantes-inspector-educacional">Aspirantes Inspector educacional</a>
+                  <div class="dropdown-divider"></div>
+                  <a href="/mensajes-contacto">Mensajes de contacto</a>
+                </div>
+              </div>
             </li>
             <li class="nav-item">
               <a class="nav-item nav-link" id="menu" href="/logout">Cerrar Sesión</a>
