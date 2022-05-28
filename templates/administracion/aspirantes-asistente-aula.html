@@ -36,23 +36,23 @@
                             <tbody>
                                 {% for row in aspirantes %}
                                 <tr>
-                                    <td>{{row.id}}</td>
-                                    <td>{{row.nombre}}</td>
-                                    <td>{{row.apellido}}</td>
-                                    <td>{{row.rut}}</td>
-                                    <td>{{row.sexo}}</td>
-                                    <td>{{row.edad}}</td>
-                                    <td>{{row.nacionalidad}}</td>
-                                    <td>{{row.estado_civil}}</td>
-                                    <td>{{row.email}}</td>
-                                    <td>{{row.telefono}}</td>
+                                    <td>{{row[0]}}</td>
+                                    <td>{{row[1]}}</td>
+                                    <td>{{row[2]}}</td>
+                                    <td>{{row[3]}}</td>
+                                    <td>{{row[4]}}</td>
+                                    <td>{{row[5]}}</td>
+                                    <td>{{row[6]}}</td>
+                                    <td>{{row[7]}}</td>
+                                    <td>{{row[8]}}</td>
+                                    <td>{{row[9]}}</td>
                                     <!-- <td>{{row.profesion}}</td> -->
-                                    <td>{{row.nivel_estudios}}</td>
-                                    <td>{{row.situacion_laboral}}</td>
-                                    <td>{{row.direccion}}</td>
+                                    <td>{{row[11]}}</td>
+                                    <td>{{row[12]}}</td>
+                                    <td>{{row[13]}}</td>
                                     <!-- <td>{{row.region}}</td> -->
-                                    <td>{{row.curso}}</td>
-                                    <td>{{row.fecha}}</td>
+                                    <td>{{row[15]}}</td>
+                                    <td>{{row[16]}}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

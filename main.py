@@ -1,11 +1,9 @@
 from asyncio.windows_events import NULL
 from flask import Flask, render_template, request, redirect, flash,url_for, session
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
-from flask_mysqldb import MySQL
 from flask import Flask, request, render_template, jsonify, json
-import pymysql
-import MySQLdb.cursors
-import re
+from bd import obtener_conexion
+import sys
 
 app = Flask(__name__)
 
@@ -20,13 +18,8 @@ app.secret_key = 'your secret key'
 # app.config['MYSQL_DB'] = 'otec'
 
 #web
-app.config['MYSQL_HOST'] = 'iccapacitacionlaboral.cl'
-app.config['MYSQL_USER'] = 'iccapaci1_admin'
-app.config['MYSQL_PASSWORD'] = 'gQ9Pb$$PKh'
-app.config['MYSQL_DB'] = 'iccapaci1_iccaplab'
+#mydb = mysql.connector.connect(host="iccapacitacionlaboral.cl", user="iccapaci1_admin", passwd="gQ9Pb$$PKh", database="iccapaci1_iccaplab")
 
-# Intialize MySQL
-mysql = MySQL(app)
 ROWS_PER_PAGE = 5
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,16 +32,16 @@ def login():
         usuario = request.form['usuario']
         clave = request.form['clave']
           # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM usuarios WHERE usuario = %s AND clave = %s', (usuario, clave,))
-        # Fetch one record and return result
-        account = cursor.fetchone()
-        # If account exists in accounts table in out database
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT id, usuario FROM usuarios WHERE usuario = %s AND clave = %s", (usuario, clave,))
+            account = cursor.fetchone()
+        conexion.close()
         if account:
             # Create session data, we can access this data in other routes
             session['loggedin'] = True
-            session['id'] = account['id']
-            session['usuario'] = account['usuario']
+            session['id'] = account[0]
+            session['usuario'] = account[1]
             # Redirect to home page
             flash('Login correcto!', category='success')
             return redirect(url_for('home'))
@@ -79,22 +72,19 @@ def register():
         password = request.form['password']
         email = request.form['email']
          # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
-        account = cursor.fetchone()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
+            account = cursor.fetchone()
+        conexion.close()
         # If account exists show error and validation checks
         if account:
             msg = 'Account already exists!'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            msg = 'Invalid email address!'
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            msg = 'Username must contain only characters and numbers!'
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
-            mysql.connection.commit()
             msg = 'You have successfully registered!'
     elif request.method == 'POST':
         # Form is empty... (no POST data)
@@ -146,11 +136,11 @@ def asistenteAula():
         region = request.form['region']
         curso = request.form['curso']
           # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
-        # Fetch one record and return result
-        curso = NULL
-        mysql.connection.commit()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+        conexion.commit()
+        conexion.close()
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-aula.html')
@@ -177,11 +167,13 @@ def inspectorEducacional():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
-          # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('INSERT INTO curso_inspector_educacional (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
-        # Fetch one record and return result
-        mysql.connection.commit()
+
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+           cursor.execute('INSERT INTO curso_inspector_educacional (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+        conexion.commit()
+        conexion.close()
+
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/inspector-educacional.html')
@@ -202,12 +194,11 @@ def contactanos():
         telefono = request.form['telefono']
         motivo = request.form['motivo']
         mensaje = request.form['mensaje']
-          # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('INSERT INTO contacto (nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
-        # Fetch one record and return result
-        mysql.connection.commit()
-        nombre = NULL
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO contacto (nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
+        conexion.commit()
+        conexion.close()
         msg = 'Mensaje enviado'
         #return render_template('contactanos.html', msg)
     return render_template('contactanos.html')
@@ -216,14 +207,16 @@ def contactanos():
 def aspirantesAula():
     # Check if user is loggedin
     if 'loggedin' in session:
-        # We need all the account info for the user so we can display it on the profile page
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        
         page = int(request.args.get('page', 1))
         per_page = 5
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = (page - 1) * per_page
-        cursor.execute('SELECT * FROM curso_asistente_aula order by id desc')# WHERE id = %s', (session['id'],))
-        aspirantes = cursor.fetchall() 
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM curso_asistente_aula order by id desc')# WHERE id = %s', (session['id'],))
+            aspirantes = cursor.fetchall()
+        conexion.close()
         pagination = Pagination(page=page, per_page=per_page, offset=offset, total=len(aspirantes), 
                     record_name='aspirantes')
         return render_template('administracion/aspirantes-asistente-aula.html', aspirantes = aspirantes, pagination = pagination) 
@@ -236,11 +229,13 @@ def aspirantesAula():
 def aspirantesInspector():
     # Check if user is loggedin
     if 'loggedin' in session:
-        # User is loggedin show them the home page
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
         page = request.args.get('page', 1, type=int)
-        cursor.execute('SELECT * FROM curso_inspector_educacional order by id desc')# WHERE id = %s', (session['id'],))
-        aspirantes = cursor.fetchall() 
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM curso_inspector_educacional order by id desc')# WHERE id = %s', (session['id'],))
+            aspirantes = cursor.fetchall()
+        conexion.close()
         return render_template('administracion/aspirantes-inspector-educacional.html', aspirantes = aspirantes)
     # User is not loggedin redirect to login page
     return redirect(url_for('home'))
@@ -249,13 +244,16 @@ def aspirantesInspector():
 def mensajesContacto():
     # Check if user is loggedin
     if 'loggedin' in session:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        mensajes = []
         page = int(request.args.get('page', 1))
         per_page = 5
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = (page - 1) * per_page
-        cursor.execute('SELECT * FROM contacto order by id desc')# WHERE id = %s', (session['id'],))
-        mensajes = cursor.fetchall() 
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT * FROM contacto order by id desc")# WHERE id = %s', (session['id'],))
+            mensajes = cursor.fetchall()
+        conexion.close()
         pagination = Pagination(page=page, per_page=per_page, offset=offset, total=len(mensajes), 
                     record_name='mensajes')
         return render_template('administracion/mensajes-contacto.html', mensajes = mensajes, pagination = pagination) 
@@ -268,10 +266,12 @@ def mensajesContacto():
 def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
-        # We need all the account info for the user so we can display it on the profile page
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM usuario WHERE id = %s', (session['id'],))
-        account = cursor.fetchone()
+
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM usuario WHERE id = %s', (session['id'],))
+            account = cursor.fetchone()
+        conexion.close()
         # Show the profile page with account info
         return render_template('profile.html', account=account)
     # User is not loggedin redirect to login page
