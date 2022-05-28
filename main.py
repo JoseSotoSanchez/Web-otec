@@ -13,10 +13,17 @@ app = Flask(__name__)
 app.secret_key = 'your secret key'
 
 # Enter your database connection details below
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'otec'
+#local
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'otec'
+
+#web
+app.config['MYSQL_HOST'] = 'iccapacitacionlaboral.cl'
+app.config['MYSQL_USER'] = 'iccapaci1_admin'
+app.config['MYSQL_PASSWORD'] = 'gQ9Pb$$PKh'
+app.config['MYSQL_DB'] = 'iccapaci1_iccaplab'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -242,8 +249,16 @@ def aspirantesInspector():
 def mensajesContacto():
     # Check if user is loggedin
     if 'loggedin' in session:
-        # User is loggedin show them the home page
-        return render_template('administracion/mensajes-contacto.html', username=session['usuario'])
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        page = int(request.args.get('page', 1))
+        per_page = 5
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        offset = (page - 1) * per_page
+        cursor.execute('SELECT * FROM contacto order by id desc')# WHERE id = %s', (session['id'],))
+        mensajes = cursor.fetchall() 
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=len(mensajes), 
+                    record_name='mensajes')
+        return render_template('administracion/mensajes-contacto.html', mensajes = mensajes, pagination = pagination) 
     # User is not loggedin redirect to login page
     return redirect(url_for('home'))
 

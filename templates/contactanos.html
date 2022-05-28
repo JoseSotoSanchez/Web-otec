@@ -20,6 +20,9 @@
             <div class="msg">{{ msg }}</div>
             <input type="submit" value="Enviar">
         </form>
+        <script>
+            document.getElementById("mensaje").value = "";
+        </script>
         <!-- <form action="{{ url_for('contactanos') }}" id="contact" method="post" >
             <h3>Contacto</h3>
             <input placeholder="Nombre" id="nombre" type="text" tabindex="1" required>
