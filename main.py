@@ -1,9 +1,7 @@
-from asyncio.windows_events import NULL
 from flask import Flask, render_template, request, redirect, flash,url_for, session
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
-import sys
 
 app = Flask(__name__)
 
