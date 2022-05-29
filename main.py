@@ -42,7 +42,7 @@ def login():
             session['usuario'] = account[1]
             # Redirect to home page
             flash('Login correcto!', category='success')
-            return redirect(url_for('home'))
+            return redirect(url_for('index'))
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Usuario y/o contraseña incorrectas'
