@@ -467,7 +467,7 @@ h1.heading {
   width:100px;
   height: 100px;
   margin-left: -90%;
-  margin-top: 500%;
+  margin-top: 400%;
   
 }
 
@@ -539,4 +539,9 @@ h1.heading {
 .imgPagos{
   width: 100px;
   height: 100px;
+}
+.centrar{
+  width: 80%;
+  margin: 0 auto;
+  border-style:outset;
 }
