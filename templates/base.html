@@ -20,9 +20,9 @@
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
     <title>{% block title %}Inicio{% endblock %}</title>
-
+    <link rel="shortcut icon" href="static/Imagenes/logoweb.png">
     <nav class="navbar fixed-top fixed-bottom navbar-expand-lg navbar-light" id="navBar">
-      <img id="logo" src="static/Imagenes/logo2.png" class="" alt="..."/>
+      <img id="logo" src="static/Imagenes/logo-3.png" class="" alt="..."/>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -40,8 +40,10 @@
                 <div class="">
                   <a class="nav-item nav-link" id="menu" >Cursos</a>
                   <div class="dropdown-content">
-                    <a href="/asistente-aula">Asistente de aula</a>
-                    <a href="/inspector-educacional">Inspector educacional</a>
+                    <a href="/asistente-aula">Asistente de aula mención convivencia escolar</a>
+                    <a href="/inspector-educacional">Inspector educacional mención convivencia escolar</a>
+                    <a href="/cajero-bancario">Cajero bancario y comercial</a>
+                    <a href="/asistente-administrativo-contable">Asistente administrativo contable</a>
                   </div>
                 </div>
               </li>
@@ -60,6 +62,8 @@
                 <div class="dropdown-content ">
                   <a href="/aspirantes-asistente-aula">Aspirantes Asistente de aula</a>
                   <a href="/aspirantes-inspector-educacional">Aspirantes Inspector educacional</a>
+                  <a href="/aspirantes-cajero-bancario">Aspirantes Cajero Bancario</a>
+                  <a href="/aspirantes-asistente-contable">Aspirantes Asistente Contable</a>
                   <div class="dropdown-divider"></div>
                   <a href="/mensajes-contacto">Mensajes de contacto</a>
                 </div>
@@ -76,6 +80,11 @@
           </ul>
         </div>
       </div>
+      <a href="https://api.whatsapp.com/send?phone=56920742757" target="_blank">
+        <div style="position: fixed; left:100px; top:100px; ">
+          <img src="static/Imagenes/whatsapp.gif" alt="wsp" class="wsp"> 
+        </div>
+      </a>
     </nav>
   
   </head>
@@ -102,7 +111,9 @@
     </div>
     {% endif %} {% endfor %} {% endif %} {% endwith %}
 
-    <div>{% block content %} {% endblock %}</div>
+    <div style="background-image: url('static/Imagenes/escolares-29-classic.jpg');
+    background-attachment: fixed;background-repeat: no-repeat;
+    background-size: cover;">{% block content %} {% endblock %}</div>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -365,10 +376,16 @@
           <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
             <h6 class="text-uppercase mb-4 font-weight-bold">Cursos</h6>
             <ul id="ul">
-              <li><a class="text-muted cursos" href="/inspector-educacional">Inspector educacional</a></li>
+              <li><a class="text-muted cursos" href="/inspector-educacional">Inspector Educacional mención Convivencia Escolar</a></li>
             </ul id="ul">
             <ul>
-              <li><a class="text-muted cursos" href="/asistente-aula">Asistente de aula</a></li>
+              <li><a class="text-muted cursos" href="/asistente-aula">Asistente de Aula mención Convivencia Escolar</a></li>
+            </ul>
+            <ul>
+              <li><a class="text-muted cursos" href="/asistente-administrativo-contable">Asistente Administrativo Contable</a></li>
+            </ul>
+            <ul>
+              <li><a class="text-muted cursos" href="/cajero-bancario">Cajero Bancario</a></li>
             </ul>
             <!-- <p>
               <a class="text-muted cursos">BrandFlow</a>
@@ -389,7 +406,7 @@
             <h6 class="text-uppercase mb-4 font-weight-bold">Contacto</h6>
             <!-- <p><i class="fas fa fa-home mr-3"></i> Direccion 123</p> -->
             <p><i class="fas fa fa-envelope mr-3"></i> contacto@iccapacitacionlaboral.cl</p>
-            <p><i class="fas fa fa-phone mr-3"></i> + 56 9 7781 4386</p>
+            <p><i class="fas fa fa-phone mr-3"></i> + 56 9 2074 2757</p>
             <!-- <p><i class="fas fa fa-print mr-3"></i> + 01 234 567 89</p> -->
           </div>
           <!-- Grid column -->

@@ -1,8 +1,7 @@
-{% extends "base.html" %} {% block title %}Contactanos{% endblock %} {% block content  %}
-<body class="bod">
+{% extends "base.html" %} {% block title %}Contáctanos{% endblock %} {% block content  %}
     <div class="container formulario">  
-        <form id="contact" action="{{ url_for('contactanos') }}" method="post" autocomplete="off">
-            <h3>Contacto</h3>
+        <form id="contact" action="{{ url_for('contacto') }}" method="post" autocomplete="off">
+            <h3 class="titulosDetalle">Contacto</h3>
             <input type="text" name="nombre" placeholder="Nombre" id="nombre" required autofocus>
             <input type="email" name="correo" placeholder="Correo" id="correo" required>
             <input value="+569"type="text" name="telefono" maxlength="12" placeholder="Telefono" id="telefono" required>
@@ -24,6 +23,4 @@
             document.getElementById("mensaje").value = "";
         </script>
     </div>
-</body>
-
   {% endblock %}

@@ -115,6 +115,7 @@ def nosotros():
 def asistenteAula():
      # Output message if something goes wrong...
     msg = ''
+    
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
     # Create variables for easy access
@@ -176,12 +177,76 @@ def inspectorEducacional():
         #return render_template('contactanos.html', msg)
     return render_template('cursos/inspector-educacional.html')
 
+@app.route('/asistente-administrativo-contable', methods=['GET', 'POST'])
+def asistenteContable():
+     # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    # Create variables for easy access
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+          # Check if account exists using MySQL
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO curso_asistente_contable (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+        conexion.commit()
+        conexion.close()
+        msg = 'postulación exitosa!'
+        #return render_template('contactanos.html', msg)
+    return render_template('cursos/asistente-administrativo-contable.html')
+
+@app.route('/cajero-bancario', methods=['GET', 'POST'])
+def cajeroBancario():
+     # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    # Create variables for easy access
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+          # Check if account exists using MySQL
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO curso_cajero_bancario (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+        conexion.commit()
+        conexion.close()
+        msg = 'postulación exitosa!'
+        #return render_template('contactanos.html', msg)
+    return render_template('cursos/cajero-bancario.html')
+
 @app.route('/sign_up')
 def sign_up():
     return render_template('sign_up.html')
 
 @app.route('/contactanos', methods=['GET', 'POST'])
-def contactanos():
+def contacto():
      # Output message if something goes wrong...
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
@@ -235,6 +300,50 @@ def aspirantesInspector():
             aspirantes = cursor.fetchall()
         conexion.close()
         return render_template('administracion/aspirantes-inspector-educacional.html', aspirantes = aspirantes)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('home'))
+
+@app.route('/aspirantes-cajero-bancario')
+def aspirantesCajeroBancario():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        
+        page = int(request.args.get('page', 1))
+        per_page = 5
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        offset = (page - 1) * per_page
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM curso_cajero_bancario order by id desc')# WHERE id = %s', (session['id'],))
+            aspirantes = cursor.fetchall()
+        conexion.close()
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=len(aspirantes), 
+                    record_name='aspirantes')
+        return render_template('administracion/aspirantes-cajero-bancario.html', aspirantes = aspirantes, pagination = pagination) 
+        # Show the profile page with account info
+        return render_template('administracion/aspirantes-cajero-bancario.html', username=session['usuario'])
+    # User is not loggedin redirect to login page
+    return redirect(url_for('home'))
+
+@app.route('/aspirantes-asistente-contable')
+def aspirantesAsistenteContable():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        
+        page = int(request.args.get('page', 1))
+        per_page = 5
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        offset = (page - 1) * per_page
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * FROM curso_asistente_contable order by id desc')# WHERE id = %s', (session['id'],))
+            aspirantes = cursor.fetchall()
+        conexion.close()
+        pagination = Pagination(page=page, per_page=per_page, offset=offset, total=len(aspirantes), 
+                    record_name='aspirantes')
+        return render_template('administracion/aspirantes-asistente-contable.html', aspirantes = aspirantes, pagination = pagination) 
+        # Show the profile page with account info
+        return render_template('administracion/aspirantes-asistente-contable.html', username=session['usuario'])
     # User is not loggedin redirect to login page
     return redirect(url_for('home'))
 

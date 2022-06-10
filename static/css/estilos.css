@@ -394,21 +394,25 @@ h1.heading {
   font-weight: 900;
   margin: 0 0 0.5em;
   color: #505050;
+  margin-top: 15%;
 }
 @media (min-width: 450px) {
   h1.heading {
     font-size: 3.55em;
+    margin-top: 4%;
   }
 }
 @media (min-width: 760px) {
   h1.heading {
     font-size: 3.05em;
+    margin-top: 4%;
   }
 }
 @media (min-width: 900px) {
   h1.heading {
     font-size: 3.25em;
     margin: 0 0 0.3em;
+    margin-top: 4%;
   }
 } 
 .card {
@@ -447,7 +451,7 @@ h1.heading {
   font-size: 1.65em;
 }
 .card-title a {
-  color: #000;
+  color: #084298;
   text-decoration: none !important;
 }
 .card-read-more {
@@ -458,4 +462,82 @@ h1.heading {
   padding:10px;
   font-weight:600;
   text-transform: uppercase
+}
+
+.wsp{
+  width:100px;
+  height: 100px;
+  margin-left: -90%;
+  margin-top: 500%;
+  
+}
+
+.container-name {
+  margin-left: 30px;
+  margin-top: 60px;
+}
+
+.example_f {
+  border-radius: 4px;
+  background: linear-gradient(to right, #e36c6c, #7f76e9) !important;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 22px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.4s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.example_f span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.4s;
+}
+
+.example_f span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.example_f:hover span {
+  padding-right: 25px;
+}
+
+.example_f:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.fondosty{
+  background-image: url("static/Imagenes/escolares-29-classic.jpg");
+  background-attachment: fixed;
+}
+
+.titulosCursos{
+  color: #084298;
+}
+
+.titulosDetalle{
+  color: #084298;
+}
+
+.tituloRojo{
+  color:rgba(255, 52, 52, 0.616);
+  font-weight: bold;
+}
+
+.textogrey{
+  color:rgba(110, 110, 110, 0.945);
+}
+.imgPagos{
+  width: 100px;
+  height: 100px;
 }

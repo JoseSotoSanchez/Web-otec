@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% block title %}Aspirantes a Cajero Bancario{% endblock %} {% block content  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class=" bg-light rounded-3">
+        <div class="container-fluid ">
+          <div class=" mx-auto">
+              <div class="row d-flex justify-content-center">
+                  <div class=" text-center">
+                      <div class="card table-responsive">
+                        <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Aspirantes a Cajero Bancario</span>
+                        <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                            <thead>
+                              <tr>
+                                <th class="th-sm">Id</th>
+                                <th class="th-sm">Nombre</th>
+                                <th class="th-sm">Apellidos</th>
+                                <th class="th-sm">Rut</th>
+                                <th class="th-sm">Sexo</th>
+                                <th class="th-sm">Edad</th>
+                                <th class="th-sm">Nacionalidad</th>
+                                <th class="th-sm">Estado civil</th>
+                                <th class="th-sm">Email</th>
+                                <th class="th-sm">Telefono</th>
+                                <!-- <th class="th-sm">Profesión</th> -->
+                                <th class="th-sm">Estudios</th>
+                                <th class="th-sm">Situación laboral</th>
+                                <th class="th-sm">Dirección</th>
+                                <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                <th class="th-sm">Curso</th>
+                                <th class="th-sm">Fecha</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in aspirantes %}
+                                <tr>
+                                    <td>{{row[0]}}</td>
+                                    <td>{{row[1]}}</td>
+                                    <td>{{row[2]}}</td>
+                                    <td>{{row[3]}}</td>
+                                    <td>{{row[4]}}</td>
+                                    <td>{{row[5]}}</td>
+                                    <td>{{row[6]}}</td>
+                                    <td>{{row[7]}}</td>
+                                    <td>{{row[8]}}</td>
+                                    <td>{{row[9]}}</td>
+                                    <!-- <td>{{row.profesion}}</td> -->
+                                    <td>{{row[11]}}</td>
+                                    <td>{{row[12]}}</td>
+                                    <td>{{row[13]}}</td>
+                                    <!-- <td>{{row.region}}</td> -->
+                                    <td>{{row[15]}}</td>
+                                    <td>{{row[16]}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="th-sm">Id</th>
+                                    <th class="th-sm">Nombre</th>
+                                    <th class="th-sm">Apellidos</th>
+                                    <th class="th-sm">Rut</th>
+                                    <th class="th-sm">Sexo</th>
+                                    <th class="th-sm">Edad</th>
+                                    <th class="th-sm">Nacionalidad</th>
+                                    <th class="th-sm">Estado civil</th>
+                                    <th class="th-sm">Email</th>
+                                    <th class="th-sm">Telefono</th>
+                                    <!-- <th class="th-sm">Profesión</th> -->
+                                    <th class="th-sm">Estudios</th>
+                                    <th class="th-sm">Situación laboral</th>
+                                    <th class="th-sm">Dirección</th>
+                                    <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                    <th class="th-sm">Curso</th>
+                                    <th class="th-sm">Fecha</th>
+                                  </tr>
+                            </tfoot>
+                          </table>
+                          {{ pagination.info }}
+                          {{ pagination.links }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+{% endblock %}

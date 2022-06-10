@@ -2,7 +2,7 @@
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-right">Inspector educacional con mención en convivencia escolar</span>
+        <span class="fs-4" data-aos="fade-right">Cajero Bancario y Comercial</span>
       </a>
     </header>
 
@@ -19,15 +19,16 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas. Nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-
-                        <form class="form-card" action="{{ url_for('inspectorEducacional') }}" method="post">
+                        <form class="form-card" action="{{ url_for('cajeroBancario') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-down">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
-                                    <select id="curso" name="curso" type="select" onblur="validate(15)" >
+                                    <select id="curso" name="curso" type="select" onblur="validate(15)">
                                         <option value="">Seleccione</option>
                                         <option value="asistente-aula-mencion">Asistente de aula mención convivencia escolar</option>
-                                        <option selected value="inspector-educacional-mencion">Inspector educacional con mención en convivencia escolar</option>
+                                        <option value="inspector-educacional-mencion">Inspector educacional con mención en convivencia escolar</option>
+                                        <option selected value="cajero-bancario">Cajero bancario y comercial</option>
+                                        <option value="asistente-administrativo-contable">Asistente administrativo contable</option>
                                     </select> 
                                 </div>
                             </div>
@@ -140,7 +141,7 @@
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-out">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img inspector-educacional-mencion" src="static/Imagenes/inspector-educacional-mencion.png" 
+            <img class="bd-placeholder-img inspector-educacional-mencion" src="static/Imagenes/cajero-bancario.png" 
            role="inspector-educacional-mencion" style="width: 100%; height: 700px;"/>
         </div>
       </div>
@@ -164,9 +165,9 @@
         <div class="col-md-6" data-aos="fade-right">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>El rol del inspector educacional dentro de las comunidades educativas es sin duda un pilar fundamental dentro del funcionamiento de la organización escolar, pues sobre él recae la primera responsabilidad de atender situaciones tanto de alumnos y apoderados que por lo general, no son situaciones agradables. El inspector educacional debe por lo tanto, manejar situaciones que ocurren en cualquier momento del día, lo que implica que debe estar preparado en cada momento.
-
-                Para esta labor, es importante el conocimiento de cada uno de los alumnos y alumnas, la etapa del desarrollo en la que están viviendo, sus realidades contextuales pues así la intervención de las situaciones inicia desde el conocimiento de quien tenemos en ese momento. Así mismo, la comunicación, como herramienta efectiva y eficaz en la resolución de conflictos, enmarcado en las políticas vigentes de convivencia escolar.</p>
+              <p>El curso de Cajero (a) Bancario está dirigido a personas que quieran trabajar en funciones de caja de cualquier banco, cajas de compensación, cooperativas, entidades financieras o del servicio público.</p>
+              <p>Nuestros relatores cuentan con una amplia experiencia en el área financiera y empresas comerciales.</p>
+              <p>Podrás adquirir conocimientos técnicos tanto del sistema financiero como de aspectos legales, procesos contables y calidad de servicio.</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -174,10 +175,10 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
+            <li class="list-group-item dtalle">Duración: 30 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
             <li class="list-group-item dtalle">Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298"class="list-group-item dtalle" target="_blank" href="static/mallas/malla-inspector-educacional.pdf">ver malla curricular</a>
+            <li class="list-group-item dtalle">ver malla curricular</li>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up-left">
