@@ -1,9 +1,9 @@
-#carouselImg {
-  height: 350px;
+.carousel{
+  height: 500px;
 }
 
 #navBar {
-  background: whitesmoke;
+  background: #f9f9f9;
   height: 100px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: unset;
@@ -11,8 +11,13 @@
 }
 
 #colorFondo {
-  background: whitesmoke;
+  background: #f9f9f9;
 }
+
+#footer{
+  background-color: #f9f9f9;
+}
+
 
 #menu {
   text-align: center;
@@ -395,10 +400,30 @@ h1.heading {
   color: #505050;
   margin-top: 15%;
 }
-@media (min-width: 450px) {
+
+.btn-group-c{
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+  .btn-group-c{
+    position: relative;
+    display: revert;
+    vertical-align: middle;
+  }
+}
+
+@media (max-width: 500px) {
+  #logo{
+    width: 50%;
+  }
+}
+@media (max-width: 760px) {
   h1.heading {
-    font-size: 3.55em;
-    margin-top: 4%;
+    margin-top: 15%;
+    font-size: 3.05em;
   }
 }
 @media (min-width: 760px) {
@@ -463,14 +488,6 @@ h1.heading {
   text-transform: uppercase
 }
 
-.wsp{
-  width:100px;
-  height: 100px;
-  margin-left: -90%;
-  margin-top: 400%;
-  
-}
-
 .container-name {
   margin-left: 30px;
   margin-top: 60px;
@@ -478,7 +495,7 @@ h1.heading {
 
 .example_f {
   border-radius: 4px;
-  background: linear-gradient(to right, #e36c6c, #7f76e9) !important;
+  background: linear-gradient(to right, #34c8f8, #90d8fa) !important;
   border: none;
   color: #FFFFFF;
   text-align: center;
@@ -543,5 +560,20 @@ h1.heading {
 .centrar{
   width: 80%;
   margin: 0 auto;
-  border-style:outset;
+}
+
+.divC{
+  background-image: url("static/Imagenes/fondoCar.png");
+  background-attachment: fixed;
+}
+
+.wsp{
+  width:100px;
+  height: 100px;
+}
+.centrador{
+  position: fixed;
+  width: 100px;
+  height: 100%;
+  z-index: 1;
 }

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, flash,url_for, sess
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
+from correo import enviarEmail
 
 app = Flask(__name__)
 
@@ -126,7 +127,7 @@ def asistenteAula():
         edad = request.form['edad']
         nacionalidad = request.form['nacionalidad']
         ecivil = request.form['ecivil']
-        email = request.form['email']
+        correo = request.form['email']
         telefono = request.form['telefono']
         profesion = request.form['profesion']
         nestudios = request.form['nestudios']
@@ -140,6 +141,8 @@ def asistenteAula():
             cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
+        nombre = nombre + ' ' + apellido
+        enviarEmail(nombre, telefono, curso, correo)
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-aula.html')
@@ -158,7 +161,7 @@ def inspectorEducacional():
         edad = request.form['edad']
         nacionalidad = request.form['nacionalidad']
         ecivil = request.form['ecivil']
-        email = request.form['email']
+        correo = request.form['email']
         telefono = request.form['telefono']
         profesion = request.form['profesion']
         nestudios = request.form['nestudios']
@@ -171,6 +174,8 @@ def inspectorEducacional():
         with conexion.cursor() as cursor:
            cursor.execute('INSERT INTO curso_inspector_educacional (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
+        nombre = nombre + ' ' + apellido
+        enviarEmail(nombre, telefono, curso, correo)
         conexion.close()
 
         msg = 'postulación exitosa!'
@@ -191,7 +196,7 @@ def asistenteContable():
         edad = request.form['edad']
         nacionalidad = request.form['nacionalidad']
         ecivil = request.form['ecivil']
-        email = request.form['email']
+        correo = request.form['email']
         telefono = request.form['telefono']
         profesion = request.form['profesion']
         nestudios = request.form['nestudios']
@@ -205,6 +210,8 @@ def asistenteContable():
             cursor.execute('INSERT INTO curso_asistente_contable (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
+        nombre = nombre + ' ' + apellido
+        enviarEmail(nombre, telefono, curso, correo)
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-administrativo-contable.html')
@@ -223,7 +230,7 @@ def cajeroBancario():
         edad = request.form['edad']
         nacionalidad = request.form['nacionalidad']
         ecivil = request.form['ecivil']
-        email = request.form['email']
+        correo = request.form['email']
         telefono = request.form['telefono']
         profesion = request.form['profesion']
         nestudios = request.form['nestudios']
@@ -237,6 +244,8 @@ def cajeroBancario():
             cursor.execute('INSERT INTO curso_cajero_bancario (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
+        nombre = nombre + ' ' + apellido
+        enviarEmail(nombre, telefono, curso, correo)
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/cajero-bancario.html')

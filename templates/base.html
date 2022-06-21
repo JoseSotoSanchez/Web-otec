@@ -58,7 +58,7 @@
             {% if 'loggedin' in session %}
             <li class="nav-item dropdown">
               <div class="">
-                <a class="nav-item nav-link " id="menu" >administración cursos</a>
+                <a class="nav-item nav-link " id="menu" >Administración de cursos</a>
                 <div class="dropdown-content ">
                   <a href="/aspirantes-asistente-aula">Aspirantes Asistente de aula</a>
                   <a href="/aspirantes-inspector-educacional">Aspirantes Inspector educacional</a>
@@ -80,14 +80,16 @@
           </ul>
         </div>
       </div>
+    </nav>
+  </head>
+  <div class="centrador">
+    <div style="height: 40%;"></div>
       <a href="https://api.whatsapp.com/send?phone=56920742757" target="_blank">
-        <div style="position: fixed; left:100px; top:100px; ">
+        <div>
           <img src="static/Imagenes/whatsapp.gif" alt="wsp" class="wsp"> 
         </div>
       </a>
-    </nav>
-  
-  </head>
+    </div>
   <body style="margin-top:100px">
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
@@ -110,10 +112,14 @@
     </div>
     </div>
     {% endif %} {% endfor %} {% endif %} {% endwith %}
-
-    <div style="background-image: url('static/Imagenes/escolares-29-classic.jpg');
+<!-- style="background-image: url('static/Imagenes/escolares-29-classic.jpg');
     background-attachment: fixed;background-repeat: no-repeat;
-    background-size: cover;">{% block content %} {% endblock %}</div>
+    background-size: cover;" -->
+    <div style="background-image: url('static/Imagenes/fondo-web3.jpg');
+      background-attachment: fixed;background-repeat: no-repeat;
+      background-size: cover; "> 
+      {% block content %} {% endblock %}
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -338,8 +344,8 @@
 
 
   <!-- Footer -->
-  <footer
-          class="text-center text-lg-start text-muted bg-white"
+  <footer id="footer"
+          class="text-center text-lg-start text-muted fondoFooter"
           >
     <!-- Grid container -->
     <div class="container p-4 pb-0">
