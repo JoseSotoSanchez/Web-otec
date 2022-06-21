@@ -138,7 +138,7 @@ def asistenteAula():
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+            cursor.execute('INSERT INTO curso_asistente_aula (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
         nombre = nombre + ' ' + apellido
@@ -172,7 +172,7 @@ def inspectorEducacional():
 
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-           cursor.execute('INSERT INTO curso_inspector_educacional (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+           cursor.execute('INSERT INTO curso_inspector_educacional (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         nombre = nombre + ' ' + apellido
         enviarEmail(nombre, telefono, curso, correo)
@@ -207,7 +207,7 @@ def asistenteContable():
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO curso_asistente_contable (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+            cursor.execute('INSERT INTO curso_asistente_contable (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
         nombre = nombre + ' ' + apellido
@@ -241,7 +241,7 @@ def cajeroBancario():
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO curso_cajero_bancario (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,email,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
+            cursor.execute('INSERT INTO curso_cajero_bancario (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, curso, fecha) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, now())', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso,))
         conexion.commit()
         conexion.close()
         nombre = nombre + ' ' + apellido
