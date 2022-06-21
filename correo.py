@@ -13,7 +13,7 @@ def enviarEmail(nombre, telefono, curso, correo):
     email_password = '$$PKhg!pB'
 
     email_send = correo
-    subject = "Postación exitosa al curso "+curso+""
+    subject = "Postulación exitosa al curso "+curso+""
     msg = MIMEMultipart()
     msg['From'] = email_user
     msg['To'] = email_send
