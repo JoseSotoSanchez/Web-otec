@@ -143,6 +143,7 @@ def asistenteAula():
         conexion.close()
         nombre = nombre + ' ' + apellido
         enviarEmail(nombre, telefono, curso, correo)
+        flash('Postulación enviada correctamente!', category='success')
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-aula.html')
@@ -177,7 +178,7 @@ def inspectorEducacional():
         nombre = nombre + ' ' + apellido
         enviarEmail(nombre, telefono, curso, correo)
         conexion.close()
-
+        flash('Postulación enviada correctamente!', category='success')
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/inspector-educacional.html')
@@ -212,6 +213,7 @@ def asistenteContable():
         conexion.close()
         nombre = nombre + ' ' + apellido
         enviarEmail(nombre, telefono, curso, correo)
+        flash('Postulación enviada correctamente!', category='success')
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/asistente-administrativo-contable.html')
@@ -246,6 +248,7 @@ def cajeroBancario():
         conexion.close()
         nombre = nombre + ' ' + apellido
         enviarEmail(nombre, telefono, curso, correo)
+        flash('Postulación enviada correctamente!', category='success')
         msg = 'postulación exitosa!'
         #return render_template('contactanos.html', msg)
     return render_template('cursos/cajero-bancario.html')
@@ -271,6 +274,7 @@ def contacto():
             cursor.execute('INSERT INTO contacto (nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
         conexion.commit()
         conexion.close()
+        flash('Mensaje enviado correctamente!', category='success')
         msg = 'Mensaje enviado'
         #return render_template('contactanos.html', msg)
     return render_template('contactanos.html')
