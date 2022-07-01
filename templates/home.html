@@ -1,81 +1,96 @@
 {% extends "base.html" %} {% block title %}Inicio{% endblock %} {% block content  %}
 <main>
-  <div>
-    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="dwn" style="background-image: url('static/Imagenes/fondo-sldr.jpg');
+  background-attachment: fixed;background-repeat: no-repeat;
+  background-size: cover; height: auto !important;">
+    <div id="carouselExampleFade" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
-        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <!-- <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button> -->
+        <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="2" aria-label="Slide 3"></button>
       </div>
-      <div class="carousel-inner carousel">
-        <div class="carousel-item carousel active">
-          <li class="slide-visible carousel">
-                <div class="row g-0 h-100 centrar">
-                    <div class="col-md-6 col-xl-5 d-flex align-items-center p-2 p-md-3 p-xl-5">
-                        <div class="card-body p-1 p-md-3 p-xl-5">
-                            <!-- <p class="lead">Why use this slider</p> -->
-                            <h2 class="card-title" style="color:#DF1E1E;">Cursos 100% Online</h2>
-                            <p class="card-text mt-3">Obten tu certificado en línea.</p>
-                            <p>Clases vía Zoom</p>
-                            <div class="container-name"><a class="example_f" rel="nofollow" onclick="scrolldiv()"><span>Nuestros Cursos</span></a></div>
-                            <!-- <p class="card-text"><small class="text-muted">Remember to check out on mobile</small></p> -->
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xl-7">
-                        <video src="static/Imagenes/portada-1.webm" autoplay loop muted class="card-img rounded" loading="lazy" style="height: 80%; object-fit: cover;" alt="...">
-                        <video src="static/Imagenes/ortada-1.webm" autoplay loop muted  class="card-img rounded" loading="lazy" style="width: 100%; object-fit: cover;" alt="...">
-                     </div>
-            </div>
-        </li>
+      <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active ">
+              <div class="row g-0 h-100 centrar">
+                  <div class="animation">
+                    <img src="static/Imagenes/-portada-1.png" class="img-fluid size" alt="..." />
+                  </div>
+                  <div class="col-xs-12 col-md-6 col-xl-5 d-flex align-items-center p-2 p-md-3 p-xl-5 slide-up">
+                      <div class="card-body p-1 p-md-5 p-xl-4"  >
+                        <img src="static/Imagenes/logo-ic-capacitacion-1.png" style="width: 40%; height: auto;" alt="logo" />
+                          <p class="card-text mt-3 fuentesSt">Capacitando personas con técnicas efectivas, dinámicas e innovadoras en desarrollo Laboral.</p>
+                          <p class="card-text mt-3 fuentesSt">Revisa Si eres Beneficiario de Nuestras Becas Formativas</p>
+                          <div class="container-name"><a class="example_f" rel="nofollow" onclick="scrolldiv()"><span>Revisa Nuestros Cursos</span></a></div>
+                          <!-- <p class="lead">Why use this slider</p> -->
+                          <!-- <p class="card-text"><small class="text-muted">Remember to check out on mobile</small></p> -->
+                      </div>
+                  </div>
+          </div>
+          </div>
+          <div class="carousel-item">
+              <div class="row g-0 h-100 centrar">
+                  <div class="animation">
+                    <img src="static/Imagenes/Convivencia-Escolar.png" class="img-fluid size" alt="..." />
+                  </div>
+                  <div class="col-md-6 col-xl-5 d-flex align-items-center p-2 p-md-3 p-xl-5 slide-up">
+                      <div class="card-body p-1 p-md-5 p-xl-4">
+                          <!-- <p class="lead">Why use this slider</p> -->
+                          <h1 class="card-title fuentesSttit">Asistente de aula con mención en convivencia escolar</h1>
+                          <p class="card-text mt-3 fuentesSt">Todos Nuestros Cursos Tienen Becas Limitadas</p>
+                          <div class="container-name"><a class="example_f" href="/asistente-aula" ><span>Postular al curso</span></a></div>
+                          <!-- <p>Super simple setup using just markup and few powerful configuration options</p>
+                          <p class="card-text"><small class="text-muted">Remember to check out on mobile</small></p> -->
+                      </div>
+                  </div>
+          </div>
+          </div>
+          <div class="carousel-item">
+              <div class="row g-0 h-100 centrar">
+                  <div class="animation">
+                    <img src="static/Imagenes/Convivencia-Escolar-3.png" class="img-fluid size" alt="..." />
+                  </div>
+                  <div class="col-md-6 col-xl-5 d-flex align-items-center p-2 p-md-3 p-xl-5 slide-up">
+                      <div class="card-body p-1 p-md-5 p-xl-4">
+                          <!-- <p class="lead">Why use this slider</p> -->
+                          <h1 class="card-title fuentesSttit">Inspector educacional con mención en convivencia escolar</h1>
+                          <p class="card-text mt-3 fuentesSt">Todos Nuestros Cursos Tienen Becas Limitadas</p>
+                          <div class="container-name"><a class="example_f" href="/inspector-educacional" ><span>Postular al curso</span></a></div>
+                          <!-- <p class="card-text"><small class="text-muted">Remember to check out on mobile</small></p> -->
+                      </div>
+                  </div>
+          </div>
+          </div>
         </div>
-        <div class="carousel-item carousel">
-          <li class="slide-visible carousel">
-                <div class="row g-0 h-100 centrar">
-                    <div class="col-md-6 col-xl-5 d-flex align-items-center p-2 p-md-3 p-xl-5">
-                        <div class="card-body p-1 p-md-3 p-xl-5">
-                            <!-- <p class="lead">Why use this slider</p> -->
-                            <h2 class="card-title" style="color:#DF1E1E;">Comprometidos con tu aprendizaje.</h2>
-                            <p class="card-text mt-3">Alcanza tus metas personales.</p>
-                            
-                            <!-- <p>Super simple setup using just markup and few powerful configuration options</p>
-                            <p class="card-text"><small class="text-muted">Remember to check out on mobile</small></p> -->
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xl-7">
-                      <video src="static/Imagenes/portada-2.webm" autoplay loop muted class="card-img rounded" loading="lazy" style="height: 80%; object-fit: cover;" alt="...">
-                      <video src="static/Imagenes/portada-2.webm" autoplay loop muted  class="card-img rounded" loading="lazy" style="width: 100%; object-fit: cover;" alt="...">
-                    </div>
-            </div>
-        </li>
-        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
   </div>
   <section class="wrapper">
     <div id="cursosd"class="container-fostrap">
       <div class="btn-group-c flex-wrap" role="group">
-        <div class="container-name"><a class="example_f" href="http://aulavirtual.iccapacitacionlaboral.cl/login/index.php" target="_blank" rel="nofollow"><span>Acceso Aula Virtual</span></a></div>
+        <div class="container-name"><a class="example_f" href="https://aulavirtual.iccapacitacionlaboral.cl/login/index.php" target="_blank" rel="nofollow"><span>Acceso Aula Virtual</span></a></div>
         <div class="container-name"><a class="example_f" href="#" target="_blank" rel="nofollow"><span>Validar Certificado</span></a></div>
       </div>
         <div>
             <!-- <img src="https://4.bp.blogspot.com/-7OHSFmygfYQ/VtLSb1xe8kI/AAAAAAAABjI/FxaRp5xW2JQ/s320/logo.png" class="fostrap-logo"/> -->
-            <h1 class="heading ">
-                Cursos
+            <h1 class="heading">
+                Cursos E-Learning
             </h1>
+            <img src="static/Imagenes/divider.png" />
         </div>
         <div class="content">
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up-right">
-                        <div class="card">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up">
+                        <div class="card brd">
                             <a class="img-card" href="/asistente-aula">
                             <img src="static/Imagenes/asistente_aula.jpg" />
                           </a>
@@ -85,59 +100,54 @@
                                     <a href="/asistente-aula"> Asistente de aula con mención en convivencia escolar
                                   </a>
                                 </h4>
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
                             </div>
-                            <div class="card-read-more">
-                                <a href="/asistente-aula" class="btn btn-link btn-block">
-                                    Ver mas detalles
-                                </a>
-                            </div>
-                        </div>
+                            <div >
+                                <div><a class="example_p" href="/asistente-aula" ><span>Postula ahora</span></a></div>
+                        </div></div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up">
-                        <div class="card">
+                        <div class="card brd">
                             <a class="img-card" href="/inspector-educacional">
                             <img src="static/Imagenes/inspector.jpg" />
                           </a>
                           <hr class="featurette-divider">
                             <div class="card-content">
                                 <h4 class="card-title">
-                                    <a href="/inspector-educacional"> Inspector educacional con mención en convivencia escolar
+                                    <a href="/inspector-educacional">Inspector educacional con mención en convivencia escolar
                                   </a>
                                 </h4>
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.
                                 </p> 
-                                <p class="">
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
                             </div>
-                            <div class="card-read-more">
-                                <a href="/inspector-educacional" class="btn btn-link btn-block">
-                                   Ver mas detalles
-                                </a>
+                            <div>
+                                <div><a class="example_p" href="/inspector-educacional" ><span>Postula ahora</span></a></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up-left">
-                      <div class="card">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up">
+                      <div class="card brd">
                           <a class="img-card" href="/cajero-bancario">
                           <img src="static/Imagenes/cajeroBancario.jpg" />
                         </a>
@@ -147,28 +157,26 @@
                                   <a href="/cajero-bancario"> Cajero bancario y comercial
                                 </a>
                               </h4>
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Entrega de Certificado al completar el curso.                                  
                               </p>
                           </div>
-                          <div class="card-read-more">
-                              <a href="/cajero-bancario" class="btn btn-link btn-block">
-                                 Ver mas detalles
-                              </a>
+                          <div >
+                              <div><a class="example_p" href="/cajero-bancario" ><span>Postula ahora</span></a></div>
                           </div>
                       </div>
                   </div>
-                  <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4" data-aos="fade-up-right">
-                      <div class="card">
+                  <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4" data-aos="fade-up">
+                      <div class="card brd">
                           <a class="img-card" href="/asistente-administrativo-contable">
                           <img src="static/Imagenes/asistenteContable.png" />
                         </a>
@@ -178,23 +186,21 @@
                                   <a href="/asistente-administrativo-contable"> Asistente administrativo contable
                                 </a>
                               </h4>
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.
                               </p> 
-                              <p class="">
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Entrega de Certificado al completar el curso.                                  
                               </p>
                           </div>
-                          <div class="card-read-more">
-                              <a href="/asistente-administrativo-contable" class="btn btn-link btn-block">
-                                  Ver mas detalles
-                              </a>
+                          <div >
+                              <div><a class="example_p" href="/asistente-administrativo-contable" ><span>Postula ahora</span></a></div>
                           </div>
                       </div>
                   </div>

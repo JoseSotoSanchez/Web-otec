@@ -1,9 +1,9 @@
 .carousel{
-  height: 500px;
+  height: auto !important;
 }
 
 #navBar {
-  background: #f9f9f9;
+  background: #0a73b9;
   height: 100px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: unset;
@@ -11,11 +11,15 @@
 }
 
 #colorFondo {
-  background: #f9f9f9;
+  background: #0a73b9;
+}
+
+.nav-item{
+  color: white !important;
 }
 
 #footer{
-  background-color: #f9f9f9;
+  background-color: #0a73b9;
 }
 
 
@@ -29,20 +33,24 @@
   margin-right: 30px;
 }
 
+.nav-item{
+  color: white;
+}
+
 .navbar-nav>.active>a {
-  color: rgb(214, 214, 214);
-  background-color: #ffe6b8;
+  color: rgb(255, 255, 255) !important;
+  background-color: #0a73b9;
   border-radius: 25% 10%;
-  box-shadow: 3px 3px 7px 1px rgb(151 100 47 / 91%);
+  box-shadow: 3px 3px 7px 1px rgb(207 207 207 / 91%);
 }
 
 .nav-item>a:hover {
-  color: rgb(214, 214, 214);
+  color: rgb(173, 173, 173) !important;
 }
 
 .cursos {
   font-size: small;
-  color: grey;
+  color: rgb(218, 218, 218);
     text-decoration: none;
 }
 
@@ -62,11 +70,10 @@
 }
 
 #textoAbout {
-  text-align: center;
-  width: 70%;
+  width: 100%;
   float: right;
-  margin-right: 18%;
-  margin-top: 5%;
+  font-family: ui-monospace;
+  text-align: initial;
 }
 
 .imagen:hover {
@@ -169,7 +176,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 15%;
-  box-shadow: 10px 10px 40px 1px rgba(241, 170, 93, 0.91);
+  box-shadow: 10px 10px 40px 1px rgb(10 115 185)
 }
 
 #contact h3 {
@@ -399,6 +406,8 @@ h1.heading {
   margin: 0 0 0.5em;
   color: #505050;
   margin-top: 15%;
+  font-family: ui-monospace;
+  color: black;
 }
 
 .btn-group-c{
@@ -475,7 +484,7 @@ h1.heading {
   font-size: 1.65em;
 }
 .card-title a {
-  color: #084298;
+  color: #0a73b9;
   text-decoration: none !important;
 }
 .card-read-more {
@@ -489,13 +498,12 @@ h1.heading {
 }
 
 .container-name {
-  margin-left: 30px;
   margin-top: 60px;
 }
 
 .example_f {
   border-radius: 4px;
-  background: linear-gradient(to right, #34c8f8, #90d8fa) !important;
+  background: #E02B20 !important;
   border: none;
   color: #FFFFFF;
   text-align: center;
@@ -512,6 +520,7 @@ h1.heading {
   display: inline-block;
   position: relative;
   transition: 0.4s;
+  color: white !important;
 }
 
 .example_f span:after {
@@ -530,6 +539,49 @@ h1.heading {
 .example_f:hover span:after {
   opacity: 1;
   right: 0;
+  color: white !important;
+}
+
+
+.example_p {
+  border-radius: 4px;
+  background: #1c68c4 !important;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 10px;
+  width: 200px;
+  transition: all 0.4s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.example_p span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.4s;
+  color: white !important;
+}
+
+.example_p span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.example_p:hover span {
+  padding-right: 25px;
+}
+
+.example_p:hover span:after {
+  opacity: 1;
+  right: 0;
+  color: white !important;
 }
 
 .fondosty{
@@ -559,7 +611,9 @@ h1.heading {
 }
 .centrar{
   width: 80%;
-  margin: 0 auto;
+  margin-left: 13%;
+  margin-right: 10%;
+  margin-bottom: 100px;
 }
 
 .divC{
@@ -577,3 +631,81 @@ h1.heading {
   height: 100%;
   z-index: 1;
 }
+.carousel-indicators li {
+  border-radius: 50%;
+}
+
+.dwn{
+  --mask: 
+  linear-gradient(#000 0 0) top/100% calc(100% - 3em) no-repeat, conic-gradient(from -450deg at bottom,#0000,#000 6deg 174deg,#0000 180deg) bottom/48.49em 3em repeat-x;
+  -webkit-mask: var(--mask);
+        mask: var(--mask);
+}
+
+
+.animation {
+  position: relative;
+  animation: animation 2s ease-out;
+  width: 50%;
+}
+@keyframes animation {
+  0% {
+    opacity: 0;
+    left: -100px;
+  }
+  100% {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+.size{
+  width: 110%;
+  height: auto;
+  margin-right : auto;
+  margin-left : auto;
+  min-width : 350px;
+  max-width : 650px;
+}
+
+.slide-up {
+  animation: 7s anim-lineUp ease-out infinite;
+}
+@keyframes anim-lineUp {
+  0% {
+    opacity:0;
+    transform: translateY(20%);
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+.fuentesSt{
+  font-family: serif;
+  font-size: x-large;
+  color: white;
+}
+
+.fuentesSttit{
+  font-family: serif;
+  font-size: 2.5em;
+  color: white;
+}
+.brd{
+  border: 1px solid #0a73b9 !important;
+  border-radius: 5px;
+}
+.aligncenter{
+  text-align: center;
+}
+
+

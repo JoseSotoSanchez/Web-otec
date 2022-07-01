@@ -39,8 +39,8 @@ def enviarEmail(nombre, telefono, curso, correo):
       <td align="center" style="padding:0;">
         <table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
           <tr>
-            <td align="center" style="background:#dd9b6d94;">
-              <img src="http://iccapacitacionlaboral.cl/static/Imagenes/logo-3.png" alt="" width="300" style="height:auto;display:block;" />
+            <td align="center" style="background:#1c68c4;">
+              <img src="http://iccapacitacionlaboral.cl/static/Imagenes/logo-ic-capacitacion-1.png" alt="" width="300" style="height:auto;display:block;" />
             </td>
           </tr>
           <tr>
@@ -68,7 +68,7 @@ def enviarEmail(nombre, telefono, curso, correo):
             </td>
           </tr>
           <tr>
-            <td style="padding:30px;background:#dd9b6d;">
+            <td style="padding:30px;background:#0a73b9;">
               <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:Arial,sans-serif;">
                 <tr>
                   <td style="padding:0;width:70%;" align="left">

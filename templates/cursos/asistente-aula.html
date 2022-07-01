@@ -2,7 +2,7 @@
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-right">Asistente de aula mención convivencia escolar</span>
+        <span class="fs-4" data-aos="fade-up">Asistente de aula mención convivencia escolar</span>
       </a>
     </header>
 
@@ -18,9 +18,9 @@
                         <h6 class="text-center textogrey">A través del siguiente formulario evaluaremos los aspirantes a participar en nuestros cursos de capacitación y aspirar a descuentos especiales de hasta un 75% del valor real del curso.</h6>
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
-                        <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas. Nuestro equipo se comunicará contigo para validar tu postulación.</h6>
+                        <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
                         <form class="form-card" action="{{ url_for('asistenteAula') }}" method="post">
-                            <div class="row justify-content-between text-left" data-aos="fade-down">
+                            <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)">
@@ -31,35 +31,35 @@
                                 </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-right"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Nombre<span class="text-danger"> *</span></label> 
                                 <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" onblur="validate(1)" required> </div>
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-left"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Apellidos<span class="text-danger"> *</span></label> 
                                 <input type="text" id="apellido" name="apellido" placeholder="Ingresa tu apellido" onblur="validate(2)"> </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-right"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Rut<span class="text-danger"> *</span></label> 
                                 <input type="text" id="rut" name="rut" placeholder="Ingresa tu Rut" onblur="validate(3)" required> </div>
-                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-left"> 
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Sexo<span class="text-danger"> *</span></label> 
                                     <select id="sexo" name="sexo" type="select" onblur="validate(4)" required>
                                         <option value="">Seleccione</option>
                                         <option value="Mujer">Mujer</option>
                                         <option value="Hombre">Hombre</option>
                                     </select> </div>
-                                <div class="form-group col-sm-2 flex-column d-flex" data-aos="fade-left"> 
+                                <div class="form-group col-sm-2 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Edad<span class="text-danger"> *</span></label> 
                                 <input id ="edad" name="edad" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                                 type = "number" min="0" maxlength = "2" onblur="validate(5)" required
                             /> </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-right"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Nacionalidad<span class="text-danger"> *</span></label> 
                                 <input type="text" id="nacionalidad" name="nacionalidad" placeholder="Ingresa tu nacionalidad" onblur="validate(6)" required> </div>
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-left"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Estado Civil<span class="text-danger"> *</span></label> 
                                     <select id="ecivil" name="ecivil" type="select" onblur="validate(7)" required>
                                         <option value="">Seleccione</option>
@@ -70,18 +70,18 @@
                                     </select> </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-right"> 
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Correo electrónico<span class="text-danger">                                         *</span></label> 
                                         <input type="email" id="email" name="email" placeholder="Ingresa su correo" onblur="validate(8)" required> </div>
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-left">
+                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up">
                                      <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
                                       <input type="text" id="telefono" name="telefono" placeholder="Ingresa tu número" onblur="validate(9)" required> </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-right"> 
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Profesión<span class="text-danger"> *</span></label> 
                                 <input type="text" id="profesion" name="profesion" placeholder="Ingresa tu profesión" onblur="validate(10)" required> </div>
-                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-left"> 
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Nivel de estudios<span class="text-danger"> *</span></label> 
                                     <select id="nestudios" name="nestudios" type="select" onblur="validate(11)" required>
                                         <option value="">Seleccione</option>
@@ -90,7 +90,7 @@
                                         <option value="Universitaria">Universitaria</option>
                                         <option value="Otro">Otro</option>
                                     </select> </div>
-                                    <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-left"> 
+                                    <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                         <label class="form-control-label px-3">Situación laboral<span class="text-danger"> *</span></label> 
                                         <select id="slaboral" name="slaboral" type="select" onblur="validate(12)" required>
                                             <option value="">Seleccione</option>
@@ -101,10 +101,10 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-between text-left">
-                                    <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-right"> 
+                                    <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Dirección<span class="text-danger"> *</span></label> 
                                     <input type="text" id="direccion" name="direccion" placeholder="Ingresa tu direccion" onblur="validate(13)" required> </div>
-                                    <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-left"> 
+                                    <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                         <label class="form-control-label px-3">Región<span class="text-danger"> *</span></label> 
                                         <select id="region" name="region" type="select" onblur="validate(14)" required>
                                             <option value="">Seleccione</option>
@@ -125,7 +125,7 @@
                                         </select> 
                                     </div>
                                 </div>
-                            <div class="row justify-content-end" data-aos="fade-up-right">
+                            <div class="row justify-content-end" data-aos="fade-up">
                                 <div class="form-group col-sm-6"> 
                                     <input class="btn-primary" type="submit" value="Enviar">
                             </div>
@@ -137,18 +137,22 @@
       </div>
     </div>
     <hr class="featurette-divider">
-    <div class="row featurette" data-aos="zoom-out">
+    <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img asistente-aula-mencion" src="static/Imagenes/asistente-aula-mencion.jpeg" 
-           role="asistente-aula-mencion" style="width: 100%; height: 700px;"/>
+            <img class="bd-placeholder-img asistente-aula-mencion img-fluid" src="static/Imagenes/asistente-aula-mencion.jpg" 
+           role="asistente-aula-mencion" style="width: 100%; height: auto;"/>
         </div>
       </div>
       <hr class="featurette-divider">
 
-  <div class="row featurette" data-aos="zoom-out">
-    <div class="col-md-12" style="text-align: center; ">
-      <b class="lead" id="textoAbout">disponible en establecimientos de educación pública o particular subvencionada, conforme a los requisitos legales de la ley 21.109, Titulo I, párrafo 2°, articulo 7.
-      </b>
+  <div class="row featurette" data-aos="zoom-in">
+    <div class="container" >
+        <div class="container" >
+        <b class="lead" id="textoAbout">Esta capacitación abre el camino al(a) participante para postular al cargo de Asistente de Aula, en
+            niveles de educación básica, disponible en establecimientos de educación pública o particular
+            subvencionada, conforme a los requisitos legales de la ley 21.109, Titulo I, párrafo 2°, articulo 7.
+        </b>
+        </div>
     </div>
     <div class="col-md-12" style="text-align: center;">
           <a href="https://www.bcn.cl/leychile/navegar?idNorma=1123513">Ver ley 21.109: TÍTULO I De los Asistentes de la Educación Pública, Párrafo 2º Categorías de asistentes de la educación, Artículos 6,7,8,9.</a>
@@ -160,7 +164,7 @@
   </div>
     <hr class="featurette-divider">
     <div class="row align-items-md-stretch">
-        <div class="col-md-6" data-aos="fade-right">
+        <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
               <p>El o la participante estará capacitado(a) para apoyar labores formativas en aula, dentro del primer ciclo de enseñanza básica del sistema educativo chileno. Además, podrá gestionar actividades con material didáctico bajo un ambiente de aprendizaje según planificación    e indicaciones del docente a cargo de cada nivel o curso y  realizar gestiones de apoyo a la convivencia escolar.
@@ -171,17 +175,17 @@
             </div>
           </div>
       <div class="col-md-6">
-        <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-down-left">
+        <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <li class="list-group-item dtalle">Fecha: 27 de Julio 2022 al 17 de Septiembre 2022.</li>
+            <li class="list-group-item dtalle">Fecha: 15 de Agosto del 2022 al 7 de septiembre del 2022.</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298"class="list-group-item dtalle" target="_blank" href="static/mallas/malla-asistente-aula.pdf">ver malla curricular</a>
           </ul>
         </div>
-        <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up-left">
+        <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
             <h2 class="titulosDetalle">Requisitos</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item dtalle">Mayor de 18 años.</li>
@@ -195,16 +199,16 @@
 
     <hr class="featurette-divider">
     <div class="row align-items-md-stretch">
-        <div class="col-md-12" data-aos="fade-down" style="text-align: center; ">
+        <div class="col-md-12" data-aos="fade-up" style="text-align: center; ">
             <div class="h-100 p-5 bg-light border rounded-3">
                 <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                    <li class="list-group-item dtalle">•	Valor del curso: $350.000.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
                     <li class="list-group-item dtalle">•	Beca subsidio empresarial: 75%.</li>
-                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $87.500.-</b></li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
                     <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
-                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img src="static/Imagenes/red-compra.png"> 
+                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
                        <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
                 </ul>
             </div>
