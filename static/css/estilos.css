@@ -426,7 +426,10 @@ h1.heading {
 
 @media (max-width: 500px) {
   #logo{
-    width: 50%;
+    width: 60%;
+  }
+  #aa{
+    width: 80%;
   }
 }
 @media (max-width: 760px) {
