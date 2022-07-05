@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, flash,url_for, sess
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
-from correo import enviarEmail
+from correo import enviarEmail, upperFirst
 
 app = Flask(__name__)
 
@@ -120,8 +120,8 @@ def asistenteAula():
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
     # Create variables for easy access
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
         sexo = request.form['sexo']
         edad = request.form['edad']
@@ -134,7 +134,7 @@ def asistenteAula():
         slaboral = request.form['slaboral']
         direccion = request.form['direccion']
         region = request.form['region']
-        curso = request.form['curso']
+        curso = upperFirst(request.form['curso'].replace("-", " ").replace("mencion", "mención").lower())
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
@@ -155,8 +155,8 @@ def inspectorEducacional():
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
     # Create variables for easy access
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
         sexo = request.form['sexo']
         edad = request.form['edad']
@@ -169,7 +169,7 @@ def inspectorEducacional():
         slaboral = request.form['slaboral']
         direccion = request.form['direccion']
         region = request.form['region']
-        curso = request.form['curso']
+        curso = upperFirst(request.form['curso'].replace("-", " ").replace("mencion", "mención").lower())
 
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
@@ -190,8 +190,8 @@ def asistenteContable():
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
     # Create variables for easy access
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
         sexo = request.form['sexo']
         edad = request.form['edad']
@@ -204,7 +204,7 @@ def asistenteContable():
         slaboral = request.form['slaboral']
         direccion = request.form['direccion']
         region = request.form['region']
-        curso = request.form['curso']
+        curso = upperFirst(request.form['curso'].replace("-", " ").lower())
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
@@ -225,8 +225,8 @@ def cajeroBancario():
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
     # Create variables for easy access
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
         sexo = request.form['sexo']
         edad = request.form['edad']
@@ -239,7 +239,7 @@ def cajeroBancario():
         slaboral = request.form['slaboral']
         direccion = request.form['direccion']
         region = request.form['region']
-        curso = request.form['curso']
+        curso = upperFirst(request.form['curso'].replace("-", " ").lower())
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
