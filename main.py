@@ -378,7 +378,7 @@ def aspirantes():
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
-                                selected = int(selected),
+                                selected = 0,
                                 )
         return redirect(url_for('home'))
     return redirect(url_for('home'))
