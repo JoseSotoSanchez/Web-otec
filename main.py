@@ -319,7 +319,6 @@ def contacto():
 
 @app.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
-    print('ASPIRANTES')
     datosCurso = ''
     global cursoActivo
     if 'loggedin' in session:
@@ -342,7 +341,6 @@ def aspirantes():
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
-                                historialEstados = historialEstados,
                                 selected = int(selected),
                                 )
         else:
