@@ -5,6 +5,7 @@ from bd import obtener_conexion
 from correo import enviarEmail, upperFirst
 
 
+
 app = Flask(__name__)
 
 # Change this to your secret key (can be anything, it's for extra protection)
@@ -21,6 +22,7 @@ app.secret_key = 'your secret key'
 #mydb = mysql.connector.connect(host="iccapacitacionlaboral.cl", user="iccapaci1_admin", passwd="gQ9Pb$$PKh", database="iccapaci1_iccaplab")
 
 ROWS_PER_PAGE = 5
+cursoActivo = 0
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -293,51 +295,84 @@ def contacto():
 @app.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
     datosCurso = ''
+    global cursoActivo
     if 'loggedin' in session:
-        if request.method == 'POST' and 'curso' in request.form:
+        if request.method == 'POST' and 'curso' in request.form :
             curso = request.form['curso']
+            selected=curso
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
                 cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick FROM alumno_estado ae JOIN alumno a ON a.id = ae.id_alumno JOIN curso c ON a.id_curso = c.id JOIN estado_alumno ea ON ae.id_estado = ea.id JOIN usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM alumno_estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
                 cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
-                cursor.execute('SELECT nombre, codigo_curso FROM curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT nombre, codigo_curso, id FROM curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
                 datosCurso = cursor.fetchall()
                 cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                 estados = cursor.fetchall()
-            conexion.close()
+                conexion.close()
             return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
+                                selected = int(selected),
                                 )
         else:
-            aspirantes = []
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
-                cursos = cursor.fetchall()
-                cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                estados = cursor.fetchall()
-            conexion.close()
-            return render_template('administracion/aspirantes.html',
-                                cursos=cursos,
+            if cursoActivo != 0:
+                selected=cursoActivo
+                conexion = obtener_conexion()
+                with conexion.cursor() as cursor:
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick FROM alumno_estado ae JOIN alumno a ON a.id = ae.id_alumno JOIN curso c ON a.id_curso = c.id JOIN estado_alumno ea ON ae.id_estado = ea.id JOIN usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM alumno_estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
+                    aspirantes = cursor.fetchall()
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
+                    cursos = cursor.fetchall()
+                    cursor.execute('SELECT nombre, codigo_curso, id FROM curso where id = %s', (cursoActivo))# WHERE id = %s', (session['id'],))
+                    datosCurso = cursor.fetchall()
+                    cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
+                    estados = cursor.fetchall()
+                    conexion.close()
+                return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
+                                cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
+                                selected = int(selected),
                                 )
+            else:
+                aspirantes = []
+                conexion = obtener_conexion()
+                with conexion.cursor() as cursor:
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
+                    cursos = cursor.fetchall()
+                    cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
+                    estados = cursor.fetchall()
+                conexion.close()
+                return render_template('administracion/aspirantes.html',
+                                    cursos=cursos,
+                                    aspirantes=aspirantes,
+                                    datosCurso=datosCurso,
+                                    estados = estados,
+                                    selected = 0,
+                                    )
         return redirect(url_for('home'))
     return redirect(url_for('home'))
 
-@app.route('/guardarEstado/<int:id>', methods=['GET', 'POST'])
-def guardarEstado(id):
+@app.route('/guardarEstado/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def guardarEstado(id, curso):
     if request.method == 'POST' and 'estado' in request.form:
         idEstado = request.form['estado']
-        print(idEstado)
-        print(id)
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO alumno_estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
+        conexion.commit()
+        conexion.close()
         flash('Estado guardado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
     return redirect(url_for('home'))
 
 @app.route('/aspirantes-asistente-aula', methods=['GET', 'POST'])

@@ -16,12 +16,12 @@
                             <br>
                         <form action="{{ url_for('aspirantes') }}" method="post">
                             <select id="curso" name="curso" type="select">
-                                <option value="0">Selecciones curso</option>
+                                <option value="0">Seleccione curso</option>
                                 {% for row in cursos %}
-                                <option value="{{row[0]}}">{{row[1]}} / {{row[2]}}</option>
+                                <option {% if selected == row[0] %} selected {% endif %} value="{{row[0]}}">{{row[1]}} / {{row[2]}}</option>
                                 {% endfor %}
                             </select> 
-                            <input class="btn-primary" type="submit" value="Buscar">
+                            <input id="btnBuscar"class="btn-primary" type="submit" value="Buscar">
                         </form>
                         <table class="table align-middle mb-0 bg-white">
                             <thead class="bg-light">
@@ -94,7 +94,7 @@
                                 </button>
                               </td>
                             </tr>
-                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0] )}}" method="post">
+                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0], curso=datosCurso[0][2])}}" method="post">
                               <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -136,5 +136,10 @@
   </div>
 {% endblock %}  
 </body>
-
+<script>
+$(document).ready(function() {
+    $('#btnBuscar').click();
+    console.log("clici");
+});
+</script>
 </html>
