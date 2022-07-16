@@ -6,7 +6,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 from email.mime.image import MIMEImage
 
-def enviarEmail(nombre, telefono, curso, correo):
+def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horario, dias):
     curso = upperFirst(curso.replace("-", " ").lower())
     nombre = upperFirst(nombre.lower())
     email_user = 'postulaciones@iccapacitacionlaboral.cl'
@@ -53,7 +53,10 @@ def enviarEmail(nombre, telefono, curso, correo):
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Nombre:</strong> """+nombre+"""</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Teléfono:</strong> """+telefono+"""</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Email:</strong> """+correo+"""</p>
-                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Curso:</strong> """+curso+"""</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Curso:</strong> """+curso+""" ("""+codigoCurso+""")</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Horario:</strong> """+horario+""" - """+dias+"""</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Fecha Inicio:</strong> """+inicio+"""</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Fecha Fin:</strong> """+fin+"""</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Un coordinador se comunicará vía e-mail, llamado telefónico o whatsapp y le indicará los pasos a seguir para formalizar su matrícula.</p>
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Si la información enviada es incorrecta enviar correo a <a href="mailto:postulaciones@iccapacitacionlaboral.cl?Subject=Cambio%20de%20información">postulaciones@iccapacitacionlaboral.cl</a> para modificar sus datos.</p>
                       </td>

@@ -23,6 +23,7 @@ app.secret_key = 'your secret key'
 
 ROWS_PER_PAGE = 5
 cursoActivo = 0
+idAlumnoEstado = 0
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -141,8 +142,14 @@ def asistenteAula():
             cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 1, now(),1)', (id))
         conexion.commit()
         conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
         nombre = nombre + ' ' + apellido
-        enviarEmail(nombre, telefono, curso, correo)
+        curso = curso_[0][1]
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -180,8 +187,14 @@ def inspectorEducacional():
             cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 1, now(),1)', (id))
         conexion.commit()
         conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
         nombre = nombre + ' ' + apellido
-        enviarEmail(nombre, telefono, curso, correo)
+        curso = curso_[0][1]
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -219,8 +232,14 @@ def asistenteContable():
             cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 1, now(),1)', (id))
         conexion.commit()
         conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
         nombre = nombre + ' ' + apellido
-        enviarEmail(nombre, telefono, curso, correo)
+        curso = curso_[0][1]
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -258,8 +277,14 @@ def cajeroBancario():
             cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 1, now(),1)', (id))
         conexion.commit()
         conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
         nombre = nombre + ' ' + apellido
-        enviarEmail(nombre, telefono, curso, correo)
+        curso = curso_[0][1]
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -294,6 +319,7 @@ def contacto():
 
 @app.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
+    print('ASPIRANTES')
     datosCurso = ''
     global cursoActivo
     if 'loggedin' in session:
@@ -311,11 +337,12 @@ def aspirantes():
                 cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                 estados = cursor.fetchall()
                 conexion.close()
-            return render_template('administracion/aspirantes.html',
+                return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
+                                historialEstados = historialEstados,
                                 selected = int(selected),
                                 )
         else:
@@ -347,14 +374,14 @@ def aspirantes():
                     cursos = cursor.fetchall()
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
-                conexion.close()
+                    conexion.close()
                 return render_template('administracion/aspirantes.html',
-                                    cursos=cursos,
-                                    aspirantes=aspirantes,
-                                    datosCurso=datosCurso,
-                                    estados = estados,
-                                    selected = 0,
-                                    )
+                                aspirantes=aspirantes,
+                                cursos=cursos,
+                                datosCurso=datosCurso,
+                                estados = estados,
+                                selected = int(selected),
+                                )
         return redirect(url_for('home'))
     return redirect(url_for('home'))
 
