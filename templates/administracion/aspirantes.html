@@ -1,0 +1,140 @@
+{% extends "base.html" %} {% block title %}Aspirantes{% endblock %} {% block content  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>-
+    <div class=" bg-light rounded-3">
+        <div class="container-fluid ">
+          <div class=" mx-auto">
+              <div class="row d-flex justify-content-center">
+                  <div class=" text-center">
+                      <div class="card table-responsive">
+                            {% if datosCurso != '' %}
+                            <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Aspirantes a Curso - {{datosCurso[0][0]}} (código: {{datosCurso[0][1]}})</span>
+                            {% endif %}
+                            <br>
+                        <form action="{{ url_for('aspirantes') }}" method="post">
+                            <select id="curso" name="curso" type="select">
+                                <option value="0">Selecciones curso</option>
+                                {% for row in cursos %}
+                                <option value="{{row[0]}}">{{row[1]}} / {{row[2]}}</option>
+                                {% endfor %}
+                            </select> 
+                            <input class="btn-primary" type="submit" value="Buscar">
+                        </form>
+                        <table class="table align-middle mb-0 bg-white">
+                            <thead class="bg-light">
+                              <tr>
+                                <th class="th-sm">Id</th>
+                                <th class="th-sm">Aspirante</th>
+                                <!-- <th class="th-sm">Apellidos</th> -->
+                                <th class="th-sm">Curso</th>
+                                <th class="th-sm">Sexo</th>
+                                <th class="th-sm">Edad</th>
+                                <th class="th-sm">Nacionalidad</th>
+                                <th class="th-sm">Estado civil</th>
+                                <!-- <th class="th-sm">Email</th> -->
+                                <!-- <th class="th-sm">Telefono</th> -->
+                                <!-- <th class="th-sm">Profesión</th> -->
+                                <th class="th-sm">Estudios</th>
+                                <th class="th-sm">Situación laboral</th>
+                                <th class="th-sm">Dirección</th>
+                                <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                <!-- <th class="th-sm">Curso</th> -->
+                                <!-- <th class="th-sm">Fecha</th> -->
+                                <th class="th-sm">Último estado modificado por</th>
+                                <th class="th-sm">Estado</th>
+                                <th class="th-sm">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in aspirantes %}
+                              <tr>
+                                <td>{{row[0]}}</td>
+                                <td>
+                                  <div class="d-flex align-items-center">
+                                    <img
+                                        src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                                        alt=""
+                                        style="width: 45px; height: 45px"
+                                        class="rounded-circle"
+                                        />
+                                    <div class="ms-3" style="width: 80%">
+                                      <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
+                                      <p class="text-muted mb-0">{{row[8]}}</p>
+                                      <p class="text-muted mb-0">{{row[9]}}</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p class="fw-normal mb-1">{{row[15]}}</p>
+                                  <p class="text-muted mb-0">{{row[16]}} / {{row[17]}}</p>
+                                </td>
+                                <td>{{row[4]}}</td>
+                                <td>{{row[5]}}</td>
+                                <td>{{row[6]}}</td>
+                                <td>{{row[7]}}</td>
+                                <td>{{row[11]}}</td>
+                                <td>{{row[12]}}</td>
+                                <td>{{row[13]}}</td>
+                                <td>{{row[19]}}</td>
+                                <td>
+                                  <span class="badge bg-warning rounded-pill d-inline">{{row[18]}}</span>
+                              </td>
+                              <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
+                                  modificar
+                                </button>
+                                <button data-id='{{row[0]}}' type="button" class="btnCorreo btn btn-link btn-sm btn-rounded">
+                                  Enviar Correo Aceptación
+                                </button>
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded">
+                                  Enviar Correo de Pago
+                                </button>
+                              </td>
+                            </tr>
+                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0] )}}" method="post">
+                              <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Actualizar estado {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Estado</label>
+                                                <div class="col-xs-10">
+                                                  <select id="estado" name="estado" type="select">
+                                                      <option value="0">Selecciones Estado</option>
+                                                      {% for estado in estados %}
+                                                      <option value="{{estado[0]}}">{{estado[1]}}</option>
+                                                      {% endfor %}
+                                                  </select> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <button type="button" class="btn btn-primary">Guardar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            {% endfor %}
+                          
+                          </tbody>
+                      </table>
+
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}  
+</body>
+
+</html>

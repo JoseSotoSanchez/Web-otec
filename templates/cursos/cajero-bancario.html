@@ -32,11 +32,10 @@
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)">
-                                        <option value="">Seleccione</option>
-                                        <option value="asistente-aula-mencion">Asistente de aula mención convivencia escolar</option>
-                                        <option value="inspector-educacional-mencion">Inspector educacional con mención en convivencia escolar</option>
-                                        <option selected value="cajero-bancario">Cajero bancario y comercial</option>
-                                        <option value="asistente-administrativo-contable">Asistente administrativo contable</option>
+                                        <option value="0">Seleccione</option>
+                                        {% for row in cursos %}
+                                        <option value="{{row[0]}}">{{row[1]}}</option>
+                                        {% endfor %}
                                     </select> 
                                 </div>
                             </div>
@@ -168,7 +167,7 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 30 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
+            <li class="list-group-item dtalle">Duración: 36 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
             <li class="list-group-item dtalle">Fecha: 15 de Agosto del 2022 al 7 de septiembre del 2022.</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298"class="list-group-item dtalle" target="_blank" href="static/mallas/malla-cajero-bancario.pdf">ver malla curricular</a>

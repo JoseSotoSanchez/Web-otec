@@ -11,7 +11,138 @@
                   <div class=" text-center">
                       <div class="card table-responsive">
                         <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Aspirantes a Cajero Bancario</span>
-                        <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                        <table class="table align-middle mb-0 bg-white">
+                            <thead class="bg-light">
+                              <tr>
+                                <th class="th-sm">Id</th>
+                                <th class="th-sm">Aspirante</th>
+                                <!-- <th class="th-sm">Apellidos</th> -->
+                                <th class="th-sm">Curso</th>
+                                <th class="th-sm">Sexo</th>
+                                <th class="th-sm">Edad</th>
+                                <th class="th-sm">Nacionalidad</th>
+                                <th class="th-sm">Estado civil</th>
+                                <!-- <th class="th-sm">Email</th> -->
+                                <!-- <th class="th-sm">Telefono</th> -->
+                                <!-- <th class="th-sm">Profesión</th> -->
+                                <th class="th-sm">Estudios</th>
+                                <th class="th-sm">Situación laboral</th>
+                                <th class="th-sm">Dirección</th>
+                                <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                <!-- <th class="th-sm">Curso</th> -->
+                                <!-- <th class="th-sm">Fecha</th> -->
+                                <th class="th-sm">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in aspirantes %}
+                              <tr>
+                                <td>{{row[0]}}</td>
+                                <td>
+                                  <div class="d-flex align-items-center">
+                                    <img
+                                        src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                                        alt=""
+                                        style="width: 45px; height: 45px"
+                                        class="rounded-circle"
+                                        />
+                                    <div class="ms-3" style="width: 80%">
+                                      <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
+                                      <p class="text-muted mb-0">{{row[8]}}</p>
+                                      <p class="text-muted mb-0">{{row[9]}}</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p class="fw-normal mb-1">{{row[15]}}</p>
+                                  <p class="text-muted mb-0">{{row[16]}}</p>
+                                </td>
+                                <td>{{row[4]}}</td>
+                                <td>{{row[5]}}</td>
+                                <td>{{row[6]}}</td>
+                                <td>{{row[7]}}</td>
+                                <td>{{row[11]}}</td>
+                                <td>{{row[12]}}</td>
+                                <td>{{row[13]}}</td>
+                                <td>
+                                  <button type="button" class="btn btn-link btn-sm btn-rounded">
+                                    Edit
+                                  </button>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                              <!-- <tr>
+                                <td>
+                                  <div class="d-flex align-items-center">
+                                    <img
+                                        src="https://mdbootstrap.com/img/new/avatars/6.jpg"
+                                        class="rounded-circle"
+                                        alt=""
+                                        style="width: 45px; height: 45px"
+                                        />
+                                    <div class="ms-3">
+                                      <p class="fw-bold mb-1">Alex Ray</p>
+                                      <p class="text-muted mb-0">alex.ray@gmail.com</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p class="fw-normal mb-1">Consultant</p>
+                                  <p class="text-muted mb-0">Finance</p>
+                                </td>
+                                <td>
+                                  <span class="badge badge-primary rounded-pill d-inline"
+                                        >Onboarding</span
+                                    >
+                                </td>
+                                <td>Junior</td>
+                                <td>
+                                  <button
+                                          type="button"
+                                          class="btn btn-link btn-rounded btn-sm fw-bold"
+                                          data-mdb-ripple-color="dark"
+                                          >
+                                    Edit
+                                  </button>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <div class="d-flex align-items-center">
+                                    <img
+                                        src="https://mdbootstrap.com/img/new/avatars/7.jpg"
+                                        class="rounded-circle"
+                                        alt=""
+                                        style="width: 45px; height: 45px"
+                                        />
+                                    <div class="ms-3">
+                                      <p class="fw-bold mb-1">Kate Hunington</p>
+                                      <p class="text-muted mb-0">kate.hunington@gmail.com</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p class="fw-normal mb-1">Designer</p>
+                                  <p class="text-muted mb-0">UI/UX</p>
+                                </td>
+                                <td>
+                                  <span class="badge badge-warning rounded-pill d-inline">Awaiting</span>
+                                </td>
+                                <td>Senior</td>
+                                <td>
+                                  <button
+                                          type="button"
+                                          class="btn btn-link btn-rounded btn-sm fw-bold"
+                                          data-mdb-ripple-color="dark"
+                                          >
+                                    Edit
+                                  </button>
+                                </td>
+                              </tr> -->
+                            </tbody>
+                        </table>
+
+                        <!-- <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                               <tr>
                                 <th class="th-sm">Id</th>
@@ -24,11 +155,11 @@
                                 <th class="th-sm">Estado civil</th>
                                 <th class="th-sm">Email</th>
                                 <th class="th-sm">Telefono</th>
-                                <!-- <th class="th-sm">Profesión</th> -->
+                                <th class="th-sm">Profesión</th>
                                 <th class="th-sm">Estudios</th>
                                 <th class="th-sm">Situación laboral</th>
                                 <th class="th-sm">Dirección</th>
-                                <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                <th style="position: fixed;"class="th-sm">Region</th>
                                 <th class="th-sm">Curso</th>
                                 <th class="th-sm">Fecha</th>
                               </tr>
@@ -46,11 +177,11 @@
                                     <td>{{row[7]}}</td>
                                     <td>{{row[8]}}</td>
                                     <td>{{row[9]}}</td>
-                                    <!-- <td>{{row.profesion}}</td> -->
+                                    <td>{{row.profesion}}</td>
                                     <td>{{row[11]}}</td>
                                     <td>{{row[12]}}</td>
                                     <td>{{row[13]}}</td>
-                                    <!-- <td>{{row.region}}</td> -->
+                                    <td>{{row.region}}</td>
                                     <td>{{row[15]}}</td>
                                     <td>{{row[16]}}</td>
                                 </tr>
@@ -68,16 +199,16 @@
                                     <th class="th-sm">Estado civil</th>
                                     <th class="th-sm">Email</th>
                                     <th class="th-sm">Telefono</th>
-                                    <!-- <th class="th-sm">Profesión</th> -->
+                                    <th class="th-sm">Profesión</th>
                                     <th class="th-sm">Estudios</th>
                                     <th class="th-sm">Situación laboral</th>
                                     <th class="th-sm">Dirección</th>
-                                    <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
+                                    <th style="position: fixed;"class="th-sm">Region</th>
                                     <th class="th-sm">Curso</th>
                                     <th class="th-sm">Fecha</th>
                                   </tr>
                             </tfoot>
-                          </table>
+                          </table> -->
                           {{ pagination.info }}
                           {{ pagination.links }}
                     </div>
