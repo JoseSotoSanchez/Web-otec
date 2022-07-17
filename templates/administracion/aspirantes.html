@@ -54,12 +54,24 @@
                                 <td>{{row[0]}}</td>
                                 <td>
                                   <div class="d-flex align-items-center">
+                                    {% if row[4] == 'Hombre'%}
                                     <img
-                                        src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                                        src="http://iccapacitacionlaboral.cl/static/Imagenes/iconUserH.png"
                                         alt=""
                                         style="width: 45px; height: 45px"
                                         class="rounded-circle"
                                         />
+                                    {% endif %}
+
+                                    {% if row[4] == 'Mujer'%}
+                                    <img
+                                        src="http://iccapacitacionlaboral.cl/static/Imagenes/iconUserM.png"
+                                        alt=""
+                                        style="width: 45px; height: 45px"
+                                        class="rounded-circle"
+                                        />
+                                    {% endif %}
+
                                     <div class="ms-3" style="width: 80%">
                                       <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
                                       <p class="text-muted mb-0">{{row[8]}}</p>
@@ -80,17 +92,25 @@
                                 <td>{{row[13]}}</td>
                                 <td>{{row[19]}}</td>
                                 <td>
+                                  {% if row[20] <= 5 %}
+                                  <span class="badge bg-danger rounded-pill d-inline">{{row[18]}}</span>
+                                  {% endif %}
+                                  {% if row[20] > 5 and row[20] < 17 %}
                                   <span class="badge bg-warning rounded-pill d-inline">{{row[18]}}</span>
+                                  {% endif %}
+                                  {% if row[20] >= 17 %}
+                                  <span class="badge bg-success rounded-pill d-inline">{{row[18]}}</span>
+                                  {% endif %}
                               </td>
                               <td>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
                                   Modificar
                                 </button>
-                                <button data-id='{{row[0]}}' type="button" class="btnCorreo btn btn-link btn-sm btn-rounded">
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioAceptacion_{{row[0]}}">
                                   Enviar Correo Aceptación
                                 </button>
-                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded">
-                                  Enviar Correo de Pago
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioPago_{{row[0]}}">
+                                  Enviar Correo Pago
                                 </button>
                               </td>
                             </tr>
@@ -118,6 +138,58 @@
                                     <div class="modal-footer">
                                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                       <input class="btn-primary" type="submit" value="Guardar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('envioCorreoAceptacion', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                              <div  class="modal fade" id="modalEnvioAceptacion_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Enviar correo de aceptación a {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Correo destino: {{row[8]}}</label>
+                                                <div class="input-group mb-3">
+                                                  <span class="input-group-text" id="inputGroup-sizing-default">Url de Pago: </span>
+                                                  <input id="urlPago" name="urlPago" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('envioCorreoPago', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                              <div  class="modal fade" id="modalEnvioPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Enviar correo de aceptación a {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label"><strong>Correo destino:</strong> {{row[8]}}</label>
+                                                <label for="author" class="col-xs-2 control-label"><strong>Costo del curso:</strong> {{row[21]}}</label>
+                                                <label for="author" class="col-xs-2 control-label"><strong>Nombre Curso:</strong> {{datosCurso[0][0]}} - {{datosCurso[0][1]}}</label>
+                                                <div class="input-group mb-3">
+                                                  <span class="input-group-text" id="inputGroup-sizing-default">Medio de Pago: </span>
+                                                  <input id="medioPago" name="medioPago" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
                                     </div>
                                   </div>
                                 </div>

@@ -31,10 +31,10 @@
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
-                                        <select id="curso" name="curso" type="select" onblur="validate(15)">
-                                            <option value="0">Seleccione</option>
+                                        <select id="curso" name="curso" type="select" onblur="validate(15)" required>
+                                            <option value="">Seleccione</option>
                                             {% for row in cursos %}
-                                            <option value="{{row[0]}}">{{row[1]}}</option>
+                                            <option value="{{row[0]}}">{{row[1]}} | {{row[4]}} | {{row[3]}}</option>
                                             {% endfor %}
                                         </select> 
                                 </div>

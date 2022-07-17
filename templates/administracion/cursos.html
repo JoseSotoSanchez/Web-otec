@@ -1,0 +1,157 @@
+{% extends "base.html" %} {% block title %}Aspirantes{% endblock %} {% block content  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class=" bg-light rounded-3">
+        <div class="container-fluid ">
+          <div class=" mx-auto">
+              <div class="row d-flex justify-content-center">
+                  <div class=" text-center">
+                      <div class="card table-responsive">
+                            <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Listado de cursos</span>
+                            <br>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+                              Agregar Curso
+                            </button>
+                        <table class="table align-middle mb-0 bg-white">
+                            <thead class="bg-light">
+                              <tr>
+                                <th class="th-sm">Id</th>
+                                <th class="th-sm">Nombre</th>
+                                <th class="th-sm">Codigo Curso</th>
+                                <th class="th-sm">Fecha Inicio</th>
+                                <th class="th-sm">Fecha Fin</th>
+                                <th class="th-sm">Dias</th>
+                                <th class="th-sm">Horario</th>
+                                <th class="th-sm">Costo</th>
+                                <th class="th-sm">Activado</th>
+                                <th class="th-sm">Modalidad</th>
+                                <th class="th-sm">Activar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in cursos %}
+                              <tr>
+                                <td>{{row[0]}}</td>
+                                <td>{{row[1]}}</td>
+                                <td>{{row[2]}}</td>
+                                <td>{{row[3]}}</td>
+                                <td>{{row[4]}}</td>
+                                <td>{{row[13]}}</td>
+                                <td>{{row[11]}}</td>
+                                <td>{{row[7]}}</td>
+                                <td>
+                                  {% if row[8] == 1 %}
+                                  <span class="badge bg-success rounded-pill d-inline">Si</span>
+                                  {% endif %}
+                                  {% if row[8] == 0 %}
+                                  <span class="badge bg-danger rounded-pill d-inline">No</span>
+                                  {% endif %}
+                                </td>
+                                <td>{{row[9]}}</td>
+                              <td>
+                                {% if row[8] == 0 %}
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
+                                  Activar
+                                </button>
+                                {% endif %}
+                                {% if row[8] == 1 %}
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
+                                  Desactivar
+                                </button>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            <form class="form-card" action="{{ url_for('actualizarEstadoCurso', id=row[0] )}}" method="post">
+                              <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      {% if row[8] == 0 %}
+                                      <h5 class="modal-title" id="basicModal">Actualizar estado de curso {{row[1]}} {{row[2]}} a: <strong style="color:green;">Activo</strong></h5>
+                                      <input id="idValor" name="idValor" value="1" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      {% endif %}
+                                      {% if row[8] == 1 %}
+                                      <h5 class="modal-title" id="basicModal">Actualizar estado de curso {{row[1]}} {{row[2]}} a: <strong style="color:red;">Inactivo</strong></h5>
+                                      <input id="idValor" name="idValor" value="0" autocomplete="false" type="hidden"class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      {% endif %}
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Confirmar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form action="{{ url_for('agregarCurso') }}" method="post">
+                              <div  class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Agregar nuevo curso</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
+                                        <input id="nombre" name="nombre" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Código</span>
+                                        <input id="codigo" name="codigo" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Fecha Inicio</span>
+                                        <input id="fechaInicio" name="fechaInicio" type="date" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Fecha Fin</span>
+                                        <input id="fechaFin" name="fechaFin" type="date" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Dias</span>
+                                        <select id="dias" name="dias" type="select">
+                                          {% for row in dias %}
+                                          <option value="{{row[0]}}">{{row[1]}}</option>
+                                          {% endfor %}
+                                      </select> 
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Horario</span>
+                                        <select id="horario" name="horario" type="select">
+                                          {% for row in horario %}
+                                          <option value="{{row[0]}}">{{row[1]}}</option>
+                                          {% endfor %}
+                                        </select> 
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Valor del curso</span>
+                                        <input id="costo" name="costo" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Modalidad</span>
+                                        <input id="modalidad" name="modalidad" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Guardar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}  
+</body>
+</html>
