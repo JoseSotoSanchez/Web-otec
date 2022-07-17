@@ -37,7 +37,7 @@ def login():
           # Check if account exists using MySQL
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT id, nick, nombre FROM usuario WHERE nick = %s AND clave = %s", (usuario, clave,))
+            cursor.execute("SELECT id, nick, nombre FROM Usuario WHERE nick = %s AND clave = %s", (usuario, clave,))
             account = cursor.fetchone()
         conexion.close()
         if account:
@@ -139,7 +139,7 @@ def asistenteAula():
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
-            cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -154,7 +154,7 @@ def asistenteAula():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM curso c JOIN horario h ON c.id_horario = h.id JOIN dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/asistente-aula.html',
@@ -184,7 +184,7 @@ def inspectorEducacional():
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
-            cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -199,7 +199,7 @@ def inspectorEducacional():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM curso c JOIN horario h ON c.id_horario = h.id JOIN dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/inspector-educacional.html',
@@ -229,7 +229,7 @@ def asistenteContable():
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
-            cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -244,7 +244,7 @@ def asistenteContable():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM curso c JOIN horario h ON c.id_horario = h.id JOIN dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/asistente-administrativo-contable.html',
@@ -274,7 +274,7 @@ def cajeroBancario():
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
-            cursor.execute('INSERT INTO alumno_estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -289,7 +289,7 @@ def cajeroBancario():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM curso c JOIN horario h ON c.id_horario = h.id JOIN dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/cajero-bancario.html',
@@ -311,7 +311,7 @@ def contacto():
         mensaje = request.form['mensaje']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO contacto (nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
+            cursor.execute('INSERT INTO Contacto(nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
         conexion.commit()
         conexion.close()
         flash('Mensaje enviado correctamente!', category='success')
@@ -327,11 +327,11 @@ def aspirantes():
             selected=curso
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM alumno_estado ae JOIN alumno a ON a.id = ae.id_alumno JOIN curso c ON a.id_curso = c.id JOIN estado_alumno ea ON ae.id_estado = ea.id JOIN usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM alumno_estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
-                cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
-                cursor.execute('SELECT nombre, codigo_curso, id FROM curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
                 datosCurso = cursor.fetchall()
                 cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                 estados = cursor.fetchall()
@@ -348,11 +348,11 @@ def aspirantes():
                 selected=cursoActivo
                 conexion = obtener_conexion()
                 with conexion.cursor() as cursor:
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM alumno_estado ae JOIN alumno a ON a.id = ae.id_alumno JOIN curso c ON a.id_curso = c.id JOIN estado_alumno ea ON ae.id_estado = ea.id JOIN usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM alumno_estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
                     aspirantes = cursor.fetchall()
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
                     cursos = cursor.fetchall()
-                    cursor.execute('SELECT nombre, codigo_curso, id FROM curso where id = %s', (cursoActivo))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (cursoActivo))# WHERE id = %s', (session['id'],))
                     datosCurso = cursor.fetchall()
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
@@ -368,7 +368,7 @@ def aspirantes():
                 aspirantes = []
                 conexion = obtener_conexion()
                 with conexion.cursor() as cursor:
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM curso')# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
                     cursos = cursor.fetchall()
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
@@ -391,7 +391,7 @@ def guardarEstado(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO alumno_estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Estado guardado correctamente!', category='success')
@@ -409,11 +409,11 @@ def envioCorreoAceptacion(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango FROM curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -424,7 +424,7 @@ def envioCorreoAceptacion(id, curso):
         enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO alumno_estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
@@ -441,18 +441,18 @@ def envioCorreoPago(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM curso c where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM Curso c where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
         enviarEmailPago(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1], str(datosCurso[0][2]), medioPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO alumno_estado(id_estado, id_alumno, fecha, id_usuario) VALUES (18, %s, now(), %s)', (id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (18, %s, now(), %s)', (id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
@@ -466,11 +466,11 @@ def cursos():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT *, h.rango, d.rango FROM curso c JOIN horario h ON h.id = c.id_horario JOIN dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT *, h.rango, d.rango FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
-            cursor.execute('SELECT * FROM horario order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Horario order by id desc')# WHERE id = %s', (session['id'],))
             horario = cursor.fetchall()
-            cursor.execute('SELECT * FROM dias order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Dias order by id desc')# WHERE id = %s', (session['id'],))
             dias = cursor.fetchall()
         conexion.close()
         return render_template('administracion/cursos.html',
@@ -486,7 +486,7 @@ def actualizarEstadoCurso(id):
         idValor = request.form['idValor']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('UPDATE curso SET activo = %s WHERE id = %s', (idValor, id,))
+            cursor.execute('UPDATE Curso SET activo = %s WHERE id = %s', (idValor, id,))
         conexion.commit()
         conexion.close()
         flash('Actualizado correctamente!', category='success')
@@ -506,7 +506,7 @@ def agregarCurso():
         modalidad = request.form['modalidad']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO curso(nombre, codigo_curso, fecha_inicio, fecha_fin, id_dias, id_horario, costo, activo, modalidad) VALUES (%s, %s, %s, %s, %s, %s, %s, 1, %s)', (nombre, codigo, fechaInicio, fechaFin, dias, horario, costo, modalidad,))
+            cursor.execute('INSERT INTO Curso(nombre, codigo_curso, fecha_inicio, fecha_fin, id_dias, id_horario, costo, activo, modalidad) VALUES (%s, %s, %s, %s, %s, %s, %s, 1, %s)', (nombre, codigo, fechaInicio, fechaFin, dias, horario, costo, modalidad,))
         conexion.commit()
         conexion.close()
         flash('Agregado correctamente!', category='success')
@@ -518,7 +518,7 @@ def aspirantesAula():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT * FROM alumno where id_curso = 1 order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Alumno where id_curso = 1 order by id desc')# WHERE id = %s', (session['id'],))
             aspirantes = cursor.fetchall()
         conexion.close()
         page, per_page, offset = get_page_args(page_parameter='page',
@@ -609,7 +609,7 @@ def mensajesContacto():
         mensajes = []
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT * FROM contacto order by id desc")# WHERE id = %s', (session['id'],))
+            cursor.execute("SELECT * FROM Contacto order by id desc")# WHERE id = %s', (session['id'],))
             mensajes = cursor.fetchall()
         conexion.close()
         page, per_page, offset = get_page_args(page_parameter='page',
@@ -634,7 +634,7 @@ def profile():
 
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT * FROM usuario WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Usuario WHERE id = %s', (session['id'],))
             account = cursor.fetchone()
         conexion.close()
         # Show the profile page with account info
