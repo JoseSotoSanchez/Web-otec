@@ -43,21 +43,21 @@
                                 <td>{{row[11]}}</td>
                                 <td>{{row[7]}}</td>
                                 <td>
-                                  {% if row[8] == 1 %}
+                                  {% if row[9] == 1 %}
                                   <span class="badge bg-success rounded-pill d-inline">Si</span>
                                   {% endif %}
-                                  {% if row[8] == 0 %}
+                                  {% if row[9] == 0 %}
                                   <span class="badge bg-danger rounded-pill d-inline">No</span>
                                   {% endif %}
                                 </td>
-                                <td>{{row[9]}}</td>
+                                <td>{{row[8]}}</td>
                               <td>
-                                {% if row[8] == 0 %}
+                                {% if row[9] == 0 %}
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
                                   Activar
                                 </button>
                                 {% endif %}
-                                {% if row[8] == 1 %}
+                                {% if row[9] == 1 %}
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
                                   Desactivar
                                 </button>
@@ -69,11 +69,11 @@
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
                                     <div class="modal-header">
-                                      {% if row[8] == 0 %}
+                                      {% if row[9] == 0 %}
                                       <h5 class="modal-title" id="basicModal">Actualizar estado de curso {{row[1]}} {{row[2]}} a: <strong style="color:green;">Activo</strong></h5>
                                       <input id="idValor" name="idValor" value="1" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                                       {% endif %}
-                                      {% if row[8] == 1 %}
+                                      {% if row[9] == 1 %}
                                       <h5 class="modal-title" id="basicModal">Actualizar estado de curso {{row[1]}} {{row[2]}} a: <strong style="color:red;">Inactivo</strong></h5>
                                       <input id="idValor" name="idValor" value="0" autocomplete="false" type="hidden"class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                                       {% endif %}

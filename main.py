@@ -160,7 +160,7 @@ def asistenteAula():
         return render_template('cursos/asistente-aula.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/inspector-educacional', methods=['GET', 'POST'])
 def inspectorEducacional():
@@ -205,7 +205,7 @@ def inspectorEducacional():
         return render_template('cursos/inspector-educacional.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/asistente-administrativo-contable', methods=['GET', 'POST'])
 def asistenteContable():
@@ -250,7 +250,7 @@ def asistenteContable():
         return render_template('cursos/asistente-administrativo-contable.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/cajero-bancario', methods=['GET', 'POST'])
 def cajeroBancario():
@@ -295,7 +295,7 @@ def cajeroBancario():
         return render_template('cursos/cajero-bancario.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/sign_up')
 def sign_up():
@@ -380,8 +380,8 @@ def aspirantes():
                                 estados = estados,
                                 selected = 0,
                                 )
-        return redirect(url_for('home'))
-    return redirect(url_for('home'))
+        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 @app.route('/guardarEstado/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def guardarEstado(id, curso):
@@ -398,7 +398,7 @@ def guardarEstado(id, curso):
         global cursoActivo
         cursoActivo = curso
         return redirect(url_for('aspirantes'))
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/envioCorreoAceptacion/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacion(id, curso):
@@ -431,7 +431,7 @@ def envioCorreoAceptacion(id, curso):
         global cursoActivo
         cursoActivo = curso
         return redirect(url_for('aspirantes'))
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/envioCorreoPago/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoPago(id, curso):
@@ -459,7 +459,7 @@ def envioCorreoPago(id, curso):
         global cursoActivo
         cursoActivo = curso
         return redirect(url_for('aspirantes'))
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/cursos', methods=['GET', 'POST'])
 def cursos():
@@ -478,7 +478,7 @@ def cursos():
                             horario=horario,
                             dias=dias,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/actualizarEstadoCurso/<int:id>', methods=['GET', 'POST'])
 def actualizarEstadoCurso(id):
@@ -491,7 +491,7 @@ def actualizarEstadoCurso(id):
         conexion.close()
         flash('Actualizado correctamente!', category='success')
         return redirect(url_for('cursos'))
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/agregarCurso', methods=['GET', 'POST'])
 def agregarCurso():
@@ -511,7 +511,7 @@ def agregarCurso():
         conexion.close()
         flash('Agregado correctamente!', category='success')
         return redirect(url_for('cursos'))
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/aspirantes-asistente-aula', methods=['GET', 'POST'])
 def aspirantesAula():
@@ -533,7 +533,7 @@ def aspirantesAula():
                             per_page=10,
                             pagination=pagination,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/aspirantes-inspector-educacional')
 def aspirantesInspector():
@@ -555,7 +555,7 @@ def aspirantesInspector():
                             per_page=10,
                             pagination=pagination,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/aspirantes-cajero-bancario')
 def aspirantesCajeroBancario():
@@ -578,7 +578,7 @@ def aspirantesCajeroBancario():
                             per_page=10,
                             pagination=pagination,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/aspirantes-asistente-contable')
 def aspirantesAsistenteContable():
@@ -600,7 +600,7 @@ def aspirantesAsistenteContable():
                             per_page=10,
                             pagination=pagination,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route('/mensajes-contacto')
 def mensajesContacto():
@@ -624,7 +624,7 @@ def mensajesContacto():
                             per_page=10,
                             pagination=pagination,
                             )
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 # http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for loggedin users
 @app.route('/profile')
