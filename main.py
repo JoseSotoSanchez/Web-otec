@@ -24,6 +24,10 @@ app.secret_key = 'your secret key'
 ROWS_PER_PAGE = 5
 cursoActivo = 0
 idAlumnoEstado = 0
+idGlobal = 0
+rutGlobal = ''
+nombreGlobal = ''
+estadoGlobal = 0
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,14 +38,21 @@ def login():
     # Create variables for easy access
         usuario = request.form['usuario']
         clave = request.form['clave']
-          # Check if account exists using MySQL
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute("SELECT id, nick, nombre FROM Usuario WHERE nick = %s AND clave = %s", (usuario, clave,))
             account = cursor.fetchone()
         conexion.close()
         if account:
-            # Create session data, we can access this data in other routes
+             #LOG login
+            conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
+                cursor.execute('INSERT INTO LogUsuario (nick, clave, estado, fecha, ip) VALUES (%s, %s, "OK",now(), %s)', (usuario, clave, hostnameAddr,))
+                conexion.commit()
+            conexion.close()
             session['loggedin'] = True
             session['id'] = account[0]
             session['usuario'] = account[1]
@@ -50,8 +61,13 @@ def login():
             flash('Login correcto!', category='success')
             return redirect(url_for('index'))
         else:
-            # Account doesnt exist or username/password incorrect
-            msg = 'Usuario y/o contraseña incorrectas'
+            #LOG login
+            conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
+                cursor.execute('INSERT INTO LogUsuario (nick, clave, estado, fecha, ip) VALUES (%s, %s, "Fallido", now(), %s)', (usuario, clave, hostnameAddr,))
+                conexion.commit()
+            conexion.close()
+            flash('Usuario y/o contraseña incorrectas!', category='error')
     return render_template('login.html', msg='')
 
 # http://localhost:5000/python/logout - this will be the logout page
@@ -96,15 +112,6 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
-# http://localhost:5000/pythinlogin/home - this will be the home page, only accessible for loggedin users
-# @app.route('/home')
-# def home():
-#     # Check if user is loggedin
-#     if 'loggedin' in session:
-#         # User is loggedin show them the home page
-#         return render_template('home.html', username=session['usuario'])
-#     # User is not loggedin redirect to login page
-#     return redirect(url_for('login'))
 @app.route('/')
 def index():
     return render_template('home.html')
@@ -135,11 +142,15 @@ def asistenteAula():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -180,11 +191,15 @@ def inspectorEducacional():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -225,11 +240,15 @@ def asistenteContable():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -270,11 +289,15 @@ def cajeroBancario():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
         conexion.commit()
         conexion.close()
         conexion = obtener_conexion()
@@ -336,12 +359,14 @@ def aspirantes():
                 cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                 estados = cursor.fetchall()
                 conexion.close()
+                total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = int(selected),
+                                total = total,
                                 )
         else:
             if cursoActivo != 0:
@@ -357,12 +382,14 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = int(selected),
+                                total = total,
                                 )
             else:
                 aspirantes = []
@@ -373,12 +400,14 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = 0,
+                                total = total,
                                 )
         return redirect(url_for('index'))
     return redirect(url_for('index'))
@@ -399,6 +428,8 @@ def guardarEstado(id, curso):
         cursoActivo = curso
         return redirect(url_for('aspirantes'))
     return redirect(url_for('index'))
+
+
 
 @app.route('/envioCorreoAceptacion/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacion(id, curso):

@@ -23,6 +23,8 @@
                             </select> 
                             <input id="btnBuscar"class="btn-primary" type="submit" value="Buscar">
                         </form>
+                        <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Total Mostrados en lista: <strong>{{total}}</strong></span>
+                       
                         <table class="table align-middle mb-0 bg-white">
                             <thead class="bg-light">
                               <tr>
@@ -74,14 +76,15 @@
 
                                     <div class="ms-3" style="width: 80%">
                                       <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
+                                      <p class="text-muted mb-0">{{row[3]}}</p>
                                       <p class="text-muted mb-0">{{row[8]}}</p>
                                       <p class="text-muted mb-0">{{row[9]}}</p>
                                     </div>
                                   </div>
                                 </td>
                                 <td>
-                                  <p class="fw-normal mb-1">{{row[15]}}</p>
                                   <p class="text-muted mb-0">{{row[16]}} / {{row[17]}}</p>
+                                  <p class="fw-normal mb-1">{{row[15]}}</p>
                                 </td>
                                 <td>{{row[4]}}</td>
                                 <td>{{row[5]}}</td>
@@ -89,7 +92,9 @@
                                 <td>{{row[7]}}</td>
                                 <td>{{row[11]}}</td>
                                 <td>{{row[12]}}</td>
-                                <td>{{row[13]}}</td>
+                                <td>
+                                  <p class="text-muted mb-0">{{row[13]}}, {{row[14]}}</p>
+                                </td>
                                 <td>{{row[19]}}</td>
                                 <td>
                                   {% if row[20] <= 5 %}
