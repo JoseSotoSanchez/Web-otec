@@ -126,7 +126,7 @@ def nosotros():
 
 @app.route('/asistente-aula', methods=['GET', 'POST'])
 def asistenteAula():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
         apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
@@ -142,12 +142,13 @@ def asistenteAula():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        ingreso = request.form['ingreso']
         hostname = request.remote_addr
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
             cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
@@ -175,7 +176,7 @@ def asistenteAula():
 
 @app.route('/inspector-educacional', methods=['GET', 'POST'])
 def inspectorEducacional():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
         apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
@@ -191,12 +192,13 @@ def inspectorEducacional():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        ingreso = request.form['ingreso']
         hostname = request.remote_addr
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
             cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
@@ -224,7 +226,7 @@ def inspectorEducacional():
 
 @app.route('/asistente-administrativo-contable', methods=['GET', 'POST'])
 def asistenteContable():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
         apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
@@ -240,12 +242,13 @@ def asistenteContable():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        ingreso = request.form['ingreso']
         hostname = request.remote_addr
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
             cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
@@ -273,7 +276,7 @@ def asistenteContable():
 
 @app.route('/cajero-bancario', methods=['GET', 'POST'])
 def cajeroBancario():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form:
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
         apellido = upperFirst(request.form['apellido'].lower())
         rut = request.form['rut']
@@ -289,12 +292,13 @@ def cajeroBancario():
         direccion = request.form['direccion']
         region = request.form['region']
         curso = request.form['curso']
+        ingreso = request.form['ingreso']
         hostname = request.remote_addr
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso))
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
             cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
             cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
@@ -350,7 +354,7 @@ def aspirantes():
             selected=curso
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
                 cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()

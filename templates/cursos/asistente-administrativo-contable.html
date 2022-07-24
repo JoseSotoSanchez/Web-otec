@@ -81,12 +81,24 @@
                                     </select> </div>
                             </div>
                             <div class="row justify-content-between text-left">
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Correo electrónico<span class="text-danger">                                         *</span></label> 
                                         <input type="email" id="email" name="email" placeholder="Ingresa su correo" onblur="validate(8)" required> </div>
-                                <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up">
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
                                      <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
                                       <input type="text" id="telefono" name="telefono" placeholder="Ingresa tu número" onblur="validate(9)"required> </div>
+                                <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
+                                    <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
+                                    <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
+                                        <option value="">Seleccione</option>
+                                        <option value="Google">Google</option>
+                                        <option value="Facebook">Facebook</option>
+                                        <option value="Twitter">Twitter</option>
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="Recomendado">Recomendado</option>
+                                        <option value="Otro">Otro</option>
+                                    </select> 
+                                </div>      
                             </div>
                             <div class="row justify-content-between text-left">
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 

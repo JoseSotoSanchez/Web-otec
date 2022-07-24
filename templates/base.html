@@ -189,6 +189,7 @@
     v13 = document.getElementById("direccion");
     v14 = document.getElementById("region");
     v15 = document.getElementById("curso");
+    v16 = document.getElementById("ingreso");
 
     flag1 = true;
     flag2 = true;
@@ -205,6 +206,7 @@
     flag13 = true;
     flag14 = true;
     flag15 = true;
+    flag16 = true;
 
     if(val>=1 || val==0) {
         if(v1.value == "") {
@@ -364,7 +366,18 @@
         }
     }
 
-    flag = flag1 && flag2 && flag3 && flag4 && flag5 && flag6&& flag7&& flag8&& flag9&& flag10&& flag11&& flag12&& flag13&& flag14&& flag15;
+    if(val>=16 || val==0) {
+        if(v16.value == "") {
+            v16.style.borderColor = "red";
+            flag16 = false;
+        }
+        else {
+            v16.style.borderColor = "green";
+            flag16 = true;
+        }
+    }
+
+    flag = flag1 && flag2 && flag3 && flag4 && flag5 && flag6&& flag7&& flag8&& flag9&& flag10&& flag11&& flag12&& flag13&& flag14&& flag15&& flag16;
 
     return flag;
 }
