@@ -33,10 +33,7 @@
                                 <!-- <th class="th-sm">Apellidos</th> -->
                                 <th class="th-sm">Curso</th>
                                 <th class="th-sm">Ingreso desde</th>
-                                <th class="th-sm">Sexo</th>
-                                <th class="th-sm">Edad</th>
-                                <th class="th-sm">Nacionalidad</th>
-                                <th class="th-sm">Estado civil</th>
+                                <th class="th-sm">Información</th>
                                 <!-- <th class="th-sm">Email</th> -->
                                 <!-- <th class="th-sm">Telefono</th> -->
                                 <!-- <th class="th-sm">Profesión</th> -->
@@ -85,13 +82,17 @@
                                 </td>
                                 <td>
                                   <p class="text-muted mb-0">{{row[16]}} / {{row[17]}}</p>
-                                  <p class="fw-normal mb-1">{{row[15]}}</p>
+                                  <p class="text-muted mb-1">{{row[15]}}</p>
                                 </td>
                                 <td>{{row[22]}}</td>
-                                <td>{{row[4]}}</td>
-                                <td>{{row[5]}}</td>
-                                <td>{{row[6]}}</td>
-                                <td>{{row[7]}}</td>
+                                <td>
+                                  <div class="ms-3" style="width: 80%">
+                                    <p class="text-muted mb-0">{{row[4]}}</p>
+                                    <p class="text-muted mb-0">{{row[5]}} años</p>
+                                    <p class="text-muted mb-0">{{row[6]}}</p>
+                                    <p class="text-muted mb-0">{{row[7]}}</p>
+                                  </div>
+                                </td>
                                 <td>{{row[11]}}</td>
                                 <td>{{row[12]}}</td>
                                 <td>

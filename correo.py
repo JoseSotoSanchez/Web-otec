@@ -112,7 +112,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
     email_password = '$$PKhg!pB'
 
     email_send = correo
-    subject = "Financiamiento Programa Emplea (Curso capacitación Laboral)"
+    subject = "Financiamiento Programa Emplea ICL (Curso Capacitación Laboral)"
     msg = MIMEMultipart()
     msg['From'] = email_user
     msg['To'] = email_send
@@ -220,13 +220,20 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
      <p style="margin:0 0 2px 0;font-size:14px;line-height:24px;font-family:Arial,sans-serif;font-style: oblique;"> """+correoUsuario+"""</p>
      <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">contacto: """+numeroUsuario+""" Whatsapp</h1>
      <p  style="font-size:14px;margin:0 0 2px 0"><a href="url">iccapacitacionlaboral.cl</a></p>
-                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
                           <tr>
-                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.png" alt=".." width="130" style="height:auto;display:block;border:0;" />
+                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
                             </td>
-                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpg" alt=".." width="130" style="height:auto;display:block;border:0;" />
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
                             </td>
-                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpg" alt=".." width="100" style="height:auto;display:block;border:0;" />
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <tr>
+                           <td><h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Alianza con:   </h1></td>
+                            <td><img src="https://sumando.cl/wp-content/uploads/2019/08/44-03.png" alt=".." width="180" style="height:auto;display:block;border:0;" />
                             </td>
                           </tr>
                         </table>
@@ -333,13 +340,20 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
      <p style="margin:0 0 2px 0;font-size:14px;line-height:24px;font-family:Arial,sans-serif;font-style: oblique;"> """+correoUsuario+"""</p>
      <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">contacto: """+numeroUsuario+""" Whatsapp</h1>
      <p  style="font-size:14px;margin:0 0 2px 0"><a href="url">iccapacitacionlaboral.cl</a></p>
-                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
                           <tr>
-                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.png" alt=".." width="130" style="height:auto;display:block;border:0;" />
+                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
                             </td>
-                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpg" alt=".." width="130" style="height:auto;display:block;border:0;" />
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
                             </td>
-                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpg" alt=".." width="100" style="height:auto;display:block;border:0;" />
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <tr>
+                           <td><h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Alianza con:   </h1></td>
+                            <td><img src="https://sumando.cl/wp-content/uploads/2019/08/44-03.png" alt=".." width="180" style="height:auto;display:block;border:0;" />
                             </td>
                           </tr>
                         </table>
