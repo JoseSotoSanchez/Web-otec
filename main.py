@@ -342,7 +342,8 @@ def contacto():
         conexion.commit()
         conexion.close()
         flash('Mensaje enviado correctamente!', category='success')
-    return render_template('contactanos.html')
+        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 @app.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
