@@ -171,6 +171,8 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Banco:</strong> Banco De Chile</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Tipo:</strong> Cuenta Corriente</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Numero:</strong> 8005934800</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar comprobante de pago a:</strong> pagos@iccapacitacionlaboral.cl</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar copia de comprobante de pago a:</strong> administracion@iccapacitacionlaboral.cl</p>
                       <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Boton de pago: </p>
                       <p align="center">
                       <a style="background-color: #1c68c4; color: white; padding: 13px 32px; text-align: center;text-decoration: none; display: inline-block; font-size: 20px; margin: 4px 2px; cursor: pointer; border-radius: 11px;" href=\""""+urlPago+"""\">Pagar</a>  
