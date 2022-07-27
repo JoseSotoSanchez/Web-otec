@@ -28,6 +28,7 @@
                                 <th class="th-sm">Costo</th>
                                 <th class="th-sm">Activado</th>
                                 <th class="th-sm">Modalidad</th>
+                                <th class="th-sm">Dias de Campaña</th>
                                 <th class="th-sm">Acción</th>
                               </tr>
                             </thead>
@@ -51,6 +52,11 @@
                                   {% endif %}
                                 </td>
                                 <td>{{row[9]}}</td>
+                                {% if row[16] > 0 %}
+                                <td>{{row[16]}}</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                               <td>
                                 {% if row[8] == 0 %}
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">

@@ -502,8 +502,9 @@ def cursos():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT *, h.rango, d.rango FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT *, h.rango, d.rango, DATEDIFF(c.fecha_inicio, now()) AS Diferencia FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
+            print(cursos)
             cursor.execute('SELECT * FROM Horario order by id desc')# WHERE id = %s', (session['id'],))
             horario = cursor.fetchall()
             cursor.execute('SELECT * FROM Dias order by id desc')# WHERE id = %s', (session['id'],))
