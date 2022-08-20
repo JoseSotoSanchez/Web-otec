@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, flash,url_for, sess
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
-from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago
+from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida
 
 
 
@@ -161,7 +161,11 @@ def asistenteAula():
         conexion.close()
         nombre = nombre + ' ' + apellido
         curso = curso_[0][1]
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -211,7 +215,11 @@ def inspectorEducacional():
         conexion.close()
         nombre = nombre + ' ' + apellido
         curso = curso_[0][1]
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -261,7 +269,11 @@ def asistenteContable():
         conexion.close()
         nombre = nombre + ' ' + apellido
         curso = curso_[0][1]
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -311,7 +323,11 @@ def cajeroBancario():
         conexion.close()
         nombre = nombre + ' ' + apellido
         curso = curso_[0][1]
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%m/%d/%Y") , curso_[0][4].strftime("%m/%d/%Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
         conexion = obtener_conexion()
@@ -343,7 +359,7 @@ def contacto():
         conexion.close()
         flash('Mensaje enviado correctamente!', category='success')
         return redirect(url_for('index'))
-    return redirect(url_for('index'))
+    return render_template('contactanos.html')
 
 @app.route('/aspirantes', methods=['GET', 'POST'])
 def aspirantes():
@@ -502,9 +518,8 @@ def cursos():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT *, h.rango, d.rango, DATEDIFF(c.fecha_inicio, now()) AS Diferencia FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT *, h.rango, d.rango, DATEDIFF(c.fecha_inicio, now()) AS Diferencia, date_format(c.fecha_inicio, "%d-%m-%Y") AS fechaInicio, date_format(c.fecha_fin, "%d-%m-%Y") AS fechaFin FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
-            print(cursos)
             cursor.execute('SELECT * FROM Horario order by id desc')# WHERE id = %s', (session['id'],))
             horario = cursor.fetchall()
             cursor.execute('SELECT * FROM Dias order by id desc')# WHERE id = %s', (session['id'],))
@@ -526,6 +541,37 @@ def actualizarEstadoCurso(id):
             cursor.execute('UPDATE Curso SET activo = %s WHERE id = %s', (idValor, id,))
         conexion.commit()
         conexion.close()
+        flash('Actualizado correctamente!', category='success')
+        return redirect(url_for('cursos'))
+    return redirect(url_for('index'))
+
+@app.route('/enviarCorreoBienvenida', methods=['GET', 'POST'])
+def enviarCorreoBienvenida():
+    if request.method == 'POST' and 'idCurso' in request.form and 'nombreCurso' in request.form and 'inicioCurso' in request.form and 'horarioCurso' in request.form and 'urlZoom' in request.form and 'idReunionZoom' in request.form and 'codigoAccesoZoom' in request.form and 'nombreProfesor' in request.form:
+        idCurso = request.form['idCurso']
+        urlZoom = request.form['urlZoom']
+        nombreCurso = request.form['nombreCurso']
+        inicioCurso = request.form['inicioCurso']
+        horarioCurso = request.form['horarioCurso']
+        idReunionZoom = request.form['idReunionZoom']
+        codigoAccesoZoom = request.form['codigoAccesoZoom']
+        nombreProfesor = request.form['nombreProfesor']
+        idUser = session['id']
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.email FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado = 18 order by a.id desc', (idCurso))# WHERE id = %s', (session['id'],))
+            alumnosPagados = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        for x in alumnosPagados:
+            nombreAlumno = x[1] + ' ' + x[2]
+            enviarEmailBienvenida(nombreAlumno, x[3], nombreCurso, urlZoom, idReunionZoom, codigoAccesoZoom, inicioCurso, nombreProfesor, horarioCurso, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
+            conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
+                cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 19, now(), 1)', (x[0]))
+            conexion.commit()   
+            conexion.close()
         flash('Actualizado correctamente!', category='success')
         return redirect(url_for('cursos'))
     return redirect(url_for('index'))

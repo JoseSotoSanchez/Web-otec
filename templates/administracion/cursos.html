@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Aspirantes{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Cursos{% endblock %} {% block content  %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +30,7 @@
                                 <th class="th-sm">Modalidad</th>
                                 <th class="th-sm">Dias de Campaña</th>
                                 <th class="th-sm">Acción</th>
+                                <th class="th-sm">Enviar Correo Bienvenida</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -38,8 +39,8 @@
                                 <td>{{row[0]}}</td>
                                 <td>{{row[1]}}</td>
                                 <td>{{row[2]}}</td>
-                                <td>{{row[3]}}</td>
-                                <td>{{row[4]}}</td>
+                                <td>{{row[17]}}</td>
+                                <td>{{row[18]}}</td>
                                 <td>{{row[13]}}</td>
                                 <td>{{row[11]}}</td>
                                 <td>{{row[7]}}</td>
@@ -69,6 +70,11 @@
                                 </button>
                                 {% endif %}
                               </td>
+                              <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEnviarCorreoBienvenida_{{row[0]}}">
+                                  Enviar
+                                </button>
+                              </td>
                             </tr>
                             <form class="form-card" action="{{ url_for('actualizarEstadoCurso', id=row[0] )}}" method="post">
                               <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
@@ -88,6 +94,43 @@
                                     <div class="modal-footer">
                                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                       <input class="btn-primary" type="submit" value="Confirmar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('enviarCorreoBienvenida')}}" method="post">
+                              <div  class="modal fade" id="modalEnviarCorreoBienvenida_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Datos necesarios para enviar correo</h5>
+                                    </div>
+                                    <input id="idCurso" name="idCurso" value="{{row[0]}}" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    <input id="inicioCurso" name="inicioCurso" value="{{row[17]}}" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    <input id="nombreCurso" name="nombreCurso" value="{{row[1]}}" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    <input id="horarioCurso" name="horarioCurso" value="{{row[11]}}" autocomplete="false" type="hidden" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    <div class="modal-body">
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Link acceso Zoom</span>
+                                        <input id="urlZoom" name="urlZoom" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Id reunión Zoom</span>
+                                        <input id="idReunionZoom" name="idReunionZoom" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Código acceso Zoom</span>
+                                        <input id="codigoAccesoZoom" name="codigoAccesoZoom" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                      <div class="input-group mb-3">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Nombre Profesor</span>
+                                        <input id="nombreProfesor" name="nombreProfesor" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
                                     </div>
                                   </div>
                                 </div>
@@ -149,6 +192,7 @@
                                   </div>
                                 </div>
                               </div>
+                            </form>
                             {% endfor %}
                           
                           </tbody>

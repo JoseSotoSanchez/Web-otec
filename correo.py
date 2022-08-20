@@ -370,6 +370,152 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
     server.sendmail(email_user,email_send,msg.as_string())
     server.quit()
 
+def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, codigoAccesoZoom, inicioCurso, nombreProfesor, horarioCurso, nombreUsuario, correoUsuario, numeroUsuario):
+    nombre = upperFirst(nombre.lower())
+    email_user = 'administracion@iccapacitacionlaboral.cl'
+    email_password = '$$PKhg!pB'
+
+    email_send = correo
+    subject = "Bienvenido(a) al curso "+ nombreCurso + ""
+    msg = MIMEMultipart()
+    msg['From'] = email_user
+    msg['To'] = email_send
+    msg['Subject'] = subject
+    h = str("Holder")
+    c = str("course")
+    t = str("trainer")
+    html = """\
+    <!DOCTYPE html>
+ <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta name="x-apple-disable-message-reformatting">
+      <title></title>
+      <style>
+        table, td, div, h1, p 
+      </style>
+    </head>
+    <body style="margin:0;padding:0;">
+      <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+        <tr>
+          <td align="center" style="padding:0;">
+            <table role="presentation" style="width:80%;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+              <tr>
+                <td align="center" style="background:#1c68c4;">
+                  <img src="http://iccapacitacionlaboral.cl/static/Imagenes/logo-ic-capacitacion-1.png" alt="" width="300" style="height:auto;display:block;" />
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:36px 30px 42px 30px;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                    <tr>
+                      <td style="padding:0 0 36px 0;color:#153643;">
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Estimado (a) <strong>"""+nombre+"""</strong></p>
+                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> IC Capacitación agradece su preferencia y le da la bienvenida al curso
+                    de <strong> """+nombreCurso+""" </strong> een nuestra modalidad online, también conocida como e-
+                    learning sincrónico: la clase se transmite en directo, esta es una
+                    modalidad de aprendizaje en que el relator y el alumno se escuchan y
+                    se ven en el mismo momento, independiente de que se encuentren en
+                    espacios físicos diferentes. Esto permite que la interacción se realice
+                    en tiempo real, como en una clase presencial pero entendiendo que se
+                    trata de un aula virtual. El participante debe conectarse día y horario
+                    indicado para la actividad. Esperamos sea de gran utilidad y juntos
+                    logremos los objetivos esperados para cumplir con el logro de perfil y
+                    estándares curriculares deseados. Cualquier dudad o consulta nuestra
+                    coordinara estará disponible para aclarar sus dudas y apoyo en la
+                    implementación de aula virtual donde encontrara además la malla
+                    curricular, grabaciones de cada una de las clases y realizar sus
+                    evaluaciones. </p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Para acceder a plataforma virtual favor ingresar al siguiente Link.</p>
+                    <a style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;" href="https://aulavirtual.iccapacitacionlaboral.cl/login/index.php">https://aulavirtual.iccapacitacionlaboral.cl/login/index.php</a>
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;  "><strong> Usuario:</strong> Su Rut sin puntos, guión ni digito verificador (Ej.:
+                    12.123.123-1 su usuario 12123123)</p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;  "><strong> Contraseña:</strong> Los 4 primeros números de su Rut más #icL. (Ej.:
+                    12.123.123-1 su contraseña 1212#icL con letra “L” final mayúscula).</p>
+                                            
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Cualquier problema para ingresar o visualizar su curso, favor reportar
+                    a la coordinadora quien lo ayudara a resolver el inconveniente.</p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Se adjunta link video que explica paso a paso la forma de ingresar al
+                    aula virtual.</p>
+                    <a style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;" href="https://www.youtube.com/watch?v=Pu2kZmMF5Xk">https://www.youtube.com/watch?v=Pu2kZmMF5Xk</a>
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Para ingresar a las clases virtuales vía zoom favor ingresar al
+                    siguiente link :</p>
+                    <a style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"  href=\""""+urlZoom+"""\">Link acceso a reunión en Zoom</a> 
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><strong>ID de reunión:</strong> """+idReunionZoom+"""</p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><strong>Código de acceso:</strong> """+codigoAccesoZoom+"""</p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><strong>Fecha de inicio:</strong> """+inicioCurso+""" horario: """+horarioCurso+"""</p>
+                    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><strong>Profesor:</strong> """+nombreProfesor+"""</p>
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Reciba nuestra más cordial bienvenida y desearles el mayor de los
+                    éxitos.</p>
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Saludos cordiales,</p>
+                    <p style="margin:12px 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">IC Instituto de Capacitación Laboral</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:30px;background:#0a73b9;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:Arial,sans-serif;">
+                    <tr>
+                      <td style="padding:0;width:70%;" align="left">
+                        <p style="margin:0;font-size:14px;line-height:20px;font-family:Arial,sans-serif;color:#ffffff;"> Esperando sea de su agrado esta capacitación.<br/>
+                        </p>
+                      </td>
+                      <td style="padding:0;width:50%;" align="right">
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                          <tr>
+                            <td style="padding:0 0 0 10px;width:38px;">
+                              <a href="https://api.whatsapp.com/send?phone=56920742757" style="color:#ffffff;"><img src="http://assets.stickpng.com/images/580b57fcd9996e24bc43c543.png" alt="Twitter" width="38" style="height:auto;display:block;border:0;" /></a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    <footer style="margin-top:100px">
+    <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; ">Atentamente.</p>
+    <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">"""+nombreUsuario+"""</h1>
+     <h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Coordinador de Curso IC capacitación Laboral</h1>
+     <p style="margin:0 0 2px 0;font-size:14px;line-height:24px;font-family:Arial,sans-serif;font-style: oblique;"> """+correoUsuario+"""</p>
+     <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">contacto: """+numeroUsuario+""" Whatsapp</h1>
+     <p  style="font-size:14px;margin:0 0 2px 0"><a href="url">iccapacitacionlaboral.cl</a></p>
+                         <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                          <tr>
+                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <tr>
+                           <td><h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Alianza con:   </h1></td>
+                            <td><img src="https://sumando.cl/wp-content/uploads/2019/08/44-03.png" alt=".." width="180" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+    </footer>
+  </html>
+    """.format(h=h , c=c , t=t) 
+        
+    msg.attach(MIMEText(html,'html'))
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server.starttls()
+    server.login(email_user,email_password)
+    server.sendmail(email_user,email_send,msg.as_string())
+    server.quit()
+
 def upperFirst(texto):
   salida = ''
   texto_ = texto.strip()

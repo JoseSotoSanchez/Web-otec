@@ -13,13 +13,18 @@
         <span class="fs-4" data-aos="fade-up">Asistente de aula mención convivencia escolar</span>
       </a>
     </header>
-
+    <div class="row featurette" data-aos="zoom-in">
+        <div class="col-md-10" style="margin-left: auto; margin-right: auto;">
+            <a  rel="nofollow" onclick="scrolldiv()"><img class="bd-placeholder-img asistente-aula-mencion img-fluid" src="static/Imagenes/pocosCuposAula.gif" 
+           role="asistente-aula-mencion" style="width: 100%; height: auto;" /></a>
+        </div>
+      </div>
     <div class=" bg-light rounded-3">
       <div class="container-fluid ">
         <div class=" mx-auto">
             <div class="row d-flex justify-content-center">
                 <div class=" text-center">
-                    <div class="card">
+                    <div class="card"  id="formularioAA">
                         <h5 class="text-center tituloRojo">POSTULA A LA BECA SOLIDARIA</h5>
                         <h5 class="text-center tituloRojo">TODOS TIENEN OPORTUNIDAD</h5>
                         <h5 class="text-center mb-4 tituloRojo">BONO DE CAPACITACIÓN DEL 75%</h5>
@@ -198,7 +203,7 @@
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 36 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <li class="list-group-item dtalle">Fecha: 19 de Agosto del 2022 al 13 de Septiembre del 2022.</li>
+            <li class="list-group-item dtalle">Fecha: 27 de Septiembre del 2022 al 20 de Octubre del 2022.</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298"class="list-group-item dtalle" target="_blank" href="static/mallas/malla-asistente-aula.pdf">ver malla curricular</a>
           </ul>
@@ -234,5 +239,10 @@
     
     </div>
   </div>
-
+  <script>
+    function scrolldiv() {
+                 var elem = document.getElementById("formularioAA");
+                 elem.scrollIntoView();
+             }
+ </script>
 {% endblock %}
