@@ -124,6 +124,10 @@ def home():
 def nosotros():
     return render_template('nosotros.html')
 
+@app.route('/privacidad')
+def privacidad():
+    return render_template('privacidad.html')
+
 @app.route('/asistente-aula', methods=['GET', 'POST'])
 def asistenteAula():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
