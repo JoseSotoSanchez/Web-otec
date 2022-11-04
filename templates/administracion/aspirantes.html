@@ -18,7 +18,7 @@
                             <select id="curso" name="curso" type="select">
                                 <option value="0">Seleccione curso</option>
                                 {% for row in cursos %}
-                                <option {% if selected == row[0] %} selected {% endif %} value="{{row[0]}}">{{row[1]}} / {{row[2]}}</option>
+                                <option {% if selected == row[0] %} selected {% endif %} value="{{row[0]}}">{{row[2]}} / {{row[1]}}</option>
                                 {% endfor %}
                             </select> 
                             <input id="btnBuscar"class="btn-primary" type="submit" value="Buscar">

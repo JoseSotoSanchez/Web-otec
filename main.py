@@ -377,7 +377,7 @@ def aspirantes():
             with conexion.cursor() as cursor:
                 cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
-                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
                 cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
                 datosCurso = cursor.fetchall()
@@ -400,7 +400,7 @@ def aspirantes():
                 with conexion.cursor() as cursor:
                     cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
                     aspirantes = cursor.fetchall()
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                     cursos = cursor.fetchall()
                     cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (cursoActivo))# WHERE id = %s', (session['id'],))
                     datosCurso = cursor.fetchall()
@@ -420,7 +420,7 @@ def aspirantes():
                 aspirantes = []
                 conexion = obtener_conexion()
                 with conexion.cursor() as cursor:
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso')# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                     cursos = cursor.fetchall()
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
