@@ -373,7 +373,7 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
 def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, codigoAccesoZoom, inicioCurso, nombreProfesor, horarioCurso, nombreUsuario, correoUsuario, numeroUsuario):
     nombre = upperFirst(nombre.lower())
     email_user = 'administracion@iccapacitacionlaboral.cl'
-    email_password = '$$PKhg!pB'
+    email_password = 'gQ9Pb$$PKh'
 
     email_send = correo
     subject = "Bienvenido(a) al curso "+ nombreCurso + ""
@@ -413,7 +413,7 @@ def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, c
                       <td style="padding:0 0 36px 0;color:#153643;">
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Estimado (a) <strong>"""+nombre+"""</strong></p>
                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> IC Capacitación agradece su preferencia y le da la bienvenida al curso
-                    de <strong> """+nombreCurso+""" </strong> een nuestra modalidad online, también conocida como e-
+                    de <strong> """+nombreCurso+""" </strong> en nuestra modalidad online, también conocida como e-
                     learning sincrónico: la clase se transmite en directo, esta es una
                     modalidad de aprendizaje en que el relator y el alumno se escuchan y
                     se ven en el mismo momento, independiente de que se encuentren en

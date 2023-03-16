@@ -137,10 +137,34 @@
                                                   <select id="estado" name="estado" type="select">
                                                       <option value="0">Selecciones Estado</option>
                                                       {% for estado in estados %}
-                                                      <option value="{{estado[0]}}">{{estado[1]}}</option>
+                                                      <option value="{{estado[0]}}"{% if estado[0] == row[20] %} selected {% endif %}>{{estado[1]}}</option>
                                                       {% endfor %}
                                                   </select> 
                                                 </div>
+                                                <div class="form-group row">
+                                                  <label for="author" class="col-xs-2 control-label">Correo</label>
+                                                  <div class="input-group mb-3">
+                                                    <input id="correoAlumno" value="{{row[8]}}" name="correoAlumno" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                  </div>
+                                              </div>
+                                              <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Celular</label>
+                                                <div class="input-group mb-3">
+                                                  <input id="celularAlumno" value="{{row[9]}}" name="celularAlumno" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                              <label for="author" class="col-xs-2 control-label">Nombres</label>
+                                              <div class="input-group mb-3">
+                                                <input id="nombresAlumno" value="{{row[1]}}" name="nombresAlumno" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                              </div>
+                                          </div>
+                                          <div class="form-group row">
+                                            <label for="author" class="col-xs-2 control-label">Apellidos</label>
+                                            <div class="input-group mb-3">
+                                              <input id="apellidosAlumno" value="{{row[2]}}" name="apellidosAlumno" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                            </div>
+                                        </div>
                                             </div>
                                         </div>
                                     <div class="modal-footer">

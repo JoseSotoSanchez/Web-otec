@@ -344,6 +344,60 @@ def cajeroBancario():
                             )
     return redirect(url_for('index'))
 
+@app.route('/convivencia-escolar', methods=['GET', 'POST'])
+def convivenciaEscolar():
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        correo = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+        ingreso = request.form['ingreso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
+            id = cursor.lastrowid
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
+        conexion.commit()
+        conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
+        nombre = nombre + ' ' + apellido
+        curso = curso_[0][1]
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        flash('Postulación enviada correctamente!', category='success')
+    else:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursos = cursor.fetchall()
+        conexion.close()
+        return render_template('cursos/convivencia-escolar.html',
+                            cursos=cursos,
+                            )
+    return redirect(url_for('index'))
+
 @app.route('/sign_up')
 def sign_up():
     return render_template('sign_up.html')
@@ -439,13 +493,18 @@ def aspirantes():
 
 @app.route('/guardarEstado/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def guardarEstado(id, curso):
-    if request.method == 'POST' and 'estado' in request.form:
+    if request.method == 'POST' and 'estado' in request.form and 'correoAlumno' in request.form and 'celularAlumno' in request.form and 'nombresAlumno' in request.form and 'apellidosAlumno' in request.form:
         idEstado = request.form['estado']
+        correoAlumno = request.form['correoAlumno']
+        celularAlumno = request.form['celularAlumno']
+        nombresAlumno = request.form['nombresAlumno']
+        apellidosAlumno = request.form['apellidosAlumno']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
+            cursor.execute('UPDATE Alumno SET nombre = %s, apellido = %s, email = %s, telefono = %s WHERE id = %s', (nombresAlumno, apellidosAlumno, correoAlumno, celularAlumno,id,))
         conexion.commit()
         conexion.close()
         flash('Estado guardado correctamente!', category='success')
