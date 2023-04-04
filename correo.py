@@ -121,7 +121,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
     c = str("course")
     t = str("trainer")
     html = """\
-   <!DOCTYPE html>
+    <!DOCTYPE html>
  <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
     <head>
       <meta charset="UTF-8">
@@ -173,6 +173,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Numero:</strong> 8005934800</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar comprobante de pago a:</strong> pagos@iccapacitacionlaboral.cl</p>
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar copia de comprobante de pago a:</strong> administracion@iccapacitacionlaboral.cl</p>
+                           <p style="color: red; margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Punto importante: </strong> No habrá devolución de dinero para aquellos que comiencen el curso. Solo casos especiales con justifiación</p>
                       <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Boton de pago: </p>
                       <p align="center">
                       <a style="background-color: #1c68c4; color: white; padding: 13px 32px; text-align: center;text-decoration: none; display: inline-block; font-size: 20px; margin: 4px 2px; cursor: pointer; border-radius: 11px;" href=\""""+urlPago+"""\">Pagar</a>  
