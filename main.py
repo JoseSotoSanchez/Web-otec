@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, flash,url_for, sess
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
-from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida
+from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida, enviarEmailBienvenidaIEMCE
 
 
 
@@ -537,6 +537,39 @@ def envioCorreoAceptacion(id, curso):
         mesFin = datosCurso[0][2].month
         nombreMesFin = obtenerMes(mesFin)
         enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
+@app.route('/envioCorreoBienvenidaIEMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaIEMCE(id, curso):
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        print(linkSense)
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaIEMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))

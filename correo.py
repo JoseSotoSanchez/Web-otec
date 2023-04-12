@@ -173,7 +173,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Numero:</strong> 8005934800</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar comprobante de pago a:</strong> pagos@iccapacitacionlaboral.cl</p>
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Enviar copia de comprobante de pago a:</strong> administracion@iccapacitacionlaboral.cl</p>
-                           <p style="color: red; margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Punto importante: </strong> No habrá devolución de dinero para aquellos que comiencen el curso. Solo casos especiales con justifiación</p>
+                           <p style="color: red; margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Punto importante: </strong> No habrá devolución de dinero para aquellos que comiencen el curso. Solo casos especiales con justificación</p>
                       <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Boton de pago: </p>
                       <p align="center">
                       <a style="background-color: #1c68c4; color: white; padding: 13px 32px; text-align: center;text-decoration: none; display: inline-block; font-size: 20px; margin: 4px 2px; cursor: pointer; border-radius: 11px;" href=\""""+urlPago+"""\">Pagar</a>  
@@ -187,6 +187,169 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                         <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                         </table>
                       </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:30px;background:#0a73b9;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:Arial,sans-serif;">
+                    <tr>
+                      <td style="padding:0;width:70%;" align="left">
+                        <p style="margin:0;font-size:14px;line-height:20px;font-family:Arial,sans-serif;color:#ffffff;"> La información recopilada es de carácter confidencial.<br/>
+                        </p>
+                      </td>
+                      <td style="padding:0;width:50%;" align="right">
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                          <tr>
+                            <td style="padding:0 0 0 10px;width:38px;">
+                              <a href="https://api.whatsapp.com/send?phone=56920742757" style="color:#ffffff;"><img src="http://assets.stickpng.com/images/580b57fcd9996e24bc43c543.png" alt="Twitter" width="38" style="height:auto;display:block;border:0;" /></a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    <footer style="margin-top:100px">
+    <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">"""+nombreUsuario+"""</h1>
+     <h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Coordinador de Curso IC capacitación Laboral</h1>
+     <p style="margin:0 0 2px 0;font-size:14px;line-height:24px;font-family:Arial,sans-serif;font-style: oblique;"> """+correoUsuario+"""</p>
+     <h1 style="font-size:14px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">contacto: """+numeroUsuario+""" Whatsapp</h1>
+     <p  style="font-size:14px;margin:0 0 2px 0"><a href="url">iccapacitacionlaboral.cl</a></p>
+                         <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                          <tr>
+                              <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo3.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo2.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                            <td><img src="http://iccapacitacionlaboral.cl/static/Imagenes/correo1.jpeg" alt=".." width="160" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+                        <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
+                         <tr>
+                           <td><h1 style="font-size:17px;margin:0 0 2px 0;font-family:Arial,sans-serif;font-style: oblique; color:#515A5A">Alianza con:   </h1></td>
+                            <td><img src="https://sumando.cl/wp-content/uploads/2019/08/44-03.png" alt=".." width="180" style="height:auto;display:block;border:0;" />
+                            </td>
+                          </tr>
+                        </table>
+    </footer>
+  </html>
+    """.format(h=h , c=c , t=t) 
+        
+    msg.attach(MIMEText(html,'html'))
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server.starttls()
+    server.login(email_user,email_password)
+    server.sendmail(email_user,email_send,msg.as_string())
+    server.quit()
+
+def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, linkSense, nombreUsuario, correoUsuario, numeroUsuario):
+    nombre = upperFirst(nombre.lower())
+    email_user = 'postulaciones@iccapacitacionlaboral.cl'
+    email_password = '$$PKhg!pB'
+
+    email_send = correo
+    subject = "¡Felicitaciones! Fuiste beneficiado con nuestra beca ICL con un 75% de descuento"
+    msg = MIMEMultipart()
+    msg['From'] = email_user
+    msg['To'] = email_send
+    msg['Subject'] = subject
+    h = str("Holder")
+    c = str("course")
+    t = str("trainer")
+    html = """\
+     <!DOCTYPE html>
+ <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta name="x-apple-disable-message-reformatting">
+      <title></title>
+      <style>
+        table, td, div, h1, p 
+      </style>
+    </head>
+    <body style="margin:0;padding:0;">
+      <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+        <tr>
+          <td align="center" style="padding:0;">
+            <table role="presentation" style="width:902px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+              <tr>
+                <td align="center" style="background:#1c68c4;">
+                  <img src="http://iccapacitacionlaboral.cl/static/Imagenes/logo-ic-capacitacion-1.png" alt="" width="300" style="height:auto;display:block;" />
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:36px 30px 42px 30px;">
+                  <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+                    <tr>
+                      <td style="padding:0 0 36px 0;color:#153643;">
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Estimado (a) Mi Nombre es <strong>"""+nombreUsuario+"""</strong> Coordinador/a de IC Capacitación Laboral. Esperando te encuentres muy bien, quisiera comentarte que fuiste beneficiado con
+                          nuestro Programa ICL Beca con un 75% de descuento en el curso de """+nombreCurso+""" duración 40 Horas Cronológicas.</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> El Curso de """+nombreCurso+""" le otorgará todas las herramientas y conocimientos
+                          necesarios para llevar a cabo su inserción laboral con una alta eficacia. Los preparamos
+                          para desempeñarse en establecimientos públicos o privados, quedarás capacitado para
+                          aplicar estrategias de convivencia escolar, atención de primeros auxilios, mediación de
+                          conflictos y todo lo necesario que debes saber para ser un Inspector Educación (Patio).
+                          Te dejamos Link para que puedas verificar que somos Acreditados por SENCE y la
+                          norma NCH 2728/ 2015 del sistema nacional de acreditación INN-Chile.</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Le dejamos link</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Para que verifiquen que somos acreditados por Sence.</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Link de Organismos Técnicos de Capacitación Acreditados por Sence:</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><a href=\""""+linkSense+"""\">"""+linkSense+"""</a></p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Verifique Ingresando nuestro RUT: 76.841.237-5</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Certifica Sumando Capacitación spa.</p>
+                           <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Plan formativo:</h1>
+                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Modalidad: E-Learning (Clases en Vivo vía ZOOM©) y plataforma de aprendizaje
+                            mediante Aula Virtual.</p>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">En qué consiste el curso:</h1>
+                                                  <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• En que te deberás conectar vía zoom para realizar las clases
+                        online en donde podrás interactuar con la profesora y tus compañeros, además realizar
+                        las respectivas evaluaciones y exámenes.</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Terminado este proceso podrás obtener tu Certificado SENCE bajo la normativa legal
+                        que lo Acredita.</p>
+
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">IC Capacitación Laboral:</h1>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Te apoya en la gestión de tú proceso de
+                        Práctica Laboral, enviando un certificado de solicitud formal al establecimiento al que tú
+                        decidas postular para trabajar como Inspector Educacional. Para esto solo necesitamos
+                        que nos consigas el contacto de la persona encargada de personal. (Una vez aceptada la
+                        solicitud procedemos a enviar la documentación para tu evaluación) todo esto sin costo
+                        adicional.</p>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Duración:</h1>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Curso teórico: 40 horas académicas.</p>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Horario:</h1>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• """+diasCurso+""" de """+horarioCurso+""" (Dos horas diarias intensivas un mes
+                        de duración).</p>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Próxima fecha:</h1>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• """+inicioCurso+""" al """+finCurso+""".</p>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Al finalizar el curso:</h1>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Entrega de Certificado Digital con validación QR.</p>
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">VALOR TOTAL DEL CURSO: $340.000</p>
+                       <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">VALOR A PAGAR CON BECA CURSO TEÓRICO: $85.000 pago único.</h1>
+                        <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">VER FORMA DE PAGO CON COORDINACIÓN HASTA 3 CUOTAS:</h1>
+                        <ol style="font-family:Arial,sans-serif;">
+                          <li>$25.000.- para guardar cupo</li>
+                          <li>$25.000.- al comienzo de clases</li>
+                          <li>$35.000.- al término de clases</li>
+                        </ol>	
+                           <p style="color: red; margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Punto importante: </strong> No habrá devolución de dinero para aquellos que comiencen el curso. Solo casos especiales con justificación</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Esperando que sea de su agrado nuestro programa formativo, quedamos atentos a su
+                  respuesta!</p>   
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Saludos cordiales.</p>  
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Instituto de Capacitación Laboral.</p>  
+                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Fono Contacto +56977814386/+56 9 2074 2757</p>  
+                                    
+                      </td>
+                      
                     </tr>
                   </table>
                 </td>
