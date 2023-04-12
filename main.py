@@ -572,7 +572,7 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         enviarEmailBienvenidaIEMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
