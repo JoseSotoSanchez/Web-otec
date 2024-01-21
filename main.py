@@ -676,11 +676,14 @@ def descargaCsv():
             with conexion.cursor() as cursor:
                 cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo,))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
+                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso WHERE id = %s order by id desc', (cursoActivo,))# WHERE id = %s', (session['id'],))
+                cursos = cursor.fetchall()
+                id, nombre, codigo_curso = cursos[0]
+                nombre_archivo = 'curso '+codigo_curso+'.csv'
 
             # Generar el archivo CSV
             csv_data = generar_csv(aspirantes)
 
-            nombre_archivo = 'curso '+aspirantes[0][17]+'.csv'
             # Crear una respuesta con el contenido del CSV y encabezados adecuados
             response = Response(csv_data, content_type='text/csv')
             response.headers["Content-Disposition"] = "attachment; filename="+nombre_archivo
@@ -708,8 +711,8 @@ def descargaCsvPagados():
                 passGen = rut[:4]+"#icL"
                 nueva_fila = (rut, passGen, nombre, apellido, email, codigo_curso, 'CL','es_mx','América/Santiago',id)
                 nueva_lista_aspirantes.append(nueva_fila)
+                nombre_archivo = 'curso '+codigo_curso+'.csv'
             csv_data = generar_csv_pagados(nueva_lista_aspirantes)
-            nombre_archivo = 'curso '+aspirantes[0][4]+'.csv'
             # Crear una respuesta con el contenido del CSV y encabezados adecuados
             response = Response(csv_data, content_type='text/csv')
             response.headers["Content-Disposition"] = "attachment; filename="+nombre_archivo
