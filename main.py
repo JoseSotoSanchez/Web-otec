@@ -669,6 +669,7 @@ def busqueda():
 def descargaCsv():
     global idAlumnoSearch
     global cursoActivo
+    codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
              # Lógica para obtener datos de MySQL
@@ -678,8 +679,11 @@ def descargaCsv():
                 aspirantes = cursor.fetchall()
                 cursor.execute('SELECT id, nombre, codigo_curso FROM Curso WHERE id = %s order by id desc', (cursoActivo,))# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
-                id, nombre, codigo_curso = cursos[0]
-                nombre_archivo = 'curso '+codigo_curso+'.csv'
+                for curso in cursos:
+                    id, nombre, codigo_curso = curso
+                    if codigoCurso == '':
+                        codigoCurso = codigo_curso
+                nombre_archivo = 'curso '+codigoCurso+'.csv'
 
             # Generar el archivo CSV
             csv_data = generar_csv(aspirantes)
@@ -695,6 +699,7 @@ def descargaCsv():
 def descargaCsvPagados():
     global idAlumnoSearch
     global cursoActivo
+    codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
              # Lógica para obtener datos de MySQL
@@ -711,7 +716,9 @@ def descargaCsvPagados():
                 passGen = rut[:4]+"#icL"
                 nueva_fila = (rut, passGen, nombre, apellido, email, codigo_curso, 'CL','es_mx','América/Santiago',id)
                 nueva_lista_aspirantes.append(nueva_fila)
-                nombre_archivo = 'curso '+codigo_curso+'.csv'
+                if codigoCurso == '':
+                        codigoCurso = codigo_curso
+            nombre_archivo = 'curso '+codigoCurso+'.csv'
             csv_data = generar_csv_pagados(nueva_lista_aspirantes)
             # Crear una respuesta con el contenido del CSV y encabezados adecuados
             response = Response(csv_data, content_type='text/csv')
