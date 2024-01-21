@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Aspirantes{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Busqueda{% endblock %} {% block content  %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,34 +10,15 @@
               <div class="row d-flex justify-content-center">
                   <div class=" text-center">
                       <div class="card table-responsive">
-                            {% if datosCurso != '' %}
-                            <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Aspirantes a Curso - {{datosCurso[0][0]}} (código: {{datosCurso[0][1]}})</span>
-                            {% endif %}
-                            <br>
-                        <form action="{{ url_for('aspirantes') }}" method="post">
-                            <select id="curso" name="curso" type="select">
-                                <option value="0">Seleccione curso</option>
-                                {% for row in cursos %}
-                                <option {% if selected == row[0] %} selected {% endif %} value="{{row[0]}}">{{row[2]}} / {{row[1]}}</option>
-                                {% endfor %}
-                            </select> 
-                            <input id="btnBuscar"class="btn-primary" type="submit" value="Buscar">
+                        <form action="{{ url_for('busqueda') }}" method="post">
+                            <label class="form-control-label px-3"><span class="text-danger"> *</span></label> 
+                            <input type="text" id="ide" name="ide" placeholder="busca por id aspirante">
+                            <input type="text" id="nombreSearch" name="nombreSearch" placeholder="busca por nombre aspirante">
+                            <input type="text" id="rutSearch" name="rutSearch" placeholder="busca por rut aspirante">
+                            <input id="btnBuscarAspirante"class="btn-primary" type="submit" value="Buscar">
                         </form>
                         <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Total Mostrados en lista: <strong>{{total}}</strong></span>
-                        {% if total > 0 %}
-                        <div style="display: inline-block;">
-                          <form action="{{ url_for('descargaCsv') }}" method="post">
-                            <label class="form-control-label px-3"><span class="text-danger"> *</span></label> 
-                            <input id="btnDescargaCsv"class="btn-primary" type="submit" value="Descargar Todos Alumnos">
-                          </form>
-                        </div>
-                        <div style="display: inline-block;">
-                          <form action="{{ url_for('descargaCsvPagados') }}" method="post">
-                            <label class="form-control-label px-3"><span class="text-danger"> *</span></label> 
-                            <input id="btnDescargaCsvPagados"class="btn-primary" type="submit" value="Descargar Pagados">
-                          </form>
-                        </div>
-                        {% endif %}
+                       
                         <table class="table align-middle mb-0 bg-white">
                             <thead class="bg-light">
                               <tr>
@@ -62,7 +43,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                                {% for row in aspirantes %}
+                                {% for row in aspirantesSearch %}
                               <tr>
                                 <td>{{row[0]}}</td>
                                 <td>
@@ -140,7 +121,7 @@
                                 </button>
                               </td>
                             </tr>
-                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('guardarEstadoSearch', id=row[0])}}" method="post">
                               <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -193,7 +174,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoAceptacion', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoAceptacionSearch', id=row[0], curso=row[23])}}" method="post">
                               <div  class="modal fade" id="modalEnvioAceptacion_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -218,7 +199,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaIEMCE', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaIEMCESearch', id=row[0], curso=row[23])}}" method="post">
                               <div  class="modal fade" id="modalEnvioBienvenidaIEMCE_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -243,7 +224,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoPago', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoPagoSearch', id=row[0], curso=row[23])}}" method="post">
                               <div  class="modal fade" id="modalEnvioPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -255,7 +236,7 @@
                                             <div class="form-group row">
                                                 <label for="author" class="col-xs-2 control-label"><strong>Correo destino:</strong> {{row[8]}}</label>
                                                 <label for="author" class="col-xs-2 control-label"><strong>Costo del curso:</strong> {{row[21]}}</label>
-                                                <label for="author" class="col-xs-2 control-label"><strong>Nombre Curso:</strong> {{datosCurso[0][0]}} - {{datosCurso[0][1]}}</label>
+                                                <label for="author" class="col-xs-2 control-label"><strong>Nombre Curso:</strong> {{row[17]}} - {{row[16]}}</label>
                                                 <div class="input-group mb-3">
                                                   <span class="input-group-text" id="inputGroup-sizing-default">Medio de Pago: </span>
                                                   <input id="medioPago" name="medioPago" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
@@ -283,8 +264,9 @@
 </body>
 <script>
 $(document).ready(function() {
-    $('#btnBuscar').click();
+    $('#btnBuscarAspirante').click();
     console.log("clici");
 });
 </script>
+
 </html>
