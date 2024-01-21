@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Convivencia Escolar, Necesidades Especiales Educativa (NEE), Trastornos del Espectro Autista (TEA){% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Convivencia Escolar, Necesidades Especiales Educativas (NEE).{% endblock %} {% block content  %}
 <head>
     <meta property="og:url" content="https://iccapacitacionlaboral.cl/convivencia-escolar"/>
     <meta property="og:title" content="Curso - Convivencia Escolar, Necesidades Especiales Educativa (NEE), Trastornos del Espectro Autista ( TEA )"/>
@@ -16,7 +16,7 @@
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Convivencia Escolar, Necesidades Especiales Educativa (NEE), Trastornos del Espectro Autista (TEA)</span>
+        <span class="fs-4" data-aos="fade-up">Convivencia Escolar, Necesidades Especiales Educativas (NEE).</span>
       </a>
     </header>
     <div class=" bg-light rounded-3">
@@ -32,7 +32,7 @@
                                 font-size: larger;
                                 color: black;
                                 font-weight: 600;
-                            ">PRÁCTICA LABORAL ( Consulte  que significa  para cursos cortos acreditación )</h6>
+                            ">PRÁCTICA LABORAL ( Consulte sobre nuestro programa de Práctica laboral en nuestros Organismo Técnico de Capacitación Acreditación Sence )</h6>
                         <h6 class="text-center textogrey"><a href="https://api.whatsapp.com/send?phone=56920742757" target="_blank">
                                 <img style="width: 30px; height: 30px;"src="static/Imagenes/whatsApp_icon.png" alt="wsp" class="wsp"> 
                         + 56 9 2074 2757</a></h6>
@@ -46,9 +46,14 @@
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)" required>
+                                        {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        <option value="{{row[0]}}">{{row[1]}} | {{row[4]}} | {{row[3]}}</option>
+                                        	{% if "Necesidades Especiales Educativa" in row[1] %}
+                                        		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
+                                        			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
+                                        		</option>
+                                        	{% endif %}
                                         {% endfor %}
                                     </select> 
                                 </div>
@@ -105,7 +110,7 @@
                                         <option value="">Seleccione</option>
                                         <option value="Google">Google</option>
                                         <option value="Facebook">Facebook</option>
-                                        <option value="Twitter">Twitter</option>
+                                        <option value="TikTok">Tik Tok</option>
                                         <option value="Instagram">Instagram</option>
                                         <option value="Recomendado">Recomendado</option>
                                         <option value="Otro">Otro</option>
@@ -200,13 +205,13 @@
                     educativa.
                     • Uso de estrategias como role playing, análisis de casos, debates, uso de materiales
                     concretos, entre otras, durante el desarrollo del curso.</p>
-                <h4 class="titulosDetalle">Objetivo TEA</h4>
+                <!--<h4 class="titulosDetalle">Objetivo TEA</h4>
                 <p>Desarrollar estrategias metodológicas de enseñanza en las diferentes asignaturas que
                     permitan el aprendizaje de los estudiantes con trastornos del espectro autista dentro
                     del aula.
                     Los participantes serán capaces de diseñar variadas estrategias metodológicas de
                     aprendizaje dirigidas a estudiantes con TEA, para potenciar su aprendizaje e inclusión
-                    en el aula escolar, como así mismo desarrollar el máximo de su potencial.</p>
+                    en el aula escolar, como así mismo desarrollar el máximo de su potencial.</p>-->
             </div>
           </div>
       <div class="col-md-6">
@@ -214,8 +219,9 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 30 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <li class="list-group-item dtalle">Fecha: 07 de Julio del 2023 al 27 de Julio del 2023.</li>
+            <li class="list-group-item dtalle">Duración: 30 horas académicas.</li>
+            <li class="list-group-item dtalle">Fecha 1: 12 de Enero del 2024 al 29 de Enero del 2024 (Lunes a Viernes de 19:30 a 22:00 hrs).</li>
+            <li class="list-group-item dtalle">Fecha 2: 02 de Febrero del 2024 al 22 de Febrero del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-convivencia-escolar.pdf">ver malla curricular</a>
           </ul>
@@ -239,12 +245,12 @@
                 <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                    <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $299.960.-</li>
                     <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 75%.</li>
-                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $74.990.-</b></li>
                     <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
-                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
-                       <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
+                    <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
+                    <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
                 </ul>
             </div>
           </div>

@@ -3,11 +3,14 @@ from flask_paginate import Pagination, get_page_args ,get_page_parameter
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
 from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida, enviarEmailBienvenidaIEMCE
+from datetime import datetime
+import locale
 
 
 
 app = Flask(__name__)
 
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
 
@@ -174,7 +177,7 @@ def asistenteAula():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/asistente-aula.html',
@@ -228,7 +231,7 @@ def inspectorEducacional():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/inspector-educacional.html',
@@ -282,7 +285,7 @@ def asistenteContable():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/asistente-administrativo-contable.html',
@@ -336,7 +339,7 @@ def cajeroBancario():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/cajero-bancario.html',
@@ -390,10 +393,118 @@ def convivenciaEscolar():
     else:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.nombre ASC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
         return render_template('cursos/convivencia-escolar.html',
+                            cursos=cursos,
+                            )
+    return redirect(url_for('index'))
+
+@app.route('/tea', methods=['GET', 'POST'])
+def tea():
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        correo = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+        ingreso = request.form['ingreso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
+            id = cursor.lastrowid
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
+        conexion.commit()
+        conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
+        nombre = nombre + ' ' + apellido
+        curso = curso_[0][1]
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        flash('Postulación enviada correctamente!', category='success')
+    else:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        conexion.close()
+        return render_template('cursos/tea.html',
+                            cursos=cursos,
+                            )
+    return redirect(url_for('index'))
+    
+@app.route('/rrhh', methods=['GET', 'POST'])
+def rrhh():
+    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
+        nombre = upperFirst(request.form['nombre'].lower())
+        apellido = upperFirst(request.form['apellido'].lower())
+        rut = request.form['rut']
+        sexo = request.form['sexo']
+        edad = request.form['edad']
+        nacionalidad = request.form['nacionalidad']
+        ecivil = request.form['ecivil']
+        correo = request.form['email']
+        telefono = request.form['telefono']
+        profesion = request.form['profesion']
+        nestudios = request.form['nestudios']
+        slaboral = request.form['slaboral']
+        direccion = request.form['direccion']
+        region = request.form['region']
+        curso = request.form['curso']
+        ingreso = request.form['ingreso']
+        hostname = request.remote_addr
+        IPAddr = request.environ['REMOTE_ADDR']
+        hostnameAddr = hostname + " / "+IPAddr
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
+            id = cursor.lastrowid
+            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
+            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
+        conexion.commit()
+        conexion.close()
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            curso_ = cursor.fetchall()
+        conexion.close()
+        nombre = nombre + ' ' + apellido
+        curso = curso_[0][1]
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        flash('Postulación enviada correctamente!', category='success')
+    else:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        conexion.close()
+        return render_template('cursos/rrhh.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
@@ -517,6 +628,7 @@ def guardarEstado(id, curso):
 
 @app.route('/envioCorreoAceptacion/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacion(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         urlPago = request.form['urlPago']
         print(urlPago)
@@ -526,7 +638,7 @@ def envioCorreoAceptacion(id, curso):
         with conexion.cursor() as cursor:
             cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
             datosCurso = cursor.fetchall()
             cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
             datosUsuario = cursor.fetchall()
@@ -536,7 +648,8 @@ def envioCorreoAceptacion(id, curso):
         nombreMes = obtenerMes(mes)
         mesFin = datosCurso[0][2].month
         nombreMesFin = obtenerMes(mesFin)
-        enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
@@ -550,6 +663,7 @@ def envioCorreoAceptacion(id, curso):
 
 @app.route('/envioCorreoBienvenidaIEMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaIEMCE(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         print(linkSense)
@@ -559,7 +673,7 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         with conexion.cursor() as cursor:
             cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
             datosCurso = cursor.fetchall()
             cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
             datosUsuario = cursor.fetchall()
@@ -568,8 +682,9 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         mes = datosCurso[0][1].month
         nombreMes = obtenerMes(mes)
         mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
         nombreMesFin = obtenerMes(mesFin)
-        enviarEmailBienvenidaIEMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
+        enviarEmailBienvenidaIEMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))

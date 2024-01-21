@@ -38,7 +38,7 @@
                                 font-size: larger;
                                 color: black;
                                 font-weight: 600;
-                            ">PRÁCTICA LABORAL ( Consulte  que significa  para cursos cortos acreditación )</h6>
+                            ">PRÁCTICA LABORAL ( Consulte sobre nuestro programa de Práctica laboral en nuestros Organismo Técnico de Capacitación Acreditación Sence )</h6>
                         <h6 class="text-center textogrey"><a href="https://api.whatsapp.com/send?phone=56920742757" target="_blank">
                                 <img style="width: 30px; height: 30px;"src="static/Imagenes/whatsApp_icon.png" alt="wsp" class="wsp"> 
                         + 56 9 2074 2757</a></h6>
@@ -52,9 +52,14 @@
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)" required>
+                                        {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        <option value="{{row[0]}}">{{row[1]}} | {{row[4]}} | {{row[3]}}</option>
+                                        	{% if "IEMCE" in row[2] %}
+                                        		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
+                                        			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
+                                        		</option>
+                                        	{% endif %}
                                         {% endfor %}
                                     </select> 
                                 </div>
@@ -111,7 +116,7 @@
                                         <option value="">Seleccione</option>
                                         <option value="Google">Google</option>
                                         <option value="Facebook">Facebook</option>
-                                        <option value="Twitter">Twitter</option>
+                                        <option value="TikTok">Tik Tok</option>
                                         <option value="Instagram">Instagram</option>
                                         <option value="Recomendado">Recomendado</option>
                                         <option value="Otro">Otro</option>
@@ -205,10 +210,10 @@
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
               <p>El/la participante estará Capacitada(o) para apoyar labores administrativas de la Inspectoría
-                General, asistir y controlar el proceso de enseñanza-aprendizaje, velar por la integridad de los
+                General, asistir y controlar el proceso de enseñanza aprendizaje, velar por la integridad de los
                 alumnos de la comunidad educativa, aplicar y cumplir lo establecido en el manual de convivencia
-                escolar y todas las normas legales asociadas a su rol educacional.
-                Aplicar la integración y técnicas de mediación escolar, atender y orientar diversas problemáticas
+                escolar y todas las normas legales asociadas a su rol educacional.</p>
+                <p>Aplicar la integración y técnicas de mediación escolar, atender y orientar diversas problemáticas
                 durante la jornada educativa. Desempeñar óptimamente el rol de asistente de la educación
                 categoría administrativo, en el cargo de Inspector Educacional.</p>
             </div>
@@ -218,8 +223,9 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 40 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <li class="list-group-item dtalle">Fecha: 03 de Julio del 2023 al 28 de Julio del 2023.</li>
+            <li class="list-group-item dtalle">Duración: 40 horas académicas (de Lunes a Viernes de 19:30 a 22:00 hrs).</li>
+            <li class="list-group-item dtalle">Fecha 1: 04 de Enero del 2024 al 25 de Enero del 2024.</li>
+            <li class="list-group-item dtalle">Fecha 2: 02 de Febrero del 2024 al 23 de Febrero del 2024.</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-inspector-educacional.pdf">ver malla curricular</a>
           </ul>

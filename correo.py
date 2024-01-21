@@ -106,7 +106,7 @@ def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horar
     server.sendmail(email_user,email_send,msg.as_string())
     server.quit()
 
-def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, urlPago, nombreUsuario, correoUsuario, numeroUsuario):
+def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, urlPago, nombreUsuario, correoUsuario, numeroUsuario, valorCurso):
     nombre = upperFirst(nombre.lower())
     email_user = 'postulaciones@iccapacitacionlaboral.cl'
     email_password = '$$PKhg!pB'
@@ -149,7 +149,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                       <td style="padding:0 0 36px 0;color:#153643;">
                         <h1 style="font-size:35px;margin:0 0 20px 0;font-family:Arial,sans-serif; color:#1c68c4; text-align:center;">FELICITACIONES</h1>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Estimado (a) <strong>"""+nombre+"""</strong> IC Capacitación agradece su preferencia y confianza, esperando cumplir con sus expectativas de desarrollo e ingreso a un mejor campo laboral.</p>
-                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Hemos revisado su postulación y nos es grato informar a usted que ha sido seleccionada con beneficio de subvención, la que considera un descuento que asciende al 75% del valor del curso, debiendo pagar solo la suma de <strong>$85.000.-</strong> pesos</p>
+                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Hemos revisado su postulación y nos es grato informar a usted que ha sido seleccionada con beneficio de subvención, la que considera un descuento que asciende al 75% del valor del curso, debiendo pagar solo la suma de <strong>$"""+valorCurso+""".-</strong> pesos</p>
                            <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Detalles del curso:</h1>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Nombre:</strong> """+nombreCurso+"""</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Fecha Inicio:</strong> """+inicioCurso+"""</p>
@@ -251,7 +251,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
     server.sendmail(email_user,email_send,msg.as_string())
     server.quit()
 
-def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, linkSense, nombreUsuario, correoUsuario, numeroUsuario):
+def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, linkSense, nombreUsuario, correoUsuario, numeroUsuario, valorCurso):
     nombre = upperFirst(nombre.lower())
     email_user = 'postulaciones@iccapacitacionlaboral.cl'
     email_password = '$$PKhg!pB'
@@ -333,8 +333,7 @@ def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurs
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• """+inicioCurso+""" al """+finCurso+""".</p>
                         <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Al finalizar el curso:</h1>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Entrega de Certificado Digital con validación QR.</p>
-                        <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">VALOR TOTAL DEL CURSO: $340.000</p>
-                       <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">VALOR A PAGAR CON BECA CURSO TEÓRICO: $85.000 pago único.</h1>
+                       <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">VALOR A PAGAR CON BECA CURSO TEÓRICO: $"""+valorCurso+""".- pago único.</h1>
                         <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">VER FORMA DE PAGO CON COORDINACIÓN HASTA 3 CUOTAS:</h1>
                         <ol style="font-family:Arial,sans-serif;">
                           <li>$25.000.- para guardar cupo</li>
