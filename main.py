@@ -34,6 +34,7 @@ rutGlobal = ''
 nombreGlobal = ''
 estadoGlobal = 0
 idAlumnoSearch = 0
+aspirantesSave = []
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -537,6 +538,7 @@ def contacto():
 def aspirantes():
     datosCurso = ''
     global cursoActivo
+    global aspirantesSave
     if 'loggedin' in session:
         if request.method == 'POST' and 'curso' in request.form :
             curso = request.form['curso']
@@ -553,6 +555,7 @@ def aspirantes():
                 estados = cursor.fetchall()
                 conexion.close()
                 total = len(aspirantes)
+                aspirantesSave = aspirantes
                 cursoActivo = curso
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
@@ -576,6 +579,7 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    aspirantesSave = aspirantes
                     total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
@@ -594,6 +598,7 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    aspirantesSave = aspirantes
                     total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
@@ -609,6 +614,7 @@ def aspirantes():
 @app.route('/busqueda', methods=['GET', 'POST'])
 def busqueda():
     datosCurso = ''
+    aspirantes = []
     global idAlumnoSearch
     if 'loggedin' in session:
         if request.method == 'POST' and 'ide' in request.form :
@@ -628,7 +634,7 @@ def busqueda():
                 if rutAlumno is not None and rutAlumno.strip() != '':
                     cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.rut LIKE %s order by a.id desc;', ('%'+rutAlumno+'%'))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
-                if (aspirantes is None or aspirantes.count == 0):
+                if aspirantes is None or not aspirantes:
                     flash('No se ha encontrado resultados!', category='error')
                     return redirect(url_for('busqueda'))
                 cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
@@ -672,24 +678,15 @@ def busqueda():
 def descargaCsv():
     global idAlumnoSearch
     global cursoActivo
+    global aspirantesSave
     codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
-             # Lógica para obtener datos de MySQL
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo,))# WHERE id = %s', (session['id'],))
-                aspirantes = cursor.fetchall()
-                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso WHERE id = %s order by id desc', (cursoActivo,))# WHERE id = %s', (session['id'],))
-                cursos = cursor.fetchall()
-                for curso in cursos:
-                    id, nombre, codigo_curso = curso
-                    if codigoCurso == '':
-                        codigoCurso = codigo_curso
-                nombre_archivo = 'curso '+codigoCurso+'.csv'
+            alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosex, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso = aspirantesSave[0]
+            nombre_archivo = 'curso '+cursoCodigo_curso+'.csv'
 
             # Generar el archivo CSV
-            csv_data = generar_csv(aspirantes)
+            csv_data = generar_csv(aspirantesSave)
 
             # Crear una respuesta con el contenido del CSV y encabezados adecuados
             response = Response(csv_data, content_type='text/csv')
@@ -703,24 +700,19 @@ def descargaCsvPagados():
     global idAlumnoSearch
     global cursoActivo
     codigoCurso = ''
+    global aspirantesSave
     if 'loggedin' in session:
         if request.method == 'POST':
-             # Lógica para obtener datos de MySQL
             nueva_lista_aspirantes = []
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.rut, a.nombre, a.apellido, a.email, c.codigo_curso, a.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado = %s order by a.id desc;', (cursoActivo, 18))# WHERE id = %s', (session['id'],))
-                aspirantes = cursor.fetchall()
-            
-            # Generar el archivo CSV
-            for aspirante in aspirantes:
-                rut, nombre, apellido, email, codigo_curso, id = aspirante
-                rut = limpiar_rut(rut.replace('.', '').replace('-', ''))
-                passGen = rut[:4]+"#icL"
-                nueva_fila = (rut, passGen, nombre, apellido, email, codigo_curso, 'CL','es_mx','América/Santiago',id)
-                nueva_lista_aspirantes.append(nueva_fila)
-                if codigoCurso == '':
-                        codigoCurso = codigo_curso
+            for aspirante in aspirantesSave:
+                alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosexo, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso = aspirante
+                if estadoAlumnoid == 18:
+                    alumnorut = limpiar_rut(alumnorut.replace('.', '').replace('-', ''))
+                    passGen = alumnorut[:4]+"#icL"
+                    nueva_fila = (alumnorut, passGen, alumnonombre, alumnoapellido, alumnoemail, cursoCodigo_curso, 'CL','es_mx','América/Santiago',id)
+                    nueva_lista_aspirantes.append(nueva_fila)
+                    if codigoCurso == '':
+                            codigoCurso = cursoCodigo_curso
             nombre_archivo = 'curso '+codigoCurso+'.csv'
             csv_data = generar_csv_pagados(nueva_lista_aspirantes)
             # Crear una respuesta con el contenido del CSV y encabezados adecuados
