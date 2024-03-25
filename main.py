@@ -706,10 +706,10 @@ def descargaCsvPagados():
             nueva_lista_aspirantes = []
             for aspirante in aspirantesSave:
                 alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosexo, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso = aspirante
-                if estadoAlumnoid == 18:
+                if estadoAlumnoid >= 18:
                     alumnorut = limpiar_rut(alumnorut.replace('.', '').replace('-', ''))
                     passGen = alumnorut[:4]+"#icL"
-                    nueva_fila = (alumnorut, passGen, alumnonombre, alumnoapellido, alumnoemail, cursoCodigo_curso, 'CL','es_mx','América/Santiago',id)
+                    nueva_fila = (alumnorut, passGen, alumnonombre, alumnoapellido, alumnoemail, cursoCodigo_curso, 'CL','es_mx','América/Santiago',alumnoid)
                     nueva_lista_aspirantes.append(nueva_fila)
                     if codigoCurso == '':
                             codigoCurso = cursoCodigo_curso
