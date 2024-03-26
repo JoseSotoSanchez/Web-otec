@@ -1,16 +1,23 @@
-{% extends "base.html" %} {% block title %}Trastorno del espectro autista{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Asistente de Párvulos{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/tea"/>
-    <meta property="og:title" content="Curso - Trastorno del espectro autista"/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/asistente-parvulos"/>
+    <meta property="og:title" content="Curso - Asistente de Párvulos"/>
     <meta property="og:img" content="https://iccapacitacionlaboral.cl/static/Imagenes/tea.jpg"/>
-    <meta property="og:description" content="El/la participante estará Capacitada(o) para apoyar labores administrativas de la Inspectoría General, asistir y controlar el proceso de enseñanza-aprendizaje, velar por la integridad de los alumnos de la comunidad educativa, aplicar y cumplir lo establecido en el manual de convivencia escolar y todas las normas legales asociadas a su rol educacional."/>
+    <meta property="og:description" content="Nuestro curso de Asistente en Educación Parvularia otorga los conocimientos necesarios para
+    favorecer el desarrollo integral de los/as niños/as en la primera infancia. Para ello, los/as
+    participantes adquirirán los conocimientos centrales respecto del currículum de Educación
+    Preescolar, así como una serie de estrategias para fomentar el desarrollo de las habilidades
+    centrales de los párvulos, a saber: lectura, escritura y cálculo. Asimismo, conocerán metodologías
+    específicas para el trabajo en aula con estudiantes con Necesidades Educativas Permanentes (TEA
+    y TDAH).
+    "/>
     <meta property="og:type" content="website"/>
 
 </head>
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Trastorno del espectro autista</span>
+        <span class="fs-4" data-aos="fade-up">Asistente de Párvulos</span>
       </a>
     </header>
     <div class=" bg-light rounded-3">
@@ -35,7 +42,7 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('tea') }}" method="post">
+                        <form class="form-card" action="{{ url_for('asistenteParvulos') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
@@ -43,7 +50,7 @@
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                            {% if "TEA" in row[2] %}
+                                            {% if "AP" in row[2] %}
                                                 <option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
                                                     {{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
                                                 </option>
@@ -173,7 +180,7 @@
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img tea img-fluid" src="static/Imagenes/tea.jpg" 
+            <img class="bd-placeholder-img tea img-fluid" src="static/Imagenes/ap.jpg" 
            role="tea" style="width: 100%; height: auto;"/>
         </div>
       </div>
@@ -197,7 +204,13 @@
         <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>En este curso, exploraremos de manera exhaustiva el Trastorno del Espectro Autista (TEA) y sus diferentes aspectos. Analizaremos los conceptos, definiciones y la evolución del TEA, así como su relación con el DSM-5. Profundizaremos en las causas y factores de riesgo, incluyendo aspectos genéticos. También abordaremos la sintomatología del TEA, la detección temprana y la comorbilidad con otros trastornos. Conoceremos el proceso diagnóstico, los tratamientos disponibles y los profesionales involucrados. Además, nos enfocaremos en estrategias de intervención educativa para manejar las conductas de los niños con TEA en el entorno escolar, incluyendo el uso de material didáctico y la planificación diversificada.</p>
+              <p>El curso de Asistente en Educación Parvularia otorga los conocimientos necesarios para
+                favorecer el desarrollo integral de los/as niños/as en la primera infancia. Para ello, los/as
+                participantes adquirirán los conocimientos centrales respecto del currículum de Educación
+                Preescolar, así como una serie de estrategias para fomentar el desarrollo de las habilidades
+                centrales de los párvulos, a saber: lectura, escritura y cálculo. Asimismo, conocerán metodologías
+                específicas para el trabajo en aula con estudiantes con Necesidades Educativas Permanentes (TEA
+                y TDAH).</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -205,11 +218,10 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 30 horas académicas.</li>
-            <li class="list-group-item dtalle">Fecha 1: 05 de Abril del 2024 al 25 de Abril del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <!-- <li class="list-group-item dtalle">Fecha 2: 05 de Abril del 2024 al 25 de Abril del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li> -->
+            <li class="list-group-item dtalle">Duración: 35 horas académicas.</li>
+            <li class="list-group-item dtalle">Fecha 1: 19 de Abril del 2024 al 15 de Mayo del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li>
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-tea.pdf">ver malla curricular</a>
+            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-asistente-parvulos.pdf">ver malla curricular</a>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
