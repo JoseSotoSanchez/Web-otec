@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, flash,url_for, sess
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
-from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida, enviarEmailBienvenidaIEMCE
+from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida, enviarEmailBienvenidaIEMCE, enviarEmailBienvenidaAAMCE, enviarEmailBienvenidaCBC, enviarEmailBienvenidaAAC
 from datetime import datetime
 import csv
 from io import StringIO
@@ -599,7 +599,7 @@ def aspirantes():
             selected=curso
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
                 cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
@@ -624,7 +624,7 @@ def aspirantes():
                 selected=cursoActivo
                 conexion = obtener_conexion()
                 with conexion.cursor() as cursor:
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
                     aspirantes = cursor.fetchall()
                     cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                     cursos = cursor.fetchall()
@@ -797,6 +797,24 @@ def limpiar_rut(rut):
     rut_limpio = rut[:-1]
     return rut_limpio
 
+@app.route('/guardarPago/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def guardarPago(id, curso):
+    if request.method == 'POST' and 'formaPago' in request.form and 'montoPago' in request.form:
+        formaPago = request.form['formaPago']
+        montoPago = request.form['montoPago']
+        idUser = session['id']
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Pagos(id_alumno, id_curso, monto, medio_pago, fecha) VALUES (%s, %s, %s, %s, now())', (id, curso, montoPago,formaPago,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', ("18", id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Pago guardado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
 @app.route('/guardarEstado/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def guardarEstado(id, curso):
     if request.method == 'POST' and 'estado' in request.form and 'correoAlumno' in request.form and 'celularAlumno' in request.form and 'nombresAlumno' in request.form and 'apellidosAlumno' in request.form:
@@ -889,6 +907,108 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         return redirect(url_for('aspirantes'))
     return redirect(url_for('index'))
 
+@app.route('/envioCorreoBienvenidaAAMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaAAMCE(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaAAMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
+@app.route('/envioCorreoBienvenidaCBC/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaCBC(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaCBC(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
+@app.route('/envioCorreoBienvenidaAAC/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaAAC(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaAAC(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
 @app.route('/envioCorreoPago/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoPago(id, curso):
     if request.method == 'POST':
@@ -938,8 +1058,6 @@ def guardarEstadoSearch(id):
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
-
-
 @app.route('/envioCorreoAceptacionSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacionSearch(id, curso):
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
@@ -974,6 +1092,30 @@ def envioCorreoAceptacionSearch(id, curso):
         global idAlumnoSearch
         idAlumnoSearch = id
         return redirect(url_for('busqueda'))
+    return redirect(url_for('index'))
+
+@app.route('/pagos-realizados/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def consultaPagos(id, curso):
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        pagos = []
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT * from Pagos WHERE id_alumno = %s AND id_curso = %s order by id desc', (id,curso,))# WHERE id = %s', (session['id'],))
+            pagos = cursor.fetchall()
+        conexion.close()
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+        total = len(pagos)
+        pagination_pagos = get_pagos(offset=offset, per_page=per_page, pagos=pagos)
+        pagination = Pagination(page=page, per_page=per_page, total=total,
+                                css_framework='bootstrap4')
+        return render_template('administracion/pagos-realizados.html',
+                            pagos=pagination_pagos,
+                            page=page,
+                            per_page=10,
+                            pagination=pagination,
+                            )
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoBienvenidaIEMCESearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
@@ -1259,6 +1401,9 @@ def get_aspirantes(offset=0, per_page=100, aspirantes=[]):
 
 def get_mensajes(offset=0, per_page=100, mensajes=[]):
     return mensajes[offset: offset + per_page]
+
+def get_pagos(offset=0, per_page=100, pagos=[]):
+    return pagos[offset: offset + per_page]
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True) 
