@@ -26,18 +26,19 @@
                                 <th class="th-sm">Aspirante</th>
                                 <!-- <th class="th-sm">Apellidos</th> -->
                                 <th class="th-sm">Curso</th>
-                                <th class="th-sm">Ingreso desde</th>
+                                <!-- <th class="th-sm">Ingreso desde</th> -->
                                 <th class="th-sm">Información</th>
                                 <!-- <th class="th-sm">Email</th> -->
                                 <!-- <th class="th-sm">Telefono</th> -->
                                 <!-- <th class="th-sm">Profesión</th> -->
-                                <th class="th-sm">Estudios</th>
-                                <th class="th-sm">Situación laboral</th>
+                                <!-- <th class="th-sm">Estudios</th> -->
+                                <!-- <th class="th-sm">Situación laboral</th> -->
                                 <th class="th-sm">Dirección</th>
                                 <!-- <th style="position: fixed;"class="th-sm">Region</th> -->
                                 <!-- <th class="th-sm">Curso</th> -->
                                 <!-- <th class="th-sm">Fecha</th> -->
                                 <th class="th-sm">Último estado modificado por</th>
+                                <th class="th-sm">Pagos</th>
                                 <th class="th-sm">Estado</th>
                                 <th class="th-sm">Acciones</th>
                               </tr>
@@ -78,7 +79,7 @@
                                   <p class="text-muted mb-0">{{row[16]}} / {{row[17]}}</p>
                                   <p class="text-muted mb-1">{{row[15]}}</p>
                                 </td>
-                                <td>{{row[22]}}</td>
+                                <!-- <td>{{row[22]}}</td> -->
                                 <td>
                                   <div class="ms-3" style="width: 80%">
                                     <p class="text-muted mb-0">{{row[4]}}</p>
@@ -87,12 +88,24 @@
                                     <p class="text-muted mb-0">{{row[7]}}</p>
                                   </div>
                                 </td>
-                                <td>{{row[11]}}</td>
-                                <td>{{row[12]}}</td>
+                                <!-- <td>{{row[11]}}</td> -->
+                                <!-- <td>{{row[12]}}</td> -->
                                 <td>
                                   <p class="text-muted mb-0">{{row[13]}}, {{row[14]}}</p>
                                 </td>
                                 <td>{{row[19]}}</td>
+                                {% if row[24] is not none %}
+                                <td>
+                                  <form action="/pagos-realizados/{{row[0]}}/{{row[23]}}" method="GET">
+                                  <button type="submit" data-id='{{row[0]}}'  class="btn btn-link btn-sm btn-rounded">
+                                  {{row[24]}}
+                                </button>
+                                </form>
+                              </td>
+                                {% endif %}
+                                {% if row[24] is none %}
+                                  <td>0</td>
+                                {% endif %}
                                 <td>
                                   {% if row[20] <= 5 %}
                                   <span class="badge bg-danger rounded-pill d-inline">{{row[18]}}</span>
@@ -105,12 +118,29 @@
                                   {% endif %}
                               </td>
                               <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPago_{{row[0]}}">
+                                  Agregar Pago
+                                </button>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMdificar_{{row[0]}}">
                                   Modificar
-                                </button>
-                                {% if "Inspector" in row[16] %}
+                                  {% if "IEMCE" in row[17] %}
                                 <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioBienvenidaIEMCE_{{row[0]}}">
                                   Enviar Correo Bienvenida IEMCE
+                                </button>
+                                {% endif %}
+                                {% if "AAMCE" in row[17] %}
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioBienvenidaAAMCE_{{row[0]}}">
+                                  Enviar Correo Bienvenida AAMCE
+                                </button>
+                                {% endif %}
+                                {% if "CBC" in row[17] %}
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioBienvenidaCBC_{{row[0]}}">
+                                  Enviar Correo Bienvenida CBC
+                                </button>
+                                {% endif %}
+                                {% if "AAC" in row[17] %}
+                                <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioBienvenidaCBC_{{row[0]}}">
+                                  Enviar Correo Bienvenida AAC
                                 </button>
                                 {% endif %}
                                 <button data-id='{{row[0]}}' type="button" class="btn btn-link btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#modalEnvioAceptacion_{{row[0]}}">
@@ -121,7 +151,40 @@
                                 </button>
                               </td>
                             </tr>
-                            <form class="form-card" action="{{ url_for('guardarEstadoSearch', id=row[0])}}" method="post">
+                            <form class="form-card" action="{{ url_for('guardarPagoSearch', id=row[0], curso=row[23])}}" method="post">
+                              <div  class="modal fade" id="modalPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Agregar pago {{row[1]}} {{row[2]}} id: {{row[0]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Forma Pago</label>
+                                                <div class="col-xs-2">
+                                                  <select id="formaPago" name="formaPago" type="select">
+                                                      <option value="Transferencia">Transferencia</option>
+                                                      <option value="Flow">Flow</option>
+                                                  </select> 
+                                                </div>
+                                                <div class="form-group row">
+                                                  <label for="author" class="col-xs-2 control-label">Monto</label>
+                                                  <div class="col-xs-2">
+                                                    <input required id="montoPago" name="montoPago" autocomplete="false" type="number" class="col-xs-2 control-label" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                  </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Guardar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('guardarEstadoSearch', id=row[0], curso=row[23])}}" method="post">
                               <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -224,6 +287,81 @@
                                 </div>
                               </div>
                             </form>
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAAMCESearch', id=row[0], curso=row[23])}}" method="post">
+                              <div  class="modal fade" id="modalEnvioBienvenidaAAMCE_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Enviar correo de bienvenida AAMCE a {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Correo destino: {{row[8]}}</label>
+                                                <div class="input-group mb-3">
+                                                  <span class="input-group-text" id="inputGroup-sizing-default">Link Sense: </span>
+                                                  <input id="linkSense" name="linkSense" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaCBCSearch', id=row[0], curso=row[23])}}" method="post">
+                              <div  class="modal fade" id="modalEnvioBienvenidaCBC_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Enviar correo de bienvenida CBC a {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Correo destino: {{row[8]}}</label>
+                                                <div class="input-group mb-3">
+                                                  <span class="input-group-text" id="inputGroup-sizing-default">Link Sense: </span>
+                                                  <input id="linkSense" name="linkSense" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAACSearch', id=row[0], curso=row[23])}}" method="post">
+                              <div  class="modal fade" id="modalEnvioBienvenidaAAC_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content" style="width: 120%;">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="basicModal">Enviar correo de bienvenida AAC a {{row[1]}} {{row[2]}}</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="author" class="col-xs-2 control-label">Correo destino: {{row[8]}}</label>
+                                                <div class="input-group mb-3">
+                                                  <span class="input-group-text" id="inputGroup-sizing-default">Link Sense: </span>
+                                                  <input id="linkSense" name="linkSense" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <input class="btn-primary" type="submit" value="Enviar">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
                             <form class="form-card" action="{{ url_for('envioCorreoPagoSearch', id=row[0], curso=row[23])}}" method="post">
                               <div  class="modal fade" id="modalEnvioPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
@@ -236,7 +374,7 @@
                                             <div class="form-group row">
                                                 <label for="author" class="col-xs-2 control-label"><strong>Correo destino:</strong> {{row[8]}}</label>
                                                 <label for="author" class="col-xs-2 control-label"><strong>Costo del curso:</strong> {{row[21]}}</label>
-                                                <label for="author" class="col-xs-2 control-label"><strong>Nombre Curso:</strong> {{row[17]}} - {{row[16]}}</label>
+                                                <label for="author" class="col-xs-2 control-label"><strong>Nombre Curso:</strong> {{row[16]}} - {{row[17]}}</label>
                                                 <div class="input-group mb-3">
                                                   <span class="input-group-text" id="inputGroup-sizing-default">Medio de Pago: </span>
                                                   <input id="medioPago" name="medioPago" autocomplete="false" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">

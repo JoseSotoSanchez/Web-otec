@@ -35,6 +35,7 @@ nombreGlobal = ''
 estadoGlobal = 0
 idAlumnoSearch = 0
 aspirantesSave = []
+cursos = []
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -613,6 +614,7 @@ def aspirantes():
                 cursoActivo = curso
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
+                                aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
@@ -637,6 +639,7 @@ def aspirantes():
                     total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
+                                aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
@@ -656,6 +659,7 @@ def aspirantes():
                     total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=aspirantes,
+                                aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
@@ -682,11 +686,11 @@ def busqueda():
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
                 if idalumno is not None and idalumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idalumno))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idalumno))# WHERE id = %s', (session['id'],))
                 if nombreAlumno is not None and nombreAlumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.nombre LIKE %s OR a.apellido Like %s order by a.id desc;', ('%'+nombreAlumno+'%', '%'+nombreAlumno+'%'))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.nombre LIKE %s OR a.apellido Like %s order by a.id desc;', ('%'+nombreAlumno+'%', '%'+nombreAlumno+'%'))# WHERE id = %s', (session['id'],))
                 if rutAlumno is not None and rutAlumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.rut LIKE %s order by a.id desc;', ('%'+rutAlumno+'%'))# WHERE id = %s', (session['id'],))
+                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.rut LIKE %s order by a.id desc;', ('%'+rutAlumno+'%'))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
                 if aspirantes is None or not aspirantes:
                     flash('No se ha encontrado resultados!', category='error')
@@ -710,7 +714,7 @@ def busqueda():
             aspirantes = [] 
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idAlumnoSearch))# WHERE id = %s', (session['id'],))
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idAlumnoSearch))# WHERE id = %s', (session['id'],))
                 aspirantes = cursor.fetchall()
                 cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
                 cursos = cursor.fetchall()
@@ -733,10 +737,13 @@ def descargaCsv():
     global idAlumnoSearch
     global cursoActivo
     global aspirantesSave
+    print("alumnos")
+    print(aspirantesSave)
+    print(aspirantes)
     codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
-            alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosex, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso = aspirantesSave[0]
+            alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosex, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso, totalPagos = aspirantesSave[0]
             nombre_archivo = 'curso '+cursoCodigo_curso+'.csv'
 
             # Generar el archivo CSV
@@ -759,7 +766,7 @@ def descargaCsvPagados():
         if request.method == 'POST':
             nueva_lista_aspirantes = []
             for aspirante in aspirantesSave:
-                alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosexo, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso = aspirante
+                alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosexo, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso, totalPagado = aspirante
                 if estadoAlumnoid >= 18:
                     alumnorut = limpiar_rut(alumnorut.replace('.', '').replace('-', ''))
                     passGen = alumnorut[:4]+"#icL"
@@ -780,7 +787,7 @@ def generar_csv(data):
     # Usar el módulo csv de Python para convertir los datos a formato CSV
     output = StringIO()
     writer = csv.writer(output)
-    writer.writerow(['ID', 'Nombre', 'Apellido', 'Rut', 'Sexo', 'Edad', 'Nacionalidad', 'Estado Civil', 'Email', 'Telefono', 'Profesion', 'Nivel de Estudios', 'Situacion Laboral', 'Direccion', 'Region', 'Fecha', 'Nombre del Curso', 'Codigo del Curso', 'Estado del Alumno', 'Nick del Usuario', 'ID de Estado', 'Costo', 'Ingreso', 'ID de Curso'])
+    writer.writerow(['ID', 'Nombre', 'Apellido', 'Rut', 'Sexo', 'Edad', 'Nacionalidad', 'Estado Civil', 'Email', 'Telefono', 'Profesion', 'Nivel de Estudios', 'Situacion Laboral', 'Direccion', 'Region', 'Fecha', 'Nombre del Curso', 'Codigo del Curso', 'Estado del Alumno', 'Nick del Usuario', 'ID de Estado', 'Costo', 'Ingreso', 'ID de Curso', 'Total pagado'])
     writer.writerows(data)
     return output.getvalue()
 
@@ -1028,13 +1035,31 @@ def envioCorreoPago(id, curso):
         enviarEmailPago(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1], str(datosCurso[0][2]), medioPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (18, %s, now(), %s)', (id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (19, %s, now(), %s)', (id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
         return redirect(url_for('aspirantes'))
+    return redirect(url_for('index'))
+
+@app.route('/guardarPagoSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def guardarPagoSearch(id, curso):
+    if request.method == 'POST' and 'formaPago' in request.form and 'montoPago' in request.form:
+        formaPago = request.form['formaPago']
+        montoPago = request.form['montoPago']
+        idUser = session['id']
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Pagos(id_alumno, id_curso, monto, medio_pago, fecha) VALUES (%s, %s, %s, %s, now())', (id, curso, montoPago,formaPago,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', ("18", id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Pago guardado correctamente!', category='success')
+        global idAlumnoSearch
+        idAlumnoSearch = id
+        return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
 @app.route('/guardarEstadoSearch/<int:id>', methods=['GET', 'POST'])
@@ -1154,6 +1179,114 @@ def envioCorreoBienvenidaIEMCESearch(id, curso):
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
+@app.route('/envioCorreoBienvenidaAAMCESearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaAAMCESearch(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaAAMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        global idAlumnoSearch
+        idAlumnoSearch = id
+        return redirect(url_for('busqueda'))
+    return redirect(url_for('index'))
+
+@app.route('/envioCorreoBienvenidaCBCSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaCBCSearch(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaCBC(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        global idAlumnoSearch
+        idAlumnoSearch = id
+        return redirect(url_for('busqueda'))
+    return redirect(url_for('index'))
+
+@app.route('/envioCorreoBienvenidaAACSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
+def envioCorreoBienvenidaAACSearch(id, curso):
+    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    if request.method == 'POST':
+        linkSense = request.form['linkSense']
+        idUser = session['id']
+        selected=curso
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            alumno = cursor.fetchall()
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            datosCurso = cursor.fetchall()
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            datosUsuario = cursor.fetchall()
+        conexion.close()
+        nombre = alumno[0][0] + ' ' + alumno[0][1]
+        mes = datosCurso[0][1].month
+        nombreMes = obtenerMes(mes)
+        mesFin = datosCurso[0][2].month
+        valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmailBienvenidaIEMCE(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], linkSense, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (14, %s, now(), %s)', (id, idUser,))
+        conexion.commit()
+        conexion.close()
+        flash('Correo enviado correctamente!', category='success')
+        global cursoActivo
+        cursoActivo = curso
+        global idAlumnoSearch
+        idAlumnoSearch = id
+        return redirect(url_for('busqueda'))
+    return redirect(url_for('index'))
+
 @app.route('/envioCorreoPagoSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoPagoSearch(id, curso):
     if request.method == 'POST':
@@ -1173,7 +1306,7 @@ def envioCorreoPagoSearch(id, curso):
         enviarEmailPago(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1], str(datosCurso[0][2]), medioPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (18, %s, now(), %s)', (id, idUser,))
+            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (19, %s, now(), %s)', (id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
