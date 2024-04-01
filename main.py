@@ -1,11 +1,15 @@
-from flask import Flask, render_template, request, redirect, flash,url_for, session,jsonify, json, Response
+from flask import Flask, render_template, request, redirect, flash,url_for, session,jsonify, json, Response, send_file
 from flask_paginate import Pagination, get_page_args ,get_page_parameter  
 from flask import Flask, request, render_template, jsonify, json
 from bd import obtener_conexion
 from correo import enviarEmail, upperFirst, enviarEmailAceptacion, obtenerMes, enviarEmailPago, enviarEmailBienvenida, enviarEmailBienvenidaIEMCE, enviarEmailBienvenidaAAMCE, enviarEmailBienvenidaCBC, enviarEmailBienvenidaAAC
 from datetime import datetime
+from openpyxl import Workbook
+from io import BytesIO
 import csv
 from io import StringIO
+import os
+from tempfile import NamedTemporaryFile
 import locale
 
 
@@ -732,55 +736,71 @@ def busqueda():
         return redirect(url_for('index'))
     return redirect(url_for('index'))
 
-@app.route('/descargaCsv', methods=['GET', 'POST'])
-def descargaCsv():
+@app.route('/descargaCsv/<int:curso>', methods=['GET', 'POST'])
+def descargaCsv(curso):
     global idAlumnoSearch
     global cursoActivo
-    global aspirantesSave
-    print("alumnos")
-    print(aspirantesSave)
-    print(aspirantes)
-    codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
-            alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosex, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso, totalPagos = aspirantesSave[0]
-            nombre_archivo = 'curso '+cursoCodigo_curso+'.csv'
+            wb = Workbook()
+            ws = wb.active
+            conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
+                aspirantes = cursor.fetchall()
+                conexion.close()
 
-            # Generar el archivo CSV
-            csv_data = generar_csv(aspirantesSave)
+            nombre_archivo = 'curso ' + aspirantes[0][17] + '.xlsx'
 
-            # Crear una respuesta con el contenido del CSV y encabezados adecuados
-            response = Response(csv_data, content_type='text/csv')
-            response.headers["Content-Disposition"] = "attachment; filename="+nombre_archivo
+            with NamedTemporaryFile(delete=False) as tmpfile:
+                for row in aspirantes:
+                    ws.append(row)
+                wb.save(tmpfile.name)
 
-            return response
+            return send_file(
+                tmpfile.name,
+                attachment_filename=nombre_archivo,
+                as_attachment=True
+            )
     return redirect(url_for('index'))
 
-@app.route('/descargaCsvPagados', methods=['GET', 'POST'])
-def descargaCsvPagados():
+@app.route('/descargaCsvPagados/<int:curso>', methods=['GET', 'POST'])
+def descargaCsvPagados(curso):
     global idAlumnoSearch
     global cursoActivo
     codigoCurso = ''
-    global aspirantesSave
     if 'loggedin' in session:
         if request.method == 'POST':
+            wb = Workbook()
+            ws = wb.active
+            conexion = obtener_conexion()
+            with conexion.cursor() as cursor:
+                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
+                aspirantes = cursor.fetchall()
+                conexion.close()
+
             nueva_lista_aspirantes = []
-            for aspirante in aspirantesSave:
+            for aspirante in aspirantes:
                 alumnoid, alumnonombre, alumnoapellido, alumnorut, alumnosexo, alumnoedad, alumnonacionalidad, alumnoestado_civil, alumnoemail, alumnotelefono, alumnoprofesion, alumnonivel_estudios, alumnosituacion_laboral, alumnodireccion, alumnoregion, alumnofecha, cursonombreCurso, cursoCodigo_curso, estadoAlumnoestado, usuarioNick, estadoAlumnoid, cursoCosto, alumnoIngreso, totalPagado = aspirante
                 if estadoAlumnoid >= 18:
                     alumnorut = limpiar_rut(alumnorut.replace('.', '').replace('-', ''))
-                    passGen = alumnorut[:4]+"#icL"
-                    nueva_fila = (alumnorut, passGen, alumnonombre, alumnoapellido, alumnoemail, cursoCodigo_curso, 'CL','es_mx','América/Santiago',alumnoid)
+                    passGen = alumnorut[:4] + "#icL"
+                    nueva_fila = (alumnorut, passGen, alumnonombre, alumnoapellido, alumnoemail, cursoCodigo_curso, 'CL', 'es_mx', 'América/Santiago', alumnoid)
                     nueva_lista_aspirantes.append(nueva_fila)
                     if codigoCurso == '':
                             codigoCurso = cursoCodigo_curso
-            nombre_archivo = 'curso '+codigoCurso+'.csv'
-            csv_data = generar_csv_pagados(nueva_lista_aspirantes)
-            # Crear una respuesta con el contenido del CSV y encabezados adecuados
-            response = Response(csv_data, content_type='text/csv')
-            response.headers["Content-Disposition"] = "attachment; filename="+nombre_archivo
+            nombre_archivo = 'curso ' + codigoCurso + '.xlsx'
 
-            return response
+            with NamedTemporaryFile(delete=False) as tmpfile:
+                for row in nueva_lista_aspirantes:
+                    ws.append(row)
+                wb.save(tmpfile.name)
+
+            return send_file(
+                tmpfile.name,
+                attachment_filename=nombre_archivo,
+                as_attachment=True
+            )
     return redirect(url_for('index'))
 
 def generar_csv(data):
