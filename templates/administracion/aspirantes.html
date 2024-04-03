@@ -63,7 +63,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                                {% for row in aspirantes %}
+                                {% for row in items_on_page %}
                               <tr>
                                 <td>{{row[0]}}</td>
                                 <td>
@@ -91,6 +91,7 @@
                                       <p class="text-muted mb-0">{{row[3]}}</p>
                                       <p class="text-muted mb-0">{{row[8]}}</p>
                                       <p class="text-muted mb-0">{{row[9]}}</p>
+                                      <p class="text-muted mb-0">{{row[22]}}</p>
                                     </div>
                                   </div>
                                 </td>
@@ -169,7 +170,7 @@
                                 </button>
                               </td>
                             </tr>
-                            <form class="form-card" action="{{ url_for('guardarPago', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('guardarPago', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -202,7 +203,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('guardarEstado', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalMdificar_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -255,7 +256,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoAceptacion', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoAceptacion', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioAceptacion_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -280,7 +281,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaIEMCE', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaIEMCE', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioBienvenidaIEMCE_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -305,7 +306,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAAMCE', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAAMCE', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioBienvenidaAAMCE_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -330,7 +331,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaCBC', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaCBC', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioBienvenidaCBC_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -355,7 +356,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAAC', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoBienvenidaAAC', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioBienvenidaAAC_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -380,7 +381,7 @@
                                 </div>
                               </div>
                             </form>
-                            <form class="form-card" action="{{ url_for('envioCorreoPago', id=row[0], curso=datosCurso[0][2])}}" method="post">
+                            <form class="form-card" action="{{ url_for('envioCorreoPago', id=row[0], curso=datosCurso[0][2], page_=page_)}}" method="post">
                               <div  class="modal fade" id="modalEnvioPago_{{row[0]}}" tabindex="-1" aria-labelledby="basicModal" aria-hidden="true" role="dialog">
                                 <div class="modal-dialog">
                                   <div class="modal-content" style="width: 120%;">
@@ -412,6 +413,14 @@
                           
                           </tbody>
                       </table>
+
+                      {% if page_ > 1 %}
+                        <a href="{{ url_for('aspirantes', page_ = page_-1, curso = datosCurso[0][2]) }}">Anterior</a>
+                      {% endif %}
+                      <span>Pagina {{ page_ }} de {{ total_pages }}</span>
+                      {% if page_ < total_pages %}
+                        <a href="{{ url_for('aspirantes', page_ = page_+1, curso = datosCurso[0][2]) }}">Siguiente</a>
+                      {% endif %}
                   </div>
               </div>
           </div>

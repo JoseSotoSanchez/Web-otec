@@ -30,7 +30,7 @@ app.secret_key = 'your secret key'
 #web
 #mydb = mysql.connector.connect(host="iccapacitacionlaboral.cl", user="iccapaci1_admin", passwd="gQ9Pb$$PKh", database="iccapaci1_iccaplab")
 
-ROWS_PER_PAGE = 5
+ROWS_PER_PAGE = 10
 cursoActivo = 0
 idAlumnoEstado = 0
 idGlobal = 0
@@ -40,6 +40,7 @@ estadoGlobal = 0
 idAlumnoSearch = 0
 aspirantesSave = []
 cursos = []
+flag = 0
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -616,16 +617,39 @@ def aspirantes():
                 total = len(aspirantes)
                 aspirantesSave = aspirantes
                 cursoActivo = curso
+                page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+                total = len(aspirantes)
+                pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
+                pagination = Pagination(page=page, per_page=per_page, total=total,
+                                        css_framework='bootstrap4')
+                
+                page_ = request.args.get('page_', 1,type=int)
+                per_page_ = 50
+                start = (page_ - 1) * per_page_
+                end = start + per_page_
+                total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
+
+                items_on_page = aspirantes[start:end]
                 return render_template('administracion/aspirantes.html',
-                                aspirantes=aspirantes,
+                                aspirantes=pagination_aspirantes,
+                                page=page,
+                                per_page=100,
+                                pagination=pagination,
                                 aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = int(selected),
                                 total = total,
+                                items_on_page = items_on_page,
+                                total_pages = total_pages,
+                                page_=page_,
                                 )
         else:
+            if cursoActivo == 0:
+                curso = request.args.get('curso', 0,type=int)
+                cursoActivo = curso
             if cursoActivo != 0:
                 selected=cursoActivo
                 conexion = obtener_conexion()
@@ -639,19 +663,39 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+                    total = len(aspirantes)
+                    pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
+                    pagination = Pagination(page=page, per_page=per_page, total=total,
+                                            css_framework='bootstrap4')
                     aspirantesSave = aspirantes
                     total = len(aspirantes)
+                    page_ = request.args.get('page_', 1,type=int)
+                    per_page_ = 50
+                    start = (page_ - 1) * per_page_
+                    end = start + per_page_
+                    total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
+
+                    items_on_page = aspirantes[start:end]
                 return render_template('administracion/aspirantes.html',
-                                aspirantes=aspirantes,
+                                aspirantes=pagination_aspirantes,
+                                page=page,
+                                per_page=100,
+                                pagination=pagination,
                                 aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = int(selected),
                                 total = total,
+                                items_on_page = items_on_page,
+                                total_pages = total_pages,
+                                page_ =page_,
                                 )
             else:
                 aspirantes = []
+                items_on_page = []
                 conexion = obtener_conexion()
                 with conexion.cursor() as cursor:
                     cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
@@ -659,16 +703,28 @@ def aspirantes():
                     cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
                     estados = cursor.fetchall()
                     conexion.close()
+                    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+                    total = len(aspirantes)
+                    pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
+                    pagination = Pagination(page=page, per_page=per_page, total=total,
+                                            css_framework='bootstrap4')
                     aspirantesSave = aspirantes
                     total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
-                                aspirantes=aspirantes,
+                                aspirantes=pagination_aspirantes,
+                                page=page,
+                                per_page=100,
+                                pagination=pagination,
                                 aspirantesSave = aspirantes,
                                 cursos=cursos,
                                 datosCurso=datosCurso,
                                 estados = estados,
                                 selected = 0,
                                 total = total,
+                                items_on_page = items_on_page,
+                                page_ = 0,
+                                total_pages = 0,
                                 )
         return redirect(url_for('index'))
     return redirect(url_for('index'))
@@ -827,6 +883,7 @@ def limpiar_rut(rut):
 @app.route('/guardarPago/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def guardarPago(id, curso):
     if request.method == 'POST' and 'formaPago' in request.form and 'montoPago' in request.form:
+        page_ = request.args.get('page_', 1,type=int)
         formaPago = request.form['formaPago']
         montoPago = request.form['montoPago']
         idUser = session['id']
@@ -839,12 +896,13 @@ def guardarPago(id, curso):
         flash('Pago guardado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/guardarEstado/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def guardarEstado(id, curso):
     if request.method == 'POST' and 'estado' in request.form and 'correoAlumno' in request.form and 'celularAlumno' in request.form and 'nombresAlumno' in request.form and 'apellidosAlumno' in request.form:
+        page_ = request.args.get('page_', 1,type=int)
         idEstado = request.form['estado']
         correoAlumno = request.form['correoAlumno']
         celularAlumno = request.form['celularAlumno']
@@ -861,7 +919,7 @@ def guardarEstado(id, curso):
         flash('Estado guardado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 
@@ -870,6 +928,7 @@ def guardarEstado(id, curso):
 def envioCorreoAceptacion(id, curso):
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
+        page_ = request.args.get('page_', 1,type=int)
         urlPago = request.form['urlPago']
         idUser = session['id']
         selected=curso
@@ -897,11 +956,12 @@ def envioCorreoAceptacion(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoBienvenidaIEMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaIEMCE(id, curso):
+    page_ = request.args.get('page_', 1,type=int)
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
@@ -931,11 +991,12 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoBienvenidaAAMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAAMCE(id, curso):
+    page_ = request.args.get('page_', 1,type=int)
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
@@ -965,12 +1026,13 @@ def envioCorreoBienvenidaAAMCE(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoBienvenidaCBC/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaCBC(id, curso):
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    page_ = request.args.get('page_', 1,type=int)
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
@@ -999,12 +1061,13 @@ def envioCorreoBienvenidaCBC(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoBienvenidaAAC/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAAC(id, curso):
     locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
+    page_ = request.args.get('page_', 1,type=int)
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
@@ -1033,12 +1096,13 @@ def envioCorreoBienvenidaAAC(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/envioCorreoPago/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoPago(id, curso):
     if request.method == 'POST':
+        page_ = request.args.get('page_', 1,type=int)
         medioPago = request.form['medioPago']
         idUser = session['id']
         selected=curso
@@ -1061,7 +1125,7 @@ def envioCorreoPago(id, curso):
         flash('Correo enviado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
-        return redirect(url_for('aspirantes'))
+        return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
 @app.route('/guardarPagoSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
@@ -1557,6 +1621,7 @@ def get_mensajes(offset=0, per_page=100, mensajes=[]):
 
 def get_pagos(offset=0, per_page=100, pagos=[]):
     return pagos[offset: offset + per_page]
+
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True) 
