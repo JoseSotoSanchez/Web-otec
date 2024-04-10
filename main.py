@@ -1447,7 +1447,7 @@ def enviarCorreoBienvenida():
         idUser = session['id']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.email FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado = 18 order by a.id desc', (idCurso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.email FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado in (18,19) order by a.id desc', (idCurso))# WHERE id = %s', (session['id'],))
             alumnosPagados = cursor.fetchall()
             cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
             datosUsuario = cursor.fetchall()
@@ -1457,7 +1457,7 @@ def enviarCorreoBienvenida():
             enviarEmailBienvenida(nombreAlumno, x[3], nombreCurso, urlZoom, idReunionZoom, codigoAccesoZoom, inicioCurso, nombreProfesor, horarioCurso, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3])
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 19, now(), 1)', (x[0]))
+                cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 20, now(), 1)', (x[0]))
             conexion.commit()   
             conexion.close()
         flash('Actualizado correctamente!', category='success')
