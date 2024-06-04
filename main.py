@@ -11,6 +11,8 @@ from io import StringIO
 import os
 from tempfile import NamedTemporaryFile
 import locale
+import sys
+from itertools import cycle
 
 
 
@@ -164,6 +166,15 @@ def asistenteAula():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-aula.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -218,6 +229,15 @@ def inspectorEducacional():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/inspector-educacional.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -227,7 +247,7 @@ def inspectorEducacional():
         conexion.close()
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             curso_ = cursor.fetchall()
         conexion.close()
         nombre = nombre + ' ' + apellido
@@ -272,6 +292,15 @@ def asistenteContable():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -326,6 +355,15 @@ def cajeroBancario():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/cajero-bancario.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -380,6 +418,15 @@ def convivenciaEscolar():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/convivencia-escolar.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -434,6 +481,15 @@ def tea():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/tea.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -488,6 +544,15 @@ def rrhh():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/rrhh.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -542,6 +607,15 @@ def asistenteParvulos():
         IPAddr = request.environ['REMOTE_ADDR']
         hostnameAddr = hostname + " / "+IPAddr
         conexion = obtener_conexion()
+        rut = rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        with conexion.cursor() as cursor:
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
+            cursos = cursor.fetchall()
+        if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-parvulos.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -1622,6 +1696,24 @@ def get_mensajes(offset=0, per_page=100, mensajes=[]):
 def get_pagos(offset=0, per_page=100, pagos=[]):
     return pagos[offset: offset + per_page]
 
+def validar_rut(rut):
+	rut = rut.upper()
+	rut = rut.replace("-","")
+	rut = rut.replace(".","")
+	aux = rut[:-1]
+	dv = rut[-1:]
+ 
+	revertido = map(int, reversed(str(aux)))
+	factors = cycle(range(2,8))
+	s = sum(d * f for d, f in zip(revertido,factors))
+	res = (-s)%11
+ 
+	if str(res) == dv:
+		return True
+	elif dv=="K" and res==10:
+		return True
+	else:
+		return False
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True) 
