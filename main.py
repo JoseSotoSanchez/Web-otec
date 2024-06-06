@@ -172,6 +172,11 @@ def asistenteAula():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/asistente-aula.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-aula.html', cursos=cursos)
@@ -235,6 +240,11 @@ def inspectorEducacional():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/inspector-educacional.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/inspector-educacional.html', cursos=cursos)
@@ -298,6 +308,11 @@ def asistenteContable():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
@@ -361,6 +376,11 @@ def cajeroBancario():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/cajero-bancario.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/cajero-bancario.html', cursos=cursos)
@@ -424,6 +444,11 @@ def convivenciaEscolar():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/convivencia-escolar.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/convivencia-escolar.html', cursos=cursos)
@@ -487,6 +512,11 @@ def tea():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/tea.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/tea.html', cursos=cursos)
@@ -550,6 +580,11 @@ def rrhh():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/rrhh.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/rrhh.html', cursos=cursos)
@@ -613,6 +648,11 @@ def asistenteParvulos():
         with conexion.cursor() as cursor:
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
+            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
+            aspirante = cursor.fetchone()
+            if aspirante:
+                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+                return render_template('cursos/asistente-parvulos.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-parvulos.html', cursos=cursos)
