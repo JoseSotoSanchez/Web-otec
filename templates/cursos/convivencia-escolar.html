@@ -220,8 +220,13 @@
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 30 horas académicas.</li>
-            <li class="list-group-item dtalle">Fecha 1: 10 de Junio del 2024 al 01 de Julio del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <!-- <li class="list-group-item dtalle">Fecha 2: 05 de Abril del 2024 al 25 de Abril del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).</li> -->
+            {% for row in cursos %}
+                {% if "Necesidades Especiales Educativa" in row[1] %}
+                    <li class="list-group-item dtalle">
+                        Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                    </li> 
+                {% endif %}
+            {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-convivencia-escolar.pdf">ver malla curricular</a>
           </ul>

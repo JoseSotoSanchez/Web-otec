@@ -194,8 +194,13 @@
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 36 horas académicas.</li>
-            <li class="list-group-item dtalle">Fecha 1: 13 de Junio del 2024 al 09 de Julio del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).</li>
-            <!-- <li class="list-group-item dtalle">Fecha 2: 01 de Abril del 2024 al 26 de Abril del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).</li> -->
+            {% for row in cursos %}
+                {% if "CBC" in row[2] %}
+                    <li class="list-group-item dtalle">
+                        Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                    </li> 
+                {% endif %}
+            {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
             <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-cajero-bancario.pdf">ver malla curricular</a>
           </ul>

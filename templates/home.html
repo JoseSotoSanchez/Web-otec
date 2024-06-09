@@ -109,12 +109,13 @@
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Duración: 40 horas académicas.
                                 </p> 
-                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 1: 07 de Junio del 2024 al 05 de Julio del 2024. (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                                </p> 
-                                <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 2: 01 de Abril del 2024 al 26 de Abril del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                                </p> -->
+                                {% for row in cursos %}
+                                  {% if "AAMCE" in row[2] %}
+                                    <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                      Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                    </p> 
+                                  {% endif %}
+                                {% endfor %}
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
@@ -138,14 +139,15 @@
                                   Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                                 </p> 
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Duración: 40 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
+                                  Duración: 40 horas académicas.
                                 </p> 
-                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                Fecha 1: 07 de Junio del 2024 al 05 de Julio del 2024.
-                                </p> 
-                                <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 2: 05 de Abril del 2024 al 26 de Abril del 2024.
-                                </p> -->
+                                {% for row in cursos %}
+                                  {% if "IEMCE" in row[2] %}
+                                    <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                      Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                    </p> 
+                                  {% endif %}
+                                {% endfor %}
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
@@ -172,12 +174,13 @@
                               <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Duración: 36 horas académicas.
                               </p> 
-                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                Fecha 1: 13 de Junio del 2024 al 09 de Julio del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                              </p> 
-                              <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                Fecha 2: 01 de Abril del 2024 al 26 de Abril del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                              </p> -->
+                              {% for row in cursos %}
+                                {% if "CBC" in row[2] %}
+                                  <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                    Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                  </p> 
+                                {% endif %}
+                              {% endfor %}
                               <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Entrega de Certificado al completar el curso.                                  
                               </p>
@@ -204,12 +207,13 @@
                               <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Duración: 36 horas académicas.
                               </p> 
-                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                               Fecha 1: 10 de Junio del 2024 al 04 de Julio del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                              </p> 
-                              <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                Fecha 2: 01 de Abril del 2024 al 26 de Abril del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                              </p> -->
+                              {% for row in cursos %}
+                                {% if "AAC" in row[2] %}
+                                  <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                    Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                  </p> 
+                                {% endif %}
+                              {% endfor %}
                               <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                 Entrega de Certificado al completar el curso.                                  
                               </p>
@@ -237,12 +241,13 @@
                             <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                               Duración: 30 horas académicas.
                             </p> 
-                            <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                              Fecha 1: 10 de Junio del 2024 al 01 de Julio del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).
-                            </p> 
-                            <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                Fecha 2: 05 de Abril del 2024 al 25 de Abril del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).
-                              </p> -->
+                            {% for row in cursos %}
+                              {% if "Necesidades Especiales Educativa" in row[1] %}
+                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                  Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                </p> 
+                              {% endif %}
+                            {% endfor %}
                             <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                               Entrega de Certificado al completar el curso.                                  
                             </p>
@@ -269,12 +274,13 @@
                           <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                             Duración: 40 horas académicas.
                           </p> 
-                          <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                            Fecha 1: 31 de Mayo del 2024 al 21 de Junio del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).
-                          </p> 
-                          <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                            Fecha 2: 05 de Abril del 2024 al 25 de Abril del 2024 (Lunes a Viernes de 19:30 a 21:30 hrs).
-                          </p> -->
+                          {% for row in cursos %}
+                            {% if "TEA" in row[2] %}
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                              </p> 
+                            {% endif %}
+                          {% endfor %}
                           <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                             Entrega de Certificado al completar el curso.                                  
                           </p>
@@ -301,12 +307,13 @@
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Duración: 40 horas académicas.
                                 </p> 
-                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 1: 07 de Junio del 2024 al 05 de Julio del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                                </p> 
-                                <!-- <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 2: 08 de Abril del 2024 al 30 de Abril del 2024 (de Lunes a Viernes de 19:30 a 21:30 hrs).
-                                </p> -->
+                                {% for row in cursos %}
+                                  {% if "RRHH" in row[2] %}
+                                    <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                      Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                    </p> 
+                                  {% endif %}
+                                {% endfor %}
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
@@ -330,11 +337,15 @@
                                   Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
                                 </p> 
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Duración: 35 horas académicas (de Lunes a Viernes de 19:30 a 21:30 hrs).
+                                  Duración: 35 horas académicas.
                                 </p> 
-                                <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
-                                  Fecha 1: 31 de Mayo del 2024 al 26 de Junio del 2024.
-                                </p> 
+                                {% for row in cursos %}
+                                  {% if "AP" in row[2] %}
+                                    <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                      Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                    </p> 
+                                  {% endif %}
+                                {% endfor %} 
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Entrega de Certificado al completar el curso.                                  
                                 </p>
