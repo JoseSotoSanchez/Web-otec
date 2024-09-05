@@ -994,7 +994,7 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
 def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, codigoAccesoZoom, inicioCurso, nombreProfesor, horarioCurso, nombreUsuario, correoUsuario, numeroUsuario):
     nombre = upperFirst(nombre.lower())
     email_user = 'administracion@iccapacitacionlaboral.cl'
-    email_password = 'gQ9Pb$$PKh'
+    email_password = '$$PKhg!pB'
 
     email_send = correo
     subject = "Bienvenido(a) al curso "+ nombreCurso + ""

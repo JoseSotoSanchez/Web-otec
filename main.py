@@ -195,6 +195,9 @@ def asistenteAula():
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-aula.html', cursos=cursos)
+        if len(rut) < 6:
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-aula.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -261,6 +264,9 @@ def inspectorEducacional():
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
                 return render_template('cursos/inspector-educacional.html', cursos=cursos)
         if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/inspector-educacional.html', cursos=cursos)
+        if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/inspector-educacional.html', cursos=cursos)
         with conexion.cursor() as cursor:
@@ -331,6 +337,9 @@ def asistenteContable():
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
+        if len(rut) < 6:
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -397,6 +406,9 @@ def cajeroBancario():
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
                 return render_template('cursos/cajero-bancario.html', cursos=cursos)
         if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/cajero-bancario.html', cursos=cursos)
+        if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/cajero-bancario.html', cursos=cursos)
         with conexion.cursor() as cursor:
@@ -467,6 +479,9 @@ def convivenciaEscolar():
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/convivencia-escolar.html', cursos=cursos)
+        if len(rut) < 6:
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/convivencia-escolar.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -533,6 +548,9 @@ def tea():
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
                 return render_template('cursos/tea.html', cursos=cursos)
         if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/tea.html', cursos=cursos)
+        if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/tea.html', cursos=cursos)
         with conexion.cursor() as cursor:
@@ -603,6 +621,9 @@ def rrhh():
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/rrhh.html', cursos=cursos)
+        if len(rut) < 6:
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/rrhh.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -669,6 +690,9 @@ def asistenteParvulos():
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
                 return render_template('cursos/asistente-parvulos.html', cursos=cursos)
         if not validar_rut(rut):
+            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
+            return render_template('cursos/asistente-parvulos.html', cursos=cursos)
+        if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/asistente-parvulos.html', cursos=cursos)
         with conexion.cursor() as cursor:

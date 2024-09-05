@@ -232,7 +232,7 @@
                       <hr class="featurette-divider">
                         <div class="card-content">
                             <h4 class="card-title">
-                                <a href="/convivencia-escolar"> Convivencia Escolar, Necesidades Especiales Educativas (NEE).
+                                <a href="/convivencia-escolar"> Convivencia Escolar mención resolución de conflictos.
                               </a>
                             </h4>
                             <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
@@ -242,7 +242,7 @@
                               Duración: 30 horas académicas.
                             </p> 
                             {% for row in cursos %}
-                              {% if "Necesidades Especiales Educativa" in row[1] %}
+                              {% if "resolución de conflictos" in row[1] %}
                                 <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
                                   Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                                 </p> 
@@ -265,7 +265,7 @@
                     <hr class="featurette-divider">
                       <div class="card-content">
                           <h4 class="card-title">
-                              <a href="/tea"> Trastorno del espectro autista mención tutor sombra
+                              <a href="/tea"> Trastorno del espectro autista y tutor sombra
                             </a>
                           </h4>
                           <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />

@@ -16,7 +16,7 @@
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Convivencia Escolar, Necesidades Especiales Educativas (NEE).</span>
+        <span class="fs-4" data-aos="fade-up">Convivencia Escolar mención resolución de conflictos.</span>
       </a>
     </header>
     <div class=" bg-light rounded-3">
@@ -49,7 +49,7 @@
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        	{% if "Necesidades Especiales Educativa" in row[1] %}
+                                        	{% if "resolución de conflictos" in row[1] %}
                                         		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
                                         			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
                                         		</option>
@@ -189,29 +189,15 @@
         <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <h4 class="titulosDetalle">Objetivo NEE</h4>
               <p>
-                Está orientada en fortalecer conocimientos que permitan tanto a profesionales de la
-                educación como personas en general, sobre las necesidades educativas especiales de
-                carácter transitorias, (dificultades específicas del aprendizaje, transitorias del lenguaje y
-                déficit atencional) y de carácter permanente (sordos, ciegos, déficit intelectual severo,
-                discapacidades múltiples, entre otros). asimismo, a partir de este conocimiento,
-                implementar las adecuaciones curriculares básicas en el aula para ofrecer
-                oportunidades de aprendizaje a todos los alumnos.</p>
-                <h4 class="titulosDetalle">Objetivo Convivencia Escolar</h4>
-                <p>• Metodología participativa, vivenciando las diferentes estrategias que irán
-                    respondiendo las interrogantes surgidas.
-                    • Construcción del aprendizaje tanto individual como grupal, aplicable a cada realidad
-                    educativa.
-                    • Uso de estrategias como role playing, análisis de casos, debates, uso de materiales
-                    concretos, entre otras, durante el desarrollo del curso.</p>
-                <!--<h4 class="titulosDetalle">Objetivo TEA</h4>
-                <p>Desarrollar estrategias metodológicas de enseñanza en las diferentes asignaturas que
-                    permitan el aprendizaje de los estudiantes con trastornos del espectro autista dentro
-                    del aula.
-                    Los participantes serán capaces de diseñar variadas estrategias metodológicas de
-                    aprendizaje dirigidas a estudiantes con TEA, para potenciar su aprendizaje e inclusión
-                    en el aula escolar, como así mismo desarrollar el máximo de su potencial.</p>-->
+                El curso "Convivencia Escolar y Resolución de Conflictos" 
+                tiene como finalidad que los participantes conozcan las disposiciones 
+                legales que regulan la convivencia escolar en el contexto educativo actual. 
+                Aprenderás a aplicar estas normativas y las reglas internas para mejorar el 
+                clima organizacional, comprendiendo la importancia de cumplir con la normativa 
+                vigente para evitar sanciones. Además, valorarás que la buena convivencia es tarea 
+                de todos los miembros de la comunidad educativa, ya sea en Jardines, Escuelas, 
+                Colegios o Liceos.</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -221,7 +207,7 @@
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 30 horas académicas.</li>
             {% for row in cursos %}
-                {% if "Necesidades Especiales Educativa" in row[1] %}
+                {% if "resolución de conflictos" in row[1] %}
                     <li class="list-group-item dtalle">
                         Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                     </li> 
