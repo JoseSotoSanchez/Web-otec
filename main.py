@@ -278,7 +278,7 @@ def inspectorEducacional():
         conexion.close()
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
+            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
             curso_ = cursor.fetchall()
         conexion.close()
         nombre = nombre + ' ' + apellido
