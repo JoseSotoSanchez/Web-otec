@@ -305,8 +305,8 @@ def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurs
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Para que verifiquen que somos acreditados por Sence.</p>
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Link de Organismos Técnicos de Capacitación Acreditados por Sence:</p>
                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><a href=\""""+linkSense+"""\">"""+linkSense+"""</a></p>
-                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Verifique Ingresando nuestro RUT: 76.841.237-5</p>
-                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Certifica Sumando Capacitación spa.</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Verifique Ingresando nuestro RUT: 77.558.994-9</p>
+                          <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">Certifica Instituto de Capacitación Laboral SPA.</p>
                            <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Plan formativo:</h1>
                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">• Modalidad: E-Learning (Clases en Vivo vía ZOOM©) y plataforma de aprendizaje
                             mediante Aula Virtual.</p>
