@@ -10,4 +10,4 @@ def obtener_conexion():
    return pymysql.connect(host="localhost"
    , user="root"
    , password="", 
-   db="otecv2")
+   db="icaplab2")
