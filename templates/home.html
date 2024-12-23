@@ -355,6 +355,39 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up">
+                      <div class="card brd">
+                          <a class="img-card" href="/corredor-propiedades">
+                          <img src="static/Imagenes/corretaje1.png" />
+                        </a>
+                        <hr class="featurette-divider">
+                          <div class="card-content">
+                              <h4 class="card-title">
+                                  <a href="/corredor-propiedades">Corredor de propiedades
+                                </a>
+                              </h4>
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.
+                              </p> 
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                Duración: 50 horas académicas.
+                              </p> 
+                              {% for row in cursos %}
+                                {% if "CDP" in row[2] %}
+                                  <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                    Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
+                                  </p> 
+                                {% endif %}
+                              {% endfor %} 
+                              <p class=""><img src="static/Imagenes/check.png" style="width: 30px; height: auto;" />
+                                Entrega de Certificado al completar el curso.                                  
+                              </p>
+                          </div>
+                          <div>
+                              <div><a class="example_p" href="/corredor-propiedades" ><span>Postula ahora</span></a></div>
+                          </div>
+                      </div>
+                  </div>
                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-xl-4 " data-aos="fade-up">
                       <div class="card brd">
                           <a class="img-card" href="/cajero-bancario">
