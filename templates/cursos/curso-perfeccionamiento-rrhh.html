@@ -1,25 +1,29 @@
-{% extends "base.html" %} {% block title %}Cajero Bancario y Comercial{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Perfeccionamiento en Gestión de RR.HH. Mención en Administración de Personas{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/cajero-bancario"/>
-    <meta property="og:title" content="Curso - Cajero Bancario y Comercial"/>
-    <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/cajero-bancario.jpg"/>
-    <meta property="og:description" content="El curso de Cajero (a) Bancario está dirigido a personas que quieran trabajar en funciones de caja de cualquier banco, cajas de compensación, cooperativas, entidades financieras o del servicio público."/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/curso-perfeccionamiento-rrhh"/>
+    <meta property="og:title" content="Curso - Perfeccionamiento en Gestión de RR.HH. Mención en Administración de Personas"/>
+    <meta property="og:img" content="https://iccapacitacionlaboral.cl/static/Imagenes/rrhh-miniatura.jpg"/>
+    <meta property="og:description" content="El objetivo de este programa es fortalecer las habilidades fundamentales de los 
+    participantes para abordar el crecimiento de sus organizaciones. Se enfoca en la gestión 
+    centrada en las personas como un elemento fundamental para alcanzar el éxito. Esto 
+    implica reconocer y potenciar el rol crítico que juegan los recursos humanos en el 
+    desarrollo y la expansión de las empresas, garantizando que sean un pilar esencial en el 
+    progreso organizacional."/>
     <meta property="og:type" content="website"/>
 
 </head>
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Cajero Bancario y Comercial mención en atención al cliente</span>
+        <span class="fs-4" data-aos="fade-up">Perfeccionamiento en Gestión de RR.HH. Mención en Administración de Personas</span>
       </a>
     </header>
-
     <div class=" bg-light rounded-3">
       <div class="container-fluid ">
         <div class=" mx-auto">
             <div class="row d-flex justify-content-center">
                 <div class=" text-center">
-                    <div class="card">
+                    <div class="card"  id="formularioAA">
                         <h5 class="text-center tituloRojo">POSTULA A LA BECA SOLIDARIA</h5>
                         <h5 class="text-center tituloRojo">TODOS TIENEN OPORTUNIDAD</h5>
                         <h5 class="text-center mb-4 tituloRojo">BONO DE CAPACITACIÓN DEL 75%</h5>
@@ -36,15 +40,15 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('cajeroBancario') }}" method="post">
+                        <form class="form-card" action="{{ url_for('rrhh') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
-                                    <label class="form-control-label px-3">Curso a postular<span class="text-danger" > *</span></label> 
+                                    <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)" required>
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        	{% if "CBC" in row[2] %}
+                                        	{% if "RRHH" in row[2] %}
                                         		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
                                         			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
                                         		</option>
@@ -99,10 +103,10 @@
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
                                      <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
                                      <input id="telefono" name="telefono" placeholder="Ingresa tu número" 
-                                     oninput="javascript: 
-                                       if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
-                                       if (this.value.indexOf('56') === 0) { this.value = ''; }"
-                                     type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
+                                      oninput="javascript: 
+                                        if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
+                                        if (this.value.indexOf('56') === 0) { this.value = ''; }"
+                                      type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
                                     <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
@@ -178,18 +182,36 @@
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img inspector-educacional-mencion img-fluid" src="static/Imagenes/cajero-bancario.jpeg" 
-           role="inspector-educacional-mencion" style="width: 100%; height: auto;"/>
+            <img class="bd-placeholder-img rrhh img-fluid" src="static/Imagenes/rrhh-principal.jpg" 
+           role="rrhh" style="width: 100%; height: auto;"/>
         </div>
       </div>
+      <hr class="featurette-divider">
+
+  <div class="row featurette" data-aos="zoom-in">
+    <!-- <div class="container" >
+        <div class="container" >
+        <p id="textoAbout">Esta capacitación abre el camino al(a) participante para postular al cargo de Inspector Educacional
+            , en niveles de educación básica y media, disponible en establecimientos de educación pública o particular
+            subvencionada, conforme a los requisitos legales de la ley 21.109.
+        </p>
+        </div>
+    </div> -->
+    <!-- <div class="col-md-12" style="text-align: center;">
+          <a href="https://www.bcn.cl/leychile/navegar?idNorma=1123513">Ver ley 21.109: TÍTULO I De los Asistentes de la Educación Pública, Párrafo 2º Categorías de asistentes de la educación, Artículos 6,7,8,9.</a>
+      </div>
+  </div> -->
     <hr class="featurette-divider">
     <div class="row align-items-md-stretch">
         <div class="col-md-6" data-aos="fade-up">
-             <div class="h-100 p-5 bg-light border rounded-3">
+            <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>El curso Cajero Bancario y Comercial mención en atención al cliente.</p>
-              <p>Está dirigido a personas que deseen adquirir conocimientos y herramientas técnicas, para la adecuada manipulación y operación de una caja bancaria o comercial. Podrás desarrollar el perfil de competencias que se requiere para  operar una caja, dentro de una institución bancaria, financiera o empresa del rubro retail o también conocido como venta al detalle o comercio minorista de productos o servicios</p>
-              <p>Le entregaremos los conocimientos necesarios para que puedas desempeñarte con un perfil laboral competente y cubrir el puesto de trabajo esperado.</p>
+              <p>El objetivo de este programa es fortalecer las habilidades fundamentales de los 
+                participantes para abordar el crecimiento de sus organizaciones. Se enfoca en la gestión 
+                centrada en las personas como un elemento fundamental para alcanzar el éxito. Esto 
+                implica reconocer y potenciar el rol crítico que juegan los recursos humanos en el 
+                desarrollo y la expansión de las empresas, garantizando que sean un pilar esencial en el 
+                progreso organizacional.</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -197,16 +219,16 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 36 horas académicas.</li>
+            <li class="list-group-item dtalle">Duración: 40 horas académicas.</li>
             {% for row in cursos %}
-                {% if "CBC" in row[2] %}
+                {% if "RRHH" in row[2] %}
                     <li class="list-group-item dtalle">
                         Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                     </li> 
                 {% endif %}
             {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-cajero-bancario.pdf">ver malla curricular</a>
+            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-rrhh.pdf">ver malla curricular</a>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
@@ -228,11 +250,11 @@
                 <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                    <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $476.000.-</li>
                     <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 75%.</li>
-                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $119.000.-</b></li>
                     <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
-                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
+                    <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
                        <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
                 </ul>
             </div>
@@ -240,6 +262,11 @@
     
     </div>
   </div>
-
+  <script>
+    function scrolldiv() {
+                 var elem = document.getElementById("formularioAA");
+                 elem.scrollIntoView();
+             }
+ </script>
 
 {% endblock %}

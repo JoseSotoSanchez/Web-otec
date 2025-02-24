@@ -1,24 +1,19 @@
-{% extends "base.html" %} {% block title %}Asistente Administrativo Contable{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Cajero Bancario y Comercial{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/asistente-administrativo-contable"/>
-    <meta property="og:title" content="Curso - Asistente Administrativo Contable"/>
-    <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/asistente-administrativo-contable.jpeg"/>
-    <meta property="og:description" content="El curso de Asistente Administrativo Contable capacita de forma actualizada e integral para trabajar con eficacia en una compañía o identidad económica: desarrolla la formación contable y administrativa, junto con el manejo de gestión en las organizaciones empresariales, así como aspectos de índole legal y comercial y el control de las operaciones que una empresa debe ejecutar.El curso de Asistente Administrativo Contable capacita de forma actualizada e integral para trabajar con eficacia en una compañía o identidad económica: desarrolla la formación contable y administrativa, junto con el manejo de gestión en las organizaciones empresariales, así como aspectos de índole legal y comercial y el control de las operaciones que una empresa debe ejecutar."/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/curso-cajero-bancario-y-comercial"/>
+    <meta property="og:title" content="Curso - Cajero Bancario y Comercial"/>
+    <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/cajero-bancario.jpg"/>
+    <meta property="og:description" content="El curso de Cajero (a) Bancario está dirigido a personas que quieran trabajar en funciones de caja de cualquier banco, cajas de compensación, cooperativas, entidades financieras o del servicio público."/>
     <meta property="og:type" content="website"/>
 
 </head>
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
-        <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Asistente Administrativo Contable Mención En RR.HH.</span>
+      <a  class="d-flex align-items-center titulosCurso text-decoration-none">
+        <span class="fs-4" data-aos="fade-up">Cajero Bancario y Comercial mención en atención al cliente</span>
       </a>
-      <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/asistente-administrativo-contable.png" />
     </header>
-    <!--<div class="" style="text-align: center;">
-        <div class="ratio ratio-21x9">
-            <iframe src="https://www.youtube.com/embed/e92UZLi9tzw?rel=0" frameborder="0" allow="autoplay" encrypted-media title="Bienvenida" allowfullscreen></iframe>
-          </div>
-    </div>-->
+
     <div class=" bg-light rounded-3">
       <div class="container-fluid ">
         <div class=" mx-auto">
@@ -41,15 +36,15 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('asistenteContable') }}" method="post">
+                        <form class="form-card" action="{{ url_for('cajeroBancario') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
-                                    <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
+                                    <label class="form-control-label px-3">Curso a postular<span class="text-danger" > *</span></label> 
                                     <select id="curso" name="curso" type="select" onblur="validate(15)" required>
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        	{% if "AAC" in row[2] %}
+                                        	{% if "CBC" in row[2] %}
                                         		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
                                         			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
                                         		</option>
@@ -64,7 +59,7 @@
                                 <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" onblur="validate(1)" required> </div>
                                 <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
                                 <label class="form-control-label px-3">Apellidos<span class="text-danger"> *</span></label> 
-                                <input type="text" id="apellido" name="apellido" placeholder="Ingresa tu apellido" onblur="validate(2)"> </div>
+                                <input type="text" id="apellido" name="apellido" placeholder="Ingresa tu apellido" onblur="validate(2)" required> </div>
                             </div>
                             <div class="row justify-content-between text-left">
                                 <div class="form-group col-sm-6 flex-column d-flex" data-aos="fade-up"> 
@@ -104,10 +99,10 @@
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
                                      <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
                                      <input id="telefono" name="telefono" placeholder="Ingresa tu número" 
-                                      oninput="javascript: 
-                                        if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
-                                        if (this.value.indexOf('56') === 0) { this.value = ''; }"
-                                      type = "number" min="8" maxlength = "9" onblur="validate(9)"required> </div>
+                                     oninput="javascript: 
+                                       if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
+                                       if (this.value.indexOf('56') === 0) { this.value = ''; }"
+                                     type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
                                     <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
@@ -183,30 +178,18 @@
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img inspector-educacional-mencion img-fluid" src="static/Imagenes/asistente-administrativo-contable.jpg" 
+            <img class="bd-placeholder-img inspector-educacional-mencion img-fluid" src="static/Imagenes/cajero-bancario.jpeg" 
            role="inspector-educacional-mencion" style="width: 100%; height: auto;"/>
         </div>
       </div>
     <hr class="featurette-divider">
     <div class="row align-items-md-stretch">
         <div class="col-md-6" data-aos="fade-up">
-            <div class="h-100 p-5 bg-light border rounded-3">
+             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>El curso está orientado a que la persona pueda comprender el concepto de empresa y
-                sus tipos, además de saber quiénes se desempeñan en ellas para así poder realizar la
-                administración, gestión, control y contabilidad de facturación y cobranza de las mismas
-                respetando las disposiciones legales vigentes. De este modo, ser una ayuda y contribuir
-                en las organizaciones.</p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item dtalle">•	Comprender la gestión y tratamiento documental relativo a todos los
-                        procedimientos administrativos de la actividad empresarial.</li>
-                    <li class="list-group-item dtalle">•	Entender la gestión y archivado documental generados en la empresa.</li>
-                    <li class="list-group-item dtalle">•	Realizar un registro financiero contable que proporcione a la empresa la
-                        información del estado debidamente organizada, ordenada y presentada
-                        segun las técnicas y procedimientos más modernos y eficaces.</li>
-                    <li class="list-group-item dtalle">•	Conocer la gestión de recursos humanos en la empresa</li>
-                    <li class="list-group-item dtalle">•	Aplicar conocimientos básicos de la caja bancaria.</li>
-                  </ul>
+              <p>El curso Cajero Bancario y Comercial mención en atención al cliente.</p>
+              <p>Está dirigido a personas que deseen adquirir conocimientos y herramientas técnicas, para la adecuada manipulación y operación de una caja bancaria o comercial. Podrás desarrollar el perfil de competencias que se requiere para  operar una caja, dentro de una institución bancaria, financiera o empresa del rubro retail o también conocido como venta al detalle o comercio minorista de productos o servicios</p>
+              <p>Le entregaremos los conocimientos necesarios para que puedas desempeñarte con un perfil laboral competente y cubrir el puesto de trabajo esperado.</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -216,14 +199,14 @@
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
             <li class="list-group-item dtalle">Duración: 36 horas académicas.</li>
             {% for row in cursos %}
-                {% if "AAC" in row[2] %}
+                {% if "CBC" in row[2] %}
                     <li class="list-group-item dtalle">
                         Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                     </li> 
                 {% endif %}
             {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-asistente-contable.pdf">ver malla curricular</a>
+            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-cajero-bancario.pdf">ver malla curricular</a>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
@@ -242,16 +225,16 @@
     <div class="row align-items-md-stretch">
         <div class="col-md-12" data-aos="fade-up" style="text-align: center; ">
             <div class="h-100 p-5 bg-light border rounded-3">
-              <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
-                <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 75%.</li>
-                <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
-                <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
-                <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
-                     <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
-              </ul>
+                <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item dtalle">•	Matricula: $0.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
+                    <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 75%.</li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
+                    <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
+                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
+                       <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
+                </ul>
             </div>
           </div>
     

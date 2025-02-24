@@ -1,23 +1,23 @@
-{% extends "base.html" %} {% block title %}Trastorno del espectro autista y tutor sombra{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Asistente de la educación para párvulos{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/tea"/>
-    <meta property="og:title" content="Curso - Trastorno del espectro autista"/>
-    <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/tea.jpg"/>
-    <meta property="og:description" content="Este programa está diseñado para capacitar a profesionales en el acompañamiento y 
-apoyo de niños y niñas con diversas necesidades educativas especiales, 
-proporcionando herramientas, conocimientos y estrategias específicas para mejorar su 
-integración y desarrollo educativo y social.
-Este programa ofrece una oportunidad única para profesionales que buscan 
-especializarse en el acompañamiento de niños y niñas con necesidades educativas 
-especiales, proporcionando un marco de trabajo integral que abarca desde el 
-diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/curso-asistente-en-educadora-de-parvulos"/>
+    <meta property="og:title" content="Curso - Asistente de la educación para párvulos"/>
+    <meta property="og:img" content="https://iccapacitacionlaboral.cl/static/Imagenes/tea.jpg"/>
+    <meta property="og:description" content="Nuestro curso de Asistente en Educación Parvularia otorga los conocimientos necesarios para
+    favorecer el desarrollo integral de los/as niños/as en la primera infancia. Para ello, los/as
+    participantes adquirirán los conocimientos centrales respecto del currículum de Educación
+    Preescolar, así como una serie de estrategias para fomentar el desarrollo de las habilidades
+    centrales de los párvulos, a saber: lectura, escritura y cálculo. Asimismo, conocerán metodologías
+    específicas para el trabajo en aula con estudiantes con Necesidades Educativas Permanentes (TEA
+    y TDAH).
+    "/>
     <meta property="og:type" content="website"/>
 
 </head>
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Trastorno del espectro autista y tutor sombra</span>
+        <span class="fs-4" data-aos="fade-up">Asistente de la educación para párvulos</span>
       </a>
     </header>
     <div class=" bg-light rounded-3">
@@ -42,7 +42,7 @@ diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('tea') }}" method="post">
+                        <form class="form-card" action="{{ url_for('asistenteParvulos') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
@@ -50,7 +50,7 @@ diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                            {% if "TEA" in row[2] %}
+                                            {% if "AP" in row[2] %}
                                                 <option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
                                                     {{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
                                                 </option>
@@ -184,7 +184,7 @@ diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img tea img-fluid" src="static/Imagenes/tea.jpeg" 
+            <img class="bd-placeholder-img tea img-fluid" src="static/Imagenes/ap.jpeg" 
            role="tea" style="width: 100%; height: auto;"/>
         </div>
       </div>
@@ -208,14 +208,13 @@ diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
         <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>Este programa está diseñado para capacitar a profesionales en el acompañamiento y 
-                apoyo de niños y niñas con diversas necesidades educativas especiales, 
-                proporcionando herramientas, conocimientos y estrategias específicas para mejorar su 
-                integración y desarrollo educativo y social.</p>
-                <p>Este programa ofrece una oportunidad única para profesionales que buscan 
-                especializarse en el acompañamiento de niños y niñas con necesidades educativas 
-                especiales, proporcionando un marco de trabajo integral que abarca desde el 
-                diagnóstico hasta la implementación de estrategias de aprendizaje efectivas.</p>
+              <p>El curso de Asistente en Educación Parvularia otorga los conocimientos necesarios para
+                favorecer el desarrollo integral de los/as niños/as en la primera infancia. Para ello, los/as
+                participantes adquirirán los conocimientos centrales respecto del currículum de Educación
+                Preescolar, así como una serie de estrategias para fomentar el desarrollo de las habilidades
+                centrales de los párvulos, a saber: lectura, escritura y cálculo. Asimismo, conocerán metodologías
+                específicas para el trabajo en aula con estudiantes con Necesidades Educativas Permanentes (TEA
+                y TDAH).</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -223,16 +222,16 @@ diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 40 horas académicas.</li>
+            <li class="list-group-item dtalle">Duración: 35 horas académicas.</li>
             {% for row in cursos %}
-                {% if "TEA" in row[2] %}
+                {% if "AP" in row[2] %}
                     <li class="list-group-item dtalle">
                         Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                     </li> 
                 {% endif %}
             {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-tea.pdf">ver malla curricular</a>
+            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-asistente-parvulos.pdf">ver malla curricular</a>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">

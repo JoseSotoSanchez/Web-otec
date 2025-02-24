@@ -1,22 +1,23 @@
-{% extends "base.html" %} {% block title %}Convivencia Escolar, Necesidades Especiales Educativas (NEE).{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Trastorno del espectro autista y tutor sombra{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/convivencia-escolar"/>
-    <meta property="og:title" content="Curso - Convivencia Escolar, Necesidades Especiales Educativa (NEE), Trastornos del Espectro Autista ( TEA )"/>
-    <meta property="og:img" content="https://iccapacitacionlaboral.cl/static/Imagenes/convivencia-escolar.jpg"/>
-    <meta property="og:description" content="Está orientada en fortalecer conocimientos que permitan tanto a profesionales de la
-    educación como personas en general, sobre las necesidades educativas especiales de
-    carácter transitorias, (dificultades específicas del aprendizaje, transitorias del lenguaje y
-    déficit atencional) y de carácter permanente (sordos, ciegos, déficit intelectual severo,
-    discapacidades múltiples, entre otros). asimismo, a partir de este conocimiento,
-    implementar las adecuaciones curriculares básicas en el aula para ofrecer
-    oportunidades de aprendizaje a todos los alumnos."/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/curso-tutor-sombra-y-trastorno-del-espectro-autista"/>
+    <meta property="og:title" content="Curso - Trastorno del espectro autista"/>
+    <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/tea.jpg"/>
+    <meta property="og:description" content="Este programa está diseñado para capacitar a profesionales en el acompañamiento y 
+apoyo de niños y niñas con diversas necesidades educativas especiales, 
+proporcionando herramientas, conocimientos y estrategias específicas para mejorar su 
+integración y desarrollo educativo y social.
+Este programa ofrece una oportunidad única para profesionales que buscan 
+especializarse en el acompañamiento de niños y niñas con necesidades educativas 
+especiales, proporcionando un marco de trabajo integral que abarca desde el 
+diagnóstico hasta la implementación de estrategias de aprendizaje efectivas"/>
     <meta property="og:type" content="website"/>
 
 </head>
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
       <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-        <span class="fs-4" data-aos="fade-up">Convivencia Escolar mención resolución de conflictos.</span>
+        <span class="fs-4" data-aos="fade-up">Trastorno del espectro autista y tutor sombra</span>
       </a>
     </header>
     <div class=" bg-light rounded-3">
@@ -41,7 +42,7 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('convivenciaEscolar') }}" method="post">
+                        <form class="form-card" action="{{ url_for('tea') }}" method="post">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
@@ -49,11 +50,11 @@
                                         {% set primerElemento = true %}
                                         <option value="">Seleccione</option>
                                         {% for row in cursos %}
-                                        	{% if "resolución de conflictos" in row[1] %}
-                                        		<option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
-                                        			{{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
-                                        		</option>
-                                        	{% endif %}
+                                            {% if "TEA" in row[2] %}
+                                                <option value="{{row[0]}}" {% if primerElemento %}selected{% set primerElemento = false %}{% endif %}>
+                                                    {{row[1]}} | Inicio: {{ row[5].strftime('%d de %B del %Y') }} Fin: {{ row[6].strftime('%d de %B del %Y') }} | {{row[4]}} | {{row[3]}}
+                                                </option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select> 
                                 </div>
@@ -107,7 +108,7 @@
                                       oninput="javascript: 
                                         if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
                                         if (this.value.indexOf('56') === 0) { this.value = ''; }"
-                                      type = "number" min="8" maxlength = "9" onblur="validate(9)"required> </div>
+                                      type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
                                     <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
@@ -183,25 +184,38 @@
     <hr class="featurette-divider">
     <div class="row featurette" data-aos="zoom-in">
         <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-            <img class="bd-placeholder-img convivencia-escolar img-fluid" src="static/Imagenes/convivencia-escolar.jpg" 
-           role="convivencia-escolar" style="width: 100%; height: auto;"/>
+            <img class="bd-placeholder-img tea img-fluid" src="static/Imagenes/tea.jpeg" 
+           role="tea" style="width: 100%; height: auto;"/>
         </div>
       </div>
       <hr class="featurette-divider">
+
+  <div class="row featurette" data-aos="zoom-in">
+    <!-- <div class="container" >
+        <div class="container" >
+        <p id="textoAbout">Esta capacitación abre el camino al(a) participante para postular al cargo de Inspector Educacional
+            , en niveles de educación básica y media, disponible en establecimientos de educación pública o particular
+            subvencionada, conforme a los requisitos legales de la ley 21.109.
+        </p>
+        </div>
+    </div> -->
+    <!-- <div class="col-md-12" style="text-align: center;">
+          <a href="https://www.bcn.cl/leychile/navegar?idNorma=1123513">Ver ley 21.109: TÍTULO I De los Asistentes de la Educación Pública, Párrafo 2º Categorías de asistentes de la educación, Artículos 6,7,8,9.</a>
+      </div>
+  </div> -->
     <hr class="featurette-divider">
     <div class="row align-items-md-stretch">
         <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>
-                El curso "Convivencia Escolar y Resolución de Conflictos" 
-                tiene como finalidad que los participantes conozcan las disposiciones 
-                legales que regulan la convivencia escolar en el contexto educativo actual. 
-                Aprenderás a aplicar estas normativas y las reglas internas para mejorar el 
-                clima organizacional, comprendiendo la importancia de cumplir con la normativa 
-                vigente para evitar sanciones. Además, valorarás que la buena convivencia es tarea 
-                de todos los miembros de la comunidad educativa, ya sea en Jardines, Escuelas, 
-                Colegios o Liceos.</p>
+              <p>Este programa está diseñado para capacitar a profesionales en el acompañamiento y 
+                apoyo de niños y niñas con diversas necesidades educativas especiales, 
+                proporcionando herramientas, conocimientos y estrategias específicas para mejorar su 
+                integración y desarrollo educativo y social.</p>
+                <p>Este programa ofrece una oportunidad única para profesionales que buscan 
+                especializarse en el acompañamiento de niños y niñas con necesidades educativas 
+                especiales, proporcionando un marco de trabajo integral que abarca desde el 
+                diagnóstico hasta la implementación de estrategias de aprendizaje efectivas.</p>
             </div>
           </div>
       <div class="col-md-6">
@@ -209,16 +223,16 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 30 horas académicas.</li>
+            <li class="list-group-item dtalle">Duración: 40 horas académicas.</li>
             {% for row in cursos %}
-                {% if "resolución de conflictos" in row[1] %}
+                {% if "TEA" in row[2] %}
                     <li class="list-group-item dtalle">
                         Fecha: {{ row[5].strftime('%d de %B del %Y') }} al {{ row[6].strftime('%d de %B del %Y') }}. ({{row[4]}} de {{row[3]}}).
                     </li> 
                 {% endif %}
             {% endfor %}
             <li class="list-group-item dtalle">Entrega de Certificado al completar el curso.</li>
-            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-convivencia-escolar.pdf">ver malla curricular</a>
+            <a style="color:#084298;text-decoration: underline;font-weight: bold; font-size: larger;" class="list-group-item dtalle" target="_blank" href="static/mallas/malla-tea.pdf">ver malla curricular</a>
           </ul>
         </div>
         <div class="h-50 p-5 bg-light border rounded-3" data-aos="fade-up">
@@ -240,12 +254,12 @@
                 <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                    <li class="list-group-item dtalle">•	Valor del curso: $299.960.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $340.000.-</li>
                     <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 75%.</li>
-                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $74.990.-</b></li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $85.000.-</b></li>
                     <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
-                    <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
-                    <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
+                  <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
+                       <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
                 </ul>
             </div>
           </div>

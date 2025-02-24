@@ -158,7 +158,7 @@ def nosotros():
 def privacidad():
     return render_template('privacidad.html')
 
-@app.route('/asistente-aula', methods=['GET', 'POST'])
+@app.route('/curso-asistente-de-aula', methods=['GET', 'POST'])
 def asistenteAula():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -191,13 +191,13 @@ def asistenteAula():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/asistente-aula.html', cursos=cursos)
+                return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-aula.html', cursos=cursos)
+            return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-aula.html', cursos=cursos)
+            return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -224,12 +224,12 @@ def asistenteAula():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/asistente-aula.html',
+        return render_template('cursos/curso-asistente-de-aula.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/inspector-educacional', methods=['GET', 'POST'])
+@app.route('/curso-inspector-educacional', methods=['GET', 'POST'])
 def inspectorEducacional():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -262,13 +262,13 @@ def inspectorEducacional():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/inspector-educacional.html', cursos=cursos)
+                return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/inspector-educacional.html', cursos=cursos)
+            return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/inspector-educacional.html', cursos=cursos)
+            return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -295,12 +295,12 @@ def inspectorEducacional():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/inspector-educacional.html',
+        return render_template('cursos/curso-inspector-educacional.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/asistente-administrativo-contable', methods=['GET', 'POST'])
+@app.route('/curso-asistente-administrativo-contable', methods=['GET', 'POST'])
 def asistenteContable():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -333,13 +333,13 @@ def asistenteContable():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
+                return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
+            return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-administrativo-contable.html', cursos=cursos)
+            return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -366,12 +366,12 @@ def asistenteContable():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/asistente-administrativo-contable.html',
+        return render_template('cursos/curso-asistente-administrativo-contable.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/cajero-bancario', methods=['GET', 'POST'])
+@app.route('/curso-cajero-bancario-y-comercial', methods=['GET', 'POST'])
 def cajeroBancario():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -404,13 +404,13 @@ def cajeroBancario():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/cajero-bancario.html', cursos=cursos)
+                return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/cajero-bancario.html', cursos=cursos)
+            return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/cajero-bancario.html', cursos=cursos)
+            return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -437,12 +437,12 @@ def cajeroBancario():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/cajero-bancario.html',
+        return render_template('cursos/curso-cajero-bancario-y-comercial.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/convivencia-escolar', methods=['GET', 'POST'])
+@app.route('/curso-convivencia-escolar', methods=['GET', 'POST'])
 def convivenciaEscolar():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -475,13 +475,13 @@ def convivenciaEscolar():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/convivencia-escolar.html', cursos=cursos)
+                return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/convivencia-escolar.html', cursos=cursos)
+            return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/convivencia-escolar.html', cursos=cursos)
+            return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -508,12 +508,12 @@ def convivenciaEscolar():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/convivencia-escolar.html',
+        return render_template('cursos/curso-convivencia-escolar.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/tea', methods=['GET', 'POST'])
+@app.route('/curso-tutor-sombra-y-trastorno-del-espectro-autista', methods=['GET', 'POST'])
 def tea():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -546,13 +546,13 @@ def tea():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/tea.html', cursos=cursos)
+                return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/tea.html', cursos=cursos)
+            return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/tea.html', cursos=cursos)
+            return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -579,12 +579,12 @@ def tea():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/tea.html',
+        return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
     
-@app.route('/corredor-propiedades', methods=['GET', 'POST'])
+@app.route('/curso-corredor-de-propiedades-y-estudio-de-titulo', methods=['GET', 'POST'])
 def corretaje():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -617,13 +617,13 @@ def corretaje():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/corredor-propiedades.html', cursos=cursos)
+                return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/corredor-propiedades.html', cursos=cursos)
+            return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/corredor-propiedades.html', cursos=cursos)
+            return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -650,12 +650,12 @@ def corretaje():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/corredor-propiedades.html',
+        return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/rrhh', methods=['GET', 'POST'])
+@app.route('/curso-perfeccionamiento-rrhh', methods=['GET', 'POST'])
 def rrhh():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -688,13 +688,13 @@ def rrhh():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/rrhh.html', cursos=cursos)
+                return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/rrhh.html', cursos=cursos)
+            return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/rrhh.html', cursos=cursos)
+            return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -721,12 +721,12 @@ def rrhh():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/rrhh.html',
+        return render_template('cursos/curso-perfeccionamiento-rrhh.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
 
-@app.route('/asistente-parvulos', methods=['GET', 'POST'])
+@app.route('/curso-asistente-en-educadora-de-parvulos', methods=['GET', 'POST'])
 def asistenteParvulos():
     if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
         nombre = upperFirst(request.form['nombre'].lower())
@@ -759,13 +759,13 @@ def asistenteParvulos():
             aspirante = cursor.fetchone()
             if aspirante:
                 flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/asistente-parvulos.html', cursos=cursos)
+                return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-parvulos.html', cursos=cursos)
+            return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/asistente-parvulos.html', cursos=cursos)
+            return render_template('cursos/acurso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
             id = cursor.lastrowid
@@ -792,7 +792,7 @@ def asistenteParvulos():
             cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
             cursos = cursor.fetchall()
         conexion.close()
-        return render_template('cursos/asistente-parvulos.html',
+        return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
