@@ -5,6 +5,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from email.mime.image import MIMEImage
+from email.utils import formataddr
+from email.utils import make_msgid
 
 def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horario, dias):
     curso = upperFirst(curso.replace("-", " ").lower())
@@ -15,7 +17,8 @@ def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horar
     email_send = correo
     subject = "Postulación exitosa al curso "+curso+""
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -100,7 +103,7 @@ def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horar
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -114,7 +117,8 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
     email_send = correo
     subject = "Financiamiento Programa Emplea ICL (Curso Capacitación Laboral)"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -245,7 +249,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -259,7 +263,8 @@ def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurs
     email_send = correo
     subject = "¡Felicitaciones! Fuiste beneficiado con nuestra beca ICL con un 75% de descuento"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -407,7 +412,7 @@ def enviarEmailBienvenidaIEMCE(nombre, correo, nombreCurso, inicioCurso, finCurs
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -421,7 +426,8 @@ def enviarEmailBienvenidaAAMCE(nombre, correo, nombreCurso, inicioCurso, finCurs
     email_send = correo
     subject = "¡Felicitaciones! Fuiste beneficiado con nuestra beca ICL con un 75% de descuento"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -563,7 +569,7 @@ Para que verifiquen que somos acreditados por Sence.</p>
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -577,7 +583,8 @@ def enviarEmailBienvenidaCBC(nombre, correo, nombreCurso, inicioCurso, finCurso,
     email_send = correo
     subject = "¡Felicitaciones! Fuiste beneficiado con nuestra beca ICL con un 75% de descuento"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -714,7 +721,7 @@ def enviarEmailBienvenidaCBC(nombre, correo, nombreCurso, inicioCurso, finCurso,
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -728,7 +735,8 @@ def enviarEmailBienvenidaAAC(nombre, correo, nombreCurso, inicioCurso, finCurso,
     email_send = correo
     subject = "¡Felicitaciones! Fuiste beneficiado con nuestra beca ICL con un 75% de descuento"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -865,7 +873,7 @@ def enviarEmailBienvenidaAAC(nombre, correo, nombreCurso, inicioCurso, finCurso,
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -879,7 +887,8 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
     email_send = correo
     subject = "Aviso de pago recibido"
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -985,7 +994,7 @@ def enviarEmailPago(nombre, correo, nombreCurso, codigoCurso, montoCurso, medioP
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())
@@ -999,7 +1008,8 @@ def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, c
     email_send = correo
     subject = "Bienvenido(a) al curso "+ nombreCurso + ""
     msg = MIMEMultipart()
-    msg['From'] = email_user
+    msg['From'] = formataddr(("IC Capacitación Laboral", email_user))
+    msg['Message-ID'] = make_msgid()
     msg['To'] = email_send
     msg['Subject'] = subject
     h = str("Holder")
@@ -1131,7 +1141,7 @@ def enviarEmailBienvenida(nombre, correo, nombreCurso, urlZoom, idReunionZoom, c
     """.format(h=h , c=c , t=t) 
         
     msg.attach(MIMEText(html,'html'))
-    server = smtplib.SMTP('iccapacitacionlaboral.cl',25)
+    server = smtplib.SMTP('iccapacitacionlaboral.cl',587)
     server.starttls()
     server.login(email_user,email_password)
     server.sendmail(email_user,email_send,msg.as_string())

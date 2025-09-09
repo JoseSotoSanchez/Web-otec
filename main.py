@@ -12,128 +12,70 @@ import os
 from tempfile import NamedTemporaryFile
 import locale
 import sys
+import socket
 from itertools import cycle
-
+from models.aspirante import Aspirante, AspiranteJSON
+from models.curso import Curso
+from db_operations import verificar_postulacion_existente, obtener_cursos_activos, registrar_aspirante, obtener_info_curso, insertar_log_usuario, obtener_aspirantes_por_curso, obtener_cursos, obtener_datos_curso_por_id, obtener_estados_alumno,guardar_contacto, obtener_info_alumno_por_id, buscar_alumnos_por_nombre, buscar_alumno_por_rut, obtener_aspirante_por_id, registrar_pago, actualizar_datos_alumno, registrar_estado_alumno
+import bcrypt
 
 
 app = Flask(__name__)
 
-locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
-# Change this to your secret key (can be anything, it's for extra protection)
-app.secret_key = 'your secret key'
+locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
+app.secret_key = 'b93f9e42086d47df8c36f5121b6a8a22'
+API_SECRET_KEY = 'b93f9e42086d47df8c36f5121b6a8a22'
 
-# Enter your database connection details below
-#local
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = ''
-# app.config['MYSQL_DB'] = 'otec'
-
-#web
-#mydb = mysql.connector.connect(host="iccapacitacionlaboral.cl", user="iccapaci1_admin", passwd="gQ9Pb$$PKh", database="iccapaci1_iccaplab")
-
-ROWS_PER_PAGE = 10
 cursoActivo = 0
-idAlumnoEstado = 0
-idGlobal = 0
-rutGlobal = ''
-nombreGlobal = ''
-estadoGlobal = 0
 idAlumnoSearch = 0
 aspirantesSave = []
 cursos = []
-flag = 0
-# http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Output message if something goes wrong...
     msg = ''
-    # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'usuario' in request.form and 'clave' in request.form:
-    # Create variables for easy access
         usuario = request.form['usuario']
         clave = request.form['clave']
         hostname = request.remote_addr
         IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
+        hostnameAddr = hostname + " / " + IPAddr
+        clave_hashed = bcrypt.hashpw(clave.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT id, nick, nombre FROM Usuario WHERE nick = %s AND clave = %s", (usuario, clave,))
+            cursor.execute("SELECT id, nick, nombre, clave FROM Usuario WHERE nick = %s", (usuario,))
             account = cursor.fetchone()
         conexion.close()
-        if account:
-             #LOG login
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('INSERT INTO LogUsuario (nick, clave, estado, fecha, ip) VALUES (%s, %s, "OK",now(), %s)', (usuario, clave, hostnameAddr,))
-                conexion.commit()
-            conexion.close()
+
+        if account and bcrypt.checkpw(clave.encode('utf-8'), account[3].encode('utf-8')):
+            estado = "OK"
+            insertar_log_usuario(usuario, clave_hashed, estado, hostnameAddr)
             session['loggedin'] = True
             session['id'] = account[0]
             session['usuario'] = account[1]
             session['nombre'] = account[2]
-            # Redirect to home page
             flash('Login correcto!', category='success')
             return redirect(url_for('index'))
         else:
-            #LOG login
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('INSERT INTO LogUsuario (nick, clave, estado, fecha, ip) VALUES (%s, %s, "Fallido", now(), %s)', (usuario, clave, hostnameAddr,))
-                conexion.commit()
-            conexion.close()
+            estado = "fallido"
+            insertar_log_usuario(usuario, clave_hashed, estado, hostnameAddr)
             flash('Usuario y/o contraseña incorrectas!', category='error')
-    return render_template('login.html', msg='')
+    return render_template('login.html', msg=msg)
 
-# http://localhost:5000/python/logout - this will be the logout page
 @app.route('/logout')
 def logout():
-    # Remove session data, this will log the user out
    session.pop('loggedin', None)
    session.pop('id', None)
    session.pop('usuario', None)
    # Redirect to login page
    return redirect(url_for('login'))
 
-   # http://localhost:5000/pythinlogin/register - this will be the registration page, we need to use both GET and POST requests
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    # Output message if something goes wrong...
-    msg = ''
-    # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'usuario' in request.form and 'usuario' in request.form and 'email' in request.form:
-        # Create variables for easy access
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-         # Check if account exists using MySQL
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
-            account = cursor.fetchone()
-        conexion.close()
-        # If account exists show error and validation checks
-        if account:
-            msg = 'Account already exists!'
-        elif not username or not password or not email:
-            msg = 'Please fill out the form!'
-        else:
-            # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
-            msg = 'You have successfully registered!'
-    elif request.method == 'POST':
-        # Form is empty... (no POST data)
-        msg = 'Please fill out the form!'
-    # Show registration form with message (if any)
-    return render_template('register.html', msg=msg)
-
 @app.route('/')
 def index():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-        cursos = cursor.fetchall()
-        conexion.close()
+        cursos = obtener_cursos_activos()
         return render_template('home.html',
                             cursos=cursos,
                             )
@@ -143,9 +85,7 @@ def index():
 def home():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-        cursos = cursor.fetchall()
-        conexion.close()
+        cursos = obtener_cursos_activos()
         return render_template('home.html',
                             cursos=cursos,
                             )
@@ -158,645 +98,107 @@ def nosotros():
 def privacidad():
     return render_template('privacidad.html')
 
-@app.route('/curso-asistente-de-aula', methods=['GET', 'POST'])
-def asistenteAula():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
+@app.route('/postulacion-curso', methods=['GET', 'POST'])
+def postulacionCurso():
+    if request.method == 'POST':
         hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
+        ip = request.environ.get('REMOTE_ADDR', '0.0.0.0')
+        aspiranteNew = Aspirante(request.form, hostname, ip, request.environ)
         conexion = obtener_conexion()
-        rut = rut.upper()
+        rut = aspiranteNew.rut.upper()
         rut = rut.replace("-","")
         rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
+        cursos = obtener_cursos_activos()
+        aspirante = verificar_postulacion_existente(rut, aspiranteNew.curso)
+        if aspirante:
+            flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
+            return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
+        registrar_aspirante(aspiranteNew, rut)
+        curso_ = obtener_info_curso(aspiranteNew.curso)
+        nombre = aspiranteNew.nombre + ' ' + aspiranteNew.apellido
         curso = curso_[0][1]
         mes = curso_[0][3].month
         nombreMes = obtenerMes(mes)
         mesFin = curso_[0][4].month
         nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        enviarEmail(nombre, aspiranteNew.telefono, curso, aspiranteNew.correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
     else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-asistente-de-aula.html',
+        cursos = obtener_cursos_activos()
+        return render_template('index.html',
                             cursos=cursos,
                             )
     return redirect(url_for('index'))
+
+@app.route('/curso-asistente-de-aula', methods=['GET', 'POST'])
+def asistenteAula():
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-asistente-de-aula.html',
+                            cursos=cursos,
+                            )
 
 @app.route('/curso-inspector-educacional', methods=['GET', 'POST'])
 def inspectorEducacional():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-inspector-educacional.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-inspector-educacional.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-inspector-educacional.html',
+                        cursos=cursos,
+                        )
 
 @app.route('/curso-asistente-administrativo-contable', methods=['GET', 'POST'])
 def asistenteContable():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-asistente-administrativo-contable.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-asistente-administrativo-contable.html',
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-asistente-administrativo-contable.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('index'))
 
 @app.route('/curso-cajero-bancario-y-comercial', methods=['GET', 'POST'])
 def cajeroBancario():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-cajero-bancario-y-comercial.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-cajero-bancario-y-comercial.html',
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-cajero-bancario-y-comercial.html',
                             cursos=cursos,
                             )
-    return redirect(url_for('index'))
-
+    
 @app.route('/curso-convivencia-escolar', methods=['GET', 'POST'])
 def convivenciaEscolar():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-convivencia-escolar.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-convivencia-escolar.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
-
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-convivencia-escolar.html',
+                        cursos=cursos,
+                        )
+    
 @app.route('/curso-tutor-sombra-y-trastorno-del-espectro-autista', methods=['GET', 'POST'])
 def tea():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
-    
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-tutor-sombra-y-trastorno-del-espectro-autista.html',
+                        cursos=cursos,
+                        )
+
 @app.route('/curso-corredor-de-propiedades-y-estudio-de-titulo', methods=['GET', 'POST'])
 def corretaje():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
+    cursos = obtener_cursos_activos()
+    return render_template('cursos/curso-corredor-de-propiedades-y-estudio-de-titulo.html',
+                        cursos=cursos,
+                        )
 
 @app.route('/curso-perfeccionamiento-rrhh', methods=['GET', 'POST'])
 def rrhh():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-perfeccionamiento-rrhh.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-perfeccionamiento-rrhh.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
-
+    cursos = obtener_cursos_activos()    
+    return render_template('cursos/curso-perfeccionamiento-rrhh.html',
+                        cursos=cursos,
+                        )
+    
 @app.route('/curso-asistente-en-educadora-de-parvulos', methods=['GET', 'POST'])
 def asistenteParvulos():
-    if request.method == 'POST' and 'nombre' in request.form and 'apellido' in request.form and 'rut' in request.form and 'sexo' in request.form and 'edad' in request.form and 'nacionalidad' in request.form and 'ecivil' in request.form and 'email' in request.form and 'telefono' in request.form and 'profesion' in request.form and 'nestudios' in request.form and 'slaboral' in request.form and 'direccion' in request.form and 'region' in request.form and 'curso' in request.form and 'ingreso' in request.form:
-        nombre = upperFirst(request.form['nombre'].lower())
-        apellido = upperFirst(request.form['apellido'].lower())
-        rut = request.form['rut']
-        sexo = request.form['sexo']
-        edad = request.form['edad']
-        nacionalidad = request.form['nacionalidad']
-        ecivil = request.form['ecivil']
-        correo = request.form['email']
-        telefono = request.form['telefono']
-        profesion = request.form['profesion']
-        nestudios = request.form['nestudios']
-        slaboral = request.form['slaboral']
-        direccion = request.form['direccion']
-        region = request.form['region']
-        curso = request.form['curso']
-        ingreso = request.form['ingreso']
-        hostname = request.remote_addr
-        IPAddr = request.environ['REMOTE_ADDR']
-        hostnameAddr = hostname + " / "+IPAddr
-        conexion = obtener_conexion()
-        rut = rut.upper()
-        rut = rut.replace("-","")
-        rut = rut.replace(".","")
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-            cursos = cursor.fetchall()
-            cursor.execute('SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s', (rut,curso))# WHERE id = %s', (session['id'],))
-            aspirante = cursor.fetchone()
-            if aspirante:
-                flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-                return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
-        if not validar_rut(rut):
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
-        if len(rut) < 6:
-            flash('Rut no válido! Favor vuelva a intentarlo', category='error')
-            return render_template('cursos/acurso-asistente-en-educadora-de-parvulos.html', cursos=cursos)
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno (nombre, apellido, rut, sexo, edad, nacionalidad, estado_civil, email, telefono, profesion, nivel_estudios, situacion_laboral, direccion, region, fecha, id_curso, id_subsidio, ingreso) VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, now(), %s, 1, %s)', (nombre,apellido,rut,sexo,edad,nacionalidad,ecivil,correo,telefono,profesion,nestudios,slaboral,direccion,region,curso, ingreso))
-            id = cursor.lastrowid
-            cursor.execute('INSERT INTO Alumno_Estado(id_alumno, id_estado, fecha,id_usuario) VALUES (%s, 6, now(),1)', (id))
-            cursor.execute('INSERT INTO LogUsuario (estado, fecha, ip, curso, idAlumno) VALUES ("postulación de curso",now(), %s, %s, %s)', (hostnameAddr,curso, id))
-        conexion.commit()
-        conexion.close()
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, c.fecha_inicio, c.fecha_fin, h.rango, d.rango FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.id = %s', (curso))
-            curso_ = cursor.fetchall()
-        conexion.close()
-        nombre = nombre + ' ' + apellido
-        curso = curso_[0][1]
-        mes = curso_[0][3].month
-        nombreMes = obtenerMes(mes)
-        mesFin = curso_[0][4].month
-        nombreMesFin = obtenerMes(mesFin)
-        enviarEmail(nombre, telefono, curso, correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
-        flash('Postulación enviada correctamente!', category='success')
-    else:
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('SELECT c.id, c.nombre, c.codigo_curso, h.rango, d.rango, c.fecha_inicio, c.fecha_fin FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id WHERE c.activo = 1 ORDER BY c.id DESC')# WHERE id = %s', (session['id'],))
-            cursos = cursor.fetchall()
-        conexion.close()
-        return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html',
-                            cursos=cursos,
-                            )
-    return redirect(url_for('index'))
-
+    cursos = obtener_cursos_activos()    
+    return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html',
+                        cursos=cursos,
+                        )
+    
 @app.route('/sign_up')
 def sign_up():
     return render_template('sign_up.html')
@@ -809,11 +211,7 @@ def contacto():
         telefono = request.form['telefono']
         motivo = request.form['motivo']
         mensaje = request.form['mensaje']
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Contacto(nombre, correo, telefono, motivo, mensaje, fecha) VALUES (%s, %s, %s, %s, %s,now())', (nombre, correo,telefono,motivo,mensaje,))
-        conexion.commit()
-        conexion.close()
+        guardar_contacto(nombre, correo, telefono, motivo, mensaje)
         flash('Mensaje enviado correctamente!', category='success')
         return redirect(url_for('index'))
     return render_template('contactanos.html')
@@ -827,27 +225,60 @@ def aspirantes():
         if request.method == 'POST' and 'curso' in request.form :
             curso = request.form['curso']
             selected=curso
-            conexion = obtener_conexion()
-            with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))# WHERE id = %s', (session['id'],))
-                aspirantes = cursor.fetchall()
-                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
-                cursos = cursor.fetchall()
-                cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (curso))# WHERE id = %s', (session['id'],))
-                datosCurso = cursor.fetchall()
-                cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                estados = cursor.fetchall()
-                conexion.close()
-                total = len(aspirantes)
-                aspirantesSave = aspirantes
+            aspirantes = obtener_aspirantes_por_curso(curso)
+            cursos = obtener_cursos()
+            datosCurso = obtener_datos_curso_por_id(curso)
+            estados = obtener_estados_alumno()
+            total = len(aspirantes)
+            aspirantesSave = aspirantes
+            cursoActivo = curso
+            page, per_page, offset = get_page_args(page_parameter='page',
+                                        per_page_parameter='per_page')
+            total = len(aspirantes)
+            pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
+            pagination = Pagination(page=page, per_page=per_page, total=total,
+                                    css_framework='bootstrap4')
+            
+            page_ = request.args.get('page_', 1,type=int)
+            per_page_ = 50
+            start = (page_ - 1) * per_page_
+            end = start + per_page_
+            total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
+
+            items_on_page = aspirantes[start:end]
+            return render_template('administracion/aspirantes.html',
+                            aspirantes=pagination_aspirantes,
+                            page=page,
+                            per_page=100,
+                            pagination=pagination,
+                            aspirantesSave = aspirantes,
+                            cursos=cursos,
+                            datosCurso=datosCurso,
+                            estados = estados,
+                            selected = int(selected),
+                            total = total,
+                            items_on_page = items_on_page,
+                            total_pages = total_pages,
+                            page_=page_,
+                            )
+        else:
+            if cursoActivo == 0:
+                curso = request.args.get('curso', 0,type=int)
                 cursoActivo = curso
+            if cursoActivo != 0:
+                selected=cursoActivo
+                aspirantes = obtener_aspirantes_por_curso(cursoActivo)
+                cursos = obtener_cursos()
+                datosCurso = obtener_datos_curso_por_id(cursoActivo)
+                estados = obtener_estados_alumno()
                 page, per_page, offset = get_page_args(page_parameter='page',
-                                           per_page_parameter='per_page')
+                                        per_page_parameter='per_page')
                 total = len(aspirantes)
                 pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
                 pagination = Pagination(page=page, per_page=per_page, total=total,
                                         css_framework='bootstrap4')
-                
+                aspirantesSave = aspirantes
+                total = len(aspirantes)
                 page_ = request.args.get('page_', 1,type=int)
                 per_page_ = 50
                 start = (page_ - 1) * per_page_
@@ -868,73 +299,21 @@ def aspirantes():
                                 total = total,
                                 items_on_page = items_on_page,
                                 total_pages = total_pages,
-                                page_=page_,
-                                )
-        else:
-            if cursoActivo == 0:
-                curso = request.args.get('curso', 0,type=int)
-                cursoActivo = curso
-            if cursoActivo != 0:
-                selected=cursoActivo
-                conexion = obtener_conexion()
-                with conexion.cursor() as cursor:
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (cursoActivo))# WHERE id = %s', (session['id'],))
-                    aspirantes = cursor.fetchall()
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
-                    cursos = cursor.fetchall()
-                    cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (cursoActivo))# WHERE id = %s', (session['id'],))
-                    datosCurso = cursor.fetchall()
-                    cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                    estados = cursor.fetchall()
-                    conexion.close()
-                    page, per_page, offset = get_page_args(page_parameter='page',
-                                           per_page_parameter='per_page')
-                    total = len(aspirantes)
-                    pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
-                    pagination = Pagination(page=page, per_page=per_page, total=total,
-                                            css_framework='bootstrap4')
-                    aspirantesSave = aspirantes
-                    total = len(aspirantes)
-                    page_ = request.args.get('page_', 1,type=int)
-                    per_page_ = 50
-                    start = (page_ - 1) * per_page_
-                    end = start + per_page_
-                    total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
-
-                    items_on_page = aspirantes[start:end]
-                return render_template('administracion/aspirantes.html',
-                                aspirantes=pagination_aspirantes,
-                                page=page,
-                                per_page=100,
-                                pagination=pagination,
-                                aspirantesSave = aspirantes,
-                                cursos=cursos,
-                                datosCurso=datosCurso,
-                                estados = estados,
-                                selected = int(selected),
-                                total = total,
-                                items_on_page = items_on_page,
-                                total_pages = total_pages,
                                 page_ =page_,
                                 )
             else:
                 aspirantes = []
                 items_on_page = []
-                conexion = obtener_conexion()
-                with conexion.cursor() as cursor:
-                    cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
-                    cursos = cursor.fetchall()
-                    cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                    estados = cursor.fetchall()
-                    conexion.close()
-                    page, per_page, offset = get_page_args(page_parameter='page',
-                                           per_page_parameter='per_page')
-                    total = len(aspirantes)
-                    pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
-                    pagination = Pagination(page=page, per_page=per_page, total=total,
-                                            css_framework='bootstrap4')
-                    aspirantesSave = aspirantes
-                    total = len(aspirantes)
+                cursos = obtener_cursos()
+                estados = obtener_estados_alumno()
+                page, per_page, offset = get_page_args(page_parameter='page',
+                                        per_page_parameter='per_page')
+                total = len(aspirantes)
+                pagination_aspirantes = get_aspirantes(offset=offset, per_page=per_page, aspirantes=aspirantes)
+                pagination = Pagination(page=page, per_page=per_page, total=total,
+                                        css_framework='bootstrap4')
+                aspirantesSave = aspirantes
+                total = len(aspirantes)
                 return render_template('administracion/aspirantes.html',
                                 aspirantes=pagination_aspirantes,
                                 page=page,
@@ -970,21 +349,17 @@ def busqueda():
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
                 if idalumno is not None and idalumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idalumno))# WHERE id = %s', (session['id'],))
+                    aspirantes = obtener_info_alumno_por_id(idalumno) 
                 if nombreAlumno is not None and nombreAlumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.nombre LIKE %s OR a.apellido Like %s order by a.id desc;', ('%'+nombreAlumno+'%', '%'+nombreAlumno+'%'))# WHERE id = %s', (session['id'],))
+                    aspirantes = buscar_alumnos_por_nombre(nombreAlumno)
                 if rutAlumno is not None and rutAlumno.strip() != '':
-                    cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.rut LIKE %s order by a.id desc;', ('%'+rutAlumno+'%'))# WHERE id = %s', (session['id'],))
-                aspirantes = cursor.fetchall()
+                    aspirantes = buscar_alumno_por_rut(rutAlumno)
                 if aspirantes is None or not aspirantes:
                     flash('No se ha encontrado resultados!', category='error')
                     return redirect(url_for('busqueda'))
-                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
-                cursos = cursor.fetchall()
-                cursor.execute('SELECT nombre, codigo_curso, id FROM Curso where id = %s', (aspirantes[0][23]))# WHERE id = %s', (session['id'],))
-                datosCurso = cursor.fetchall()
-                cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                estados = cursor.fetchall()
+                cursos = obtener_cursos()
+                datosCurso = obtener_datos_curso_por_id(aspirantes[0][23])
+                estados = obtener_estados_alumno()
                 conexion.close()
                 total = len(aspirantes)
                 return render_template('administracion/busqueda.html',
@@ -998,12 +373,9 @@ def busqueda():
             aspirantes = [] 
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, c.id, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND ae.fecha = (select de.fecha AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND a.id = %s order by a.id desc;', (idAlumnoSearch))# WHERE id = %s', (session['id'],))
-                aspirantes = cursor.fetchall()
-                cursor.execute('SELECT id, nombre, codigo_curso FROM Curso order by id desc')# WHERE id = %s', (session['id'],))
-                cursos = cursor.fetchall()
-                cursor.execute('SELECT id, estado FROM Estado_Alumno')# WHERE id = %s', (session['id'],))
-                estados = cursor.fetchall()
+                aspirantes = obtener_aspirante_por_id(idAlumnoSearch)
+                cursos = obtener_cursos()
+                estados = obtener_estados_alumno()
                 conexion.close()
                 total = len(aspirantes)
             return render_template('administracion/busqueda.html',
@@ -1026,17 +398,14 @@ def descargaCsv(curso):
             ws = wb.active
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
-                aspirantes = cursor.fetchall()
+                # cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
+                aspirantes = obtener_aspirantes_por_curso(curso)
                 conexion.close()
-
             nombre_archivo = 'curso ' + aspirantes[0][17] + '.xlsx'
-
             with NamedTemporaryFile(delete=False) as tmpfile:
                 for row in aspirantes:
                     ws.append(row)
                 wb.save(tmpfile.name)
-
             return send_file(
                 tmpfile.name,
                 attachment_filename=nombre_archivo,
@@ -1055,8 +424,8 @@ def descargaCsvPagados(curso):
             ws = wb.active
             conexion = obtener_conexion()
             with conexion.cursor() as cursor:
-                cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
-                aspirantes = cursor.fetchall()
+                # cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil, a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral, a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso, ea.estado, u.nick, ea.id ,c.costo, a.ingreso, (SELECT SUM(p.monto) FROM Pagos p WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id JOIN Estado_Alumno ea ON ae.id_estado = ea.id JOIN Usuario u ON ae.id_usuario = u.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s order by a.id desc;', (curso))
+                aspirantes = obtener_aspirantes_por_curso(curso)
                 conexion.close()
 
             nueva_lista_aspirantes = []
@@ -1113,8 +482,10 @@ def guardarPago(id, curso):
         idUser = session['id']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Pagos(id_alumno, id_curso, monto, medio_pago, fecha) VALUES (%s, %s, %s, %s, now())', (id, curso, montoPago,formaPago,))
-            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', ("18", id, idUser,))
+            registrar_pago(id, curso, montoPago, formaPago)
+            registrar_estado_alumno("18", id, idUser)
+            # cursor.execute('INSERT INTO Pagos(id_alumno, id_curso, monto, medio_pago, fecha) VALUES (%s, %s, %s, %s, now())', (id, curso, montoPago,formaPago,))
+            # cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', ("18", id, idUser,))
         conexion.commit()
         conexion.close()
         flash('Pago guardado correctamente!', category='success')
@@ -1134,12 +505,10 @@ def guardarEstado(id, curso):
         apellidosAlumno = request.form['apellidosAlumno']
         idUser = session['id']
         selected=curso
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
-            cursor.execute('UPDATE Alumno SET nombre = %s, apellido = %s, email = %s, telefono = %s WHERE id = %s', (nombresAlumno, apellidosAlumno, correoAlumno, celularAlumno,id,))
-        conexion.commit()
-        conexion.close()
+        registrar_estado_alumno(idEstado, id, idUser)
+        actualizar_datos_alumno(id, nombresAlumno, apellidosAlumno, correoAlumno, celularAlumno)
+            # cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
+            # cursor.execute('UPDATE Alumno SET nombre = %s, apellido = %s, email = %s, telefono = %s WHERE id = %s', (nombresAlumno, apellidosAlumno, correoAlumno, celularAlumno,id,))x|x|
         flash('Estado guardado correctamente!', category='success')
         global cursoActivo
         cursoActivo = curso
@@ -1150,7 +519,6 @@ def guardarEstado(id, curso):
 
 @app.route('/envioCorreoAceptacion/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacion(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         page_ = request.args.get('page_', 1,type=int)
         urlPago = request.form['urlPago']
@@ -1158,11 +526,11 @@ def envioCorreoAceptacion(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1186,18 +554,17 @@ def envioCorreoAceptacion(id, curso):
 @app.route('/envioCorreoBienvenidaIEMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaIEMCE(id, curso):
     page_ = request.args.get('page_', 1,type=int)
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1221,18 +588,17 @@ def envioCorreoBienvenidaIEMCE(id, curso):
 @app.route('/envioCorreoBienvenidaAAMCE/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAAMCE(id, curso):
     page_ = request.args.get('page_', 1,type=int)
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1255,7 +621,6 @@ def envioCorreoBienvenidaAAMCE(id, curso):
 
 @app.route('/envioCorreoBienvenidaCBC/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaCBC(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     page_ = request.args.get('page_', 1,type=int)
     if request.method == 'POST':
         linkSense = request.form['linkSense']
@@ -1263,11 +628,11 @@ def envioCorreoBienvenidaCBC(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1290,7 +655,6 @@ def envioCorreoBienvenidaCBC(id, curso):
 
 @app.route('/envioCorreoBienvenidaAAC/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAAC(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     page_ = request.args.get('page_', 1,type=int)
     if request.method == 'POST':
         linkSense = request.form['linkSense']
@@ -1298,11 +662,11 @@ def envioCorreoBienvenidaAAC(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1332,11 +696,11 @@ def envioCorreoPago(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM Curso c where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM Curso c where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1393,18 +757,17 @@ def guardarEstadoSearch(id):
 
 @app.route('/envioCorreoAceptacionSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoAceptacionSearch(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         urlPago = request.form['urlPago']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1434,7 +797,7 @@ def consultaPagos(id, curso):
         pagos = []
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT * from Pagos WHERE id_alumno = %s AND id_curso = %s order by id desc', (id,curso,))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * from Pagos WHERE id_alumno = %s AND id_curso = %s order by id desc', (id,curso,))
             pagos = cursor.fetchall()
         conexion.close()
         page, per_page, offset = get_page_args(page_parameter='page',
@@ -1453,18 +816,17 @@ def consultaPagos(id, curso):
 
 @app.route('/envioCorreoBienvenidaIEMCESearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaIEMCESearch(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1489,18 +851,17 @@ def envioCorreoBienvenidaIEMCESearch(id, curso):
 
 @app.route('/envioCorreoBienvenidaAAMCESearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAAMCESearch(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1525,18 +886,17 @@ def envioCorreoBienvenidaAAMCESearch(id, curso):
 
 @app.route('/envioCorreoBienvenidaCBCSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaCBCSearch(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1561,18 +921,17 @@ def envioCorreoBienvenidaCBCSearch(id, curso):
 
 @app.route('/envioCorreoBienvenidaAACSearch/<int:id>/<int:curso>', methods=['GET', 'POST'])
 def envioCorreoBienvenidaAACSearch(id, curso):
-    locale.setlocale(locale.LC_ALL, 'es_CL.UTF-8')
     if request.method == 'POST':
         linkSense = request.form['linkSense']
         idUser = session['id']
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.fecha_inicio, c.fecha_fin, c.modalidad, h.rango, d.rango, c.costo FROM Curso c JOIN Horario h ON c.id_horario = h.id JOIN Dias d ON c.id_dias = d.id where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1603,11 +962,11 @@ def envioCorreoPagoSearch(id, curso):
         selected=curso
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.nombre, a.apellido, a.email FROM Alumno a WHERE a.id = %s;', (id))
             alumno = cursor.fetchall()
-            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM Curso c where c.id = %s', (curso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT c.nombre, c.codigo_curso, c.costo FROM Curso c where c.id = %s', (curso))
             datosCurso = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         nombre = alumno[0][0] + ' ' + alumno[0][1]
@@ -1630,11 +989,11 @@ def cursos():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT *, h.rango, d.rango, DATEDIFF(c.fecha_inicio, now()) AS Diferencia, date_format(c.fecha_inicio, "%d-%m-%Y") AS fechaInicio, date_format(c.fecha_fin, "%d-%m-%Y") AS fechaFin FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT *, h.rango, d.rango, DATEDIFF(c.fecha_inicio, now()) AS Diferencia, date_format(c.fecha_inicio, "%d-%m-%Y") AS fechaInicio, date_format(c.fecha_fin, "%d-%m-%Y") AS fechaFin FROM Curso c JOIN Horario h ON h.id = c.id_horario JOIN Dias d ON d.id = c.id_dias order by c.id desc')
             cursos = cursor.fetchall()
-            cursor.execute('SELECT * FROM Horario order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Horario order by id desc')
             horario = cursor.fetchall()
-            cursor.execute('SELECT * FROM Dias order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Dias order by id desc')
             dias = cursor.fetchall()
         conexion.close()
         return render_template('administracion/cursos.html',
@@ -1671,9 +1030,9 @@ def enviarCorreoBienvenida():
         idUser = session['id']
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.email FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado in (18,19) order by a.id desc', (idCurso))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT DISTINCT a.id, a.nombre, a.apellido, a.email FROM Alumno_Estado ae JOIN Alumno a ON a.id = ae.id_alumno JOIN Curso c ON a.id_curso = c.id WHERE ae.id_estado = (select de.id_estado AS Id FROM Alumno_Estado de WHERE id_alumno = ae.id_alumno order by de.fecha desc limit 1) AND c.id = %s AND ae.id_estado in (18,19) order by a.id desc', (idCurso))
             alumnosPagados = cursor.fetchall()
-            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT nombre, nick, correo, numero FROM Usuario WHERE id = %s', (idUser))
             datosUsuario = cursor.fetchall()
         conexion.close()
         for x in alumnosPagados:
@@ -1713,7 +1072,7 @@ def aspirantesAula():
     if 'loggedin' in session:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute('SELECT * FROM Alumno where id_curso = 1 order by id desc')# WHERE id = %s', (session['id'],))
+            cursor.execute('SELECT * FROM Alumno where id_curso = 1 order by id desc')
             aspirantes = cursor.fetchall()
         conexion.close()
         page, per_page, offset = get_page_args(page_parameter='page',
@@ -1799,12 +1158,11 @@ def aspirantesAsistenteContable():
 
 @app.route('/mensajes-contacto')
 def mensajesContacto():
-    # Check if user is loggedin
     if 'loggedin' in session:
         mensajes = []
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT * FROM Contacto order by id desc")# WHERE id = %s', (session['id'],))
+            cursor.execute("SELECT * FROM Contacto order by id desc")
             mensajes = cursor.fetchall()
         conexion.close()
         page, per_page, offset = get_page_args(page_parameter='page',
@@ -1821,22 +1179,111 @@ def mensajesContacto():
                             )
     return redirect(url_for('index'))
 
-# http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for loggedin users
 @app.route('/profile')
 def profile():
-    # Check if user is loggedin
     if 'loggedin' in session:
-
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('SELECT * FROM Usuario WHERE id = %s', (session['id'],))
             account = cursor.fetchone()
         conexion.close()
-        # Show the profile page with account info
         return render_template('profile.html', account=account)
-    # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+@app.route('/api/postular', methods=['POST'])
+def postular_aspirante():
+    try:
+        data = request.get_json()
+        if data is None:
+            return jsonify({"error": "No se recibió un JSON válido"}), 400
+
+        if data.get('api_key')  != API_SECRET_KEY:
+            return jsonify({'error': 'Acceso no autorizado'}), 401
+        # Crear el objeto Aspirante
+        aspirante = AspiranteJSON(data)
+        if aspirante.sexo == "M":
+            aspirante.sexo = "Hombre"
+        else:
+            aspirante.sexo = "Mujer"
+        rut = aspirante.rut.upper()
+        rut = rut.replace("-","")
+        rut = rut.replace(".","")
+        cursos = obtener_cursos_activos()
+        aspiranteVer = verificar_postulacion_existente(rut, aspirante.curso)
+        if aspiranteVer:
+            return jsonify({"cargado": "Usted ya ha postulado al curso!, en breve nos comunicaremos con usted."}), 400
+        if not validar_rut(rut):
+            return jsonify({"cargado": "Rut no válido! Favor vuelva a intentarlo"}), 400
+        if len(rut) < 6:
+            return jsonify({"cargado": "Rut no válido! Favor vuelva a intentarlo"}), 400
+        # Guardar en la base de datos
+        registrar_aspirante(aspirante, rut)
+        curso_ = obtener_info_curso(aspirante.curso)
+        nombre = aspirante.nombre + ' ' + aspirante.apellido
+        curso = curso_[0][1]
+        mes = curso_[0][3].month
+        nombreMes = obtenerMes(mes)
+        mesFin = curso_[0][4].month
+        nombreMesFin = obtenerMes(mesFin)
+        enviarEmail(nombre, aspirante.telefono, curso, aspirante.correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
+        
+        return jsonify({"cargado": "Postulación realizada correctamente"}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Ocurrió un error: {str(e)}"}), 500
+
+@app.route('/api/cursos_activos', methods=['GET'])
+def obtener_cursos_activos_n():
+    cursosSalida = []
+    cursos__ = obtener_cursos_activos()
+    for fila in cursos__:
+                id, nombre, codigo_curso, horario, dias, fecha_inicio, fecha_fin = fila
+                curso = Curso(id, nombre, codigo_curso, horario, dias, fecha_inicio, fecha_fin)
+                cursosSalida.append(curso)
+    return jsonify([curso.to_dict() for curso in cursosSalida])
+
+@app.route('/api/hashearclaves', methods=['POST'])
+def hashearClavesAdm():
+    try:
+        hashearClaves()
+        return jsonify({"cargado": "Hashed"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Ocurrió un error: {str(e)}"}), 500
+
+@app.route('/api/crear_usuario', methods=['POST'])
+def api_crear_usuario():
+    try:
+        data = request.get_json()
+
+        if data.get('api_key') != API_SECRET_KEY:
+            return jsonify({'error': 'Acceso no autorizado'}), 401
+
+        nombre = data.get('nombre')
+        nick = data.get('nick')
+        clave_plana = data.get('clave')
+        numero = data.get('numero')
+        correo = data.get('correo', None) 
+
+        if not all([nombre, nick, clave_plana]):
+            return jsonify({'error': 'Faltan campos obligatorios'}), 400
+
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT id FROM Usuario WHERE nick = %s", (nick,))
+            if cursor.fetchone():
+                return jsonify({'error': 'El nombre de usuario (nick) ya existe'}), 409
+
+            clave_hashed = bcrypt.hashpw(clave_plana.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+            cursor.execute("INSERT INTO Usuario (nombre, nick, clave, correo, numero, activo) VALUES (%s, %s, %s, %s, %s,1)",
+                           (nombre, nick, clave_hashed, correo, numero))
+            conexion.commit()
+        conexion.close()
+
+        return jsonify({'estado': 'ok', 'mensaje': 'Usuario creado exitosamente'})
+
+    except Exception as e:
+        return jsonify({'error': f'Ocurrió un error: {str(e)}'}), 500
 def get_aspirantes(offset=0, per_page=100, aspirantes=[]):
     return aspirantes[offset: offset + per_page]
 
@@ -1864,6 +1311,27 @@ def validar_rut(rut):
 		return True
 	else:
 		return False
+
+def hashearClaves():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, clave FROM Usuario")
+        usuarios = cursor.fetchall()
+
+        for usuario in usuarios:
+            id_usuario = usuario[0]
+            clave_plana = usuario[1]
+
+            if clave_plana.startswith("$2b$"):
+                continue
+
+            clave_hashed = bcrypt.hashpw(clave_plana.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+            cursor.execute("UPDATE Usuario SET clave = %s WHERE id = %s", (clave_hashed, id_usuario))
+
+        conexion.commit()
+    conexion.close()
+    print("Contraseñas actualizadas exitosamente.")
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True) 
