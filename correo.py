@@ -109,7 +109,7 @@ def enviarEmail(nombre, telefono, curso, correo, inicio, fin, codigoCurso, horar
     server.sendmail(email_user,email_send,msg.as_string())
     server.quit()
 
-def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, urlPago, nombreUsuario, correoUsuario, numeroUsuario, valorCurso):
+def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, diasCurso, horarioCurso, modalidad, urlPago, nombreUsuario, correoUsuario, numeroUsuario, valorCurso, porcentaje):
     nombre = upperFirst(nombre.lower())
     email_user = 'postulaciones@iccapacitacionlaboral.cl'
     email_password = '$$PKhg!pB'
@@ -153,7 +153,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                       <td style="padding:0 0 36px 0;color:#153643;">
                         <h1 style="font-size:35px;margin:0 0 20px 0;font-family:Arial,sans-serif; color:#1c68c4; text-align:center;">FELICITACIONES</h1>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Estimado (a) <strong>"""+nombre+"""</strong> IC Capacitación agradece su preferencia y confianza, esperando cumplir con sus expectativas de desarrollo e ingreso a un mejor campo laboral.</p>
-                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Hemos revisado su postulación y nos es grato informar a usted que ha sido seleccionada con beneficio de subvención, la que considera un descuento que asciende al 75% del valor del curso, debiendo pagar solo la suma de <strong>$"""+valorCurso+""".-</strong> pesos</p>
+                           <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"> Hemos revisado su postulación y nos es grato informar a usted que ha sido seleccionada con beneficio de subvención, la que considera un descuento que asciende al """+porcentaje+"""% del valor del curso, debiendo pagar solo la suma de <strong>$"""+valorCurso+""".-</strong> pesos</p>
                            <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">Detalles del curso:</h1>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Nombre:</strong> """+nombreCurso+"""</p>
                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif; text-align:center; "><strong> Fecha Inicio:</strong> """+inicioCurso+"""</p>
@@ -164,7 +164,7 @@ def enviarEmailAceptacion(nombre, correo, nombreCurso, inicioCurso, finCurso, di
                         <h1 style="font-size:17px;margin:0 0 20px 0;font-family:Arial,sans-serif;">El curso incluye:</h1>
                         <ol style="font-family:Arial,sans-serif;">
                           <li>Certificación digital con validación código QR</li>
-                          <li>Descuento de 75% del valor del curso</li>
+                          <li>Descuento de """+porcentaje+"""% del valor del curso</li>
                           <li><strong>Taller de Inserción Laboral</strong> (“CREATIVIDAD Y CONSEJOS PARA ENCONTRAR TRABAJO”)</li>
                           <li>Beneficios adicionales ( verificar con el coordinador del curso si corresponde según curso realizado)</li>
                         </ol>	
