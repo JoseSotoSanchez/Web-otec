@@ -38,6 +38,31 @@
                           </form>
                         </div>
                         {% endif %}
+                        <div class="pagination pagination-flex">
+
+                        {% if page_ > 1 %}
+                            <a href="{{ url_for('aspirantes', page_=page_-1, curso=datosCurso[0][2]) }}">
+                                &laquo; Anterior
+                            </a>
+                        {% endif %}
+
+                        {% for p in pages %}
+                            {% if p == page_ %}
+                                <span class="active-page">{{ p }}</span>
+                            {% else %}
+                                <a href="{{ url_for('aspirantes', page_=p, curso=datosCurso[0][2]) }}">
+                                    {{ p }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_ < total_pages %}
+                            <a href="{{ url_for('aspirantes', page_=page_+1, curso=datosCurso[0][2]) }}">
+                                Siguiente &raquo;
+                            </a>
+                        {% endif %}
+
+                      </div>
                         <table class="table align-middle mb-0 bg-white">
                             <thead class="bg-light">
                               <tr>
@@ -90,7 +115,19 @@
                                       <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
                                       <p class="text-muted mb-0">{{row[3]}}</p>
                                       <p class="text-muted mb-0">{{row[8]}}</p>
-                                      <p class="text-muted mb-0">{{row[9]}}</p>
+                                      {% set numero = row[9] | replace(' ', '') %}
+                                        {% if numero.startswith('+56') %}
+                                            {% set numero_final = numero | replace('+', '') %}
+                                            <a href="https://wa.me/{{ numero_final }}" target="_blank" class="text-muted mb-0">
+                                              {{ numero }}
+                                            </a>
+                                        {% else %}
+                                            {% set numero_final = numero %}
+                                            <a href="https://wa.me/{{ numero_final }}" target="_blank" class="text-muted mb-0">
+                                              {{ "+56" ~ numero }}
+                                            </a>
+                                        {% endif %}
+                                        
                                       <p class="text-muted mb-0">{{row[22]}}</p>
                                     </div>
                                   </div>
@@ -414,13 +451,31 @@
                           </tbody>
                       </table>
 
-                      {% if page_ > 1 %}
-                        <a href="{{ url_for('aspirantes', page_ = page_-1, curso = datosCurso[0][2]) }}">Anterior</a>
-                      {% endif %}
-                      <span>Pagina {{ page_ }} de {{ total_pages }}</span>
-                      {% if page_ < total_pages %}
-                        <a href="{{ url_for('aspirantes', page_ = page_+1, curso = datosCurso[0][2]) }}">Siguiente</a>
-                      {% endif %}
+                      <div class="pagination pagination-flex">
+
+                        {% if page_ > 1 %}
+                            <a href="{{ url_for('aspirantes', page_=page_-1, curso=datosCurso[0][2]) }}">
+                                &laquo; Anterior
+                            </a>
+                        {% endif %}
+
+                        {% for p in pages %}
+                            {% if p == page_ %}
+                                <span class="active-page">{{ p }}</span>
+                            {% else %}
+                                <a href="{{ url_for('aspirantes', page_=p, curso=datosCurso[0][2]) }}">
+                                    {{ p }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_ < total_pages %}
+                            <a href="{{ url_for('aspirantes', page_=page_+1, curso=datosCurso[0][2]) }}">
+                                Siguiente &raquo;
+                            </a>
+                        {% endif %}
+
+                      </div>
                   </div>
               </div>
           </div>

@@ -42,7 +42,7 @@
                         <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                         <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                         <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                        <form class="form-card" action="{{ url_for('postulacionCurso') }}" method="post">
+                        <form class="form-card" action="{{ url_for('postulacionCurso') }}" method="post" onsubmit="return validarFormulario()">
                             <div class="row justify-content-between text-left" data-aos="fade-up">
                                 <div class="form-group col-sm-12 flex-column d-flex"> 
                                     <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
@@ -103,12 +103,28 @@
                                     <label class="form-control-label px-3">Correo electrónico<span class="text-danger">                                         *</span></label> 
                                         <input type="email" id="email" name="email" placeholder="Ingresa su correo" onblur="validate(8)" required> </div>
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
-                                     <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
-                                     <input id="telefono" name="telefono" placeholder="Ingresa tu número" 
-                                      oninput="javascript: 
-                                        if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
-                                        if (this.value.indexOf('56') === 0) { this.value = ''; }"
-                                      type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
+                                    <label class="form-control-label px-3">
+                                        Teléfono<span class="text-danger"> *</span>
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text small-prefix">+56</span>
+                                        <input 
+                                            id="telefono" 
+                                            name="telefono" 
+                                            type="number"
+                                            class="form-control"
+                                            placeholder="Ingresa tu número (9 dígitos)"
+                                            minlength="9"
+                                            maxlength="9"
+                                            required
+                                            oninput="validarTelefono(this)"
+                                        >
+                                    </div>
+                                    <small id="telError" class="text-danger" style="display:none;">
+                                        El número debe tener exactamente 9 dígitos.
+                                    </small>
+                                </div>
                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
                                     <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
@@ -270,6 +286,41 @@
                  var elem = document.getElementById("formularioAA");
                  elem.scrollIntoView();
              }
+
+  function validarTelefono(input) {
+    // Mantener solo números
+    input.value = input.value.replace(/\D/g, '');
+
+    // Limitar máximo 9 dígitos
+    if (input.value.length > 9) {
+        input.value = input.value.slice(0, 9);
+    }
+    // quitar +56
+    if (input.value == '+56') {
+        input.value = '';
+    }
+    // Validación visual
+    document.getElementById("telError").style.display =
+        input.value.length === 9 ? "none" : "block";
+
+    
+}
+
+function validarFormulario() {
+    let rut = document.getElementById("rut").value.trim();
+    let celular = document.getElementById("telefono").value.trim();
+
+    if (!rut) {
+        alert("Debes ingresar un RUT");
+        return false; 
+    }
+    if (celular.length !== 9 || !/^\d{9}$/.test(celular)) {
+        alert("El número de celular debe tener 9 dígitos.");
+        return false; 
+    }
+
+    return true;
+}
  </script>
 
 {% endblock %}

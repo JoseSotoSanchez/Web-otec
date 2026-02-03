@@ -16,18 +16,24 @@ import socket
 from itertools import cycle
 from models.aspirante import Aspirante, AspiranteJSON
 from models.curso import Curso
-from db_operations import verificar_postulacion_existente, obtener_cursos_activos, registrar_aspirante, obtener_info_curso, insertar_log_usuario, obtener_aspirantes_por_curso, obtener_cursos, obtener_datos_curso_por_id, obtener_estados_alumno,guardar_contacto, obtener_info_alumno_por_id, buscar_alumnos_por_nombre, buscar_alumno_por_rut, obtener_aspirante_por_id, registrar_pago, actualizar_datos_alumno, registrar_estado_alumno
+from db_operations import verificar_postulacion_existente, obtener_cursos_activos, registrar_aspirante, obtener_info_curso, insertar_log_usuario, obtener_aspirantes_por_curso, obtener_cursos, obtener_datos_curso_por_id, obtener_estados_alumno,guardar_contacto, obtener_info_alumno_por_id, buscar_alumnos_por_nombre, buscar_alumno_por_rut, buscar_alumno_por_correo, obtener_aspirante_por_id, registrar_pago, actualizar_datos_alumno, registrar_estado_alumno
 import bcrypt
+# from flask import Flask, request, session, redirect, url_for, flash, render_template, render_template_string
 
 
+# === APP FLASK ===
 app = Flask(__name__)
+# app.secret_key = SECRET_KEY
+# app.config.update(
+#     SESSION_COOKIE_HTTPONLY=True,
+#     SESSION_COOKIE_SAMESITE="Lax",
+# )
 
 locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
 app.secret_key = 'b93f9e42086d47df8c36f5121b6a8a22'
 API_SECRET_KEY = 'b93f9e42086d47df8c36f5121b6a8a22'
 
 cursoActivo = 0
-idAlumnoSearch = 0
 aspirantesSave = []
 cursos = []
 
@@ -231,7 +237,7 @@ def aspirantes():
             estados = obtener_estados_alumno()
             total = len(aspirantes)
             aspirantesSave = aspirantes
-            cursoActivo = curso
+            session['cursoActivo'] = curso
             page, per_page, offset = get_page_args(page_parameter='page',
                                         per_page_parameter='per_page')
             total = len(aspirantes)
@@ -244,6 +250,7 @@ def aspirantes():
             start = (page_ - 1) * per_page_
             end = start + per_page_
             total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
+            pages = range(1, total_pages + 1)
 
             items_on_page = aspirantes[start:end]
             return render_template('administracion/aspirantes.html',
@@ -260,16 +267,18 @@ def aspirantes():
                             items_on_page = items_on_page,
                             total_pages = total_pages,
                             page_=page_,
+                            pages=pages,
                             )
         else:
-            if cursoActivo == 0:
+            cursoAct = session.get('cursoActivo', 0)
+            if cursoAct == 0:
                 curso = request.args.get('curso', 0,type=int)
-                cursoActivo = curso
-            if cursoActivo != 0:
-                selected=cursoActivo
-                aspirantes = obtener_aspirantes_por_curso(cursoActivo)
+                cursoAct = curso
+            if cursoAct != 0:
+                selected=cursoAct
+                aspirantes = obtener_aspirantes_por_curso(cursoAct)
                 cursos = obtener_cursos()
-                datosCurso = obtener_datos_curso_por_id(cursoActivo)
+                datosCurso = obtener_datos_curso_por_id(cursoAct)
                 estados = obtener_estados_alumno()
                 page, per_page, offset = get_page_args(page_parameter='page',
                                         per_page_parameter='per_page')
@@ -284,6 +293,7 @@ def aspirantes():
                 start = (page_ - 1) * per_page_
                 end = start + per_page_
                 total_pages = (len(aspirantes) + per_page_ - 1) // per_page_
+                pages = range(1, total_pages + 1)
 
                 items_on_page = aspirantes[start:end]
                 return render_template('administracion/aspirantes.html',
@@ -300,6 +310,7 @@ def aspirantes():
                                 items_on_page = items_on_page,
                                 total_pages = total_pages,
                                 page_ =page_,
+                                pages= pages,
                                 )
             else:
                 aspirantes = []
@@ -336,14 +347,15 @@ def aspirantes():
 def busqueda():
     datosCurso = ''
     aspirantes = []
-    global idAlumnoSearch
+    idAlumnoSearch = curso = session.get('idAlumnoSearch', 0)
     if 'loggedin' in session:
         if request.method == 'POST' and 'ide' in request.form :
             idalumno = request.form['ide']
             nombreAlumno = request.form['nombreSearch']
             rutAlumno = request.form['rutSearch']
+            correoAlumno = request.form['correoSearch']
             session['idAlSearch'] = idalumno
-            if (idalumno is None or idalumno.strip() == '') and (nombreAlumno is None or nombreAlumno.strip() == '') and (rutAlumno is None or rutAlumno.strip() == ''):
+            if (idalumno is None or idalumno.strip() == '') and (nombreAlumno is None or nombreAlumno.strip() == '') and (rutAlumno is None or rutAlumno.strip() == '') and (correoAlumno is None or correoAlumno.strip() == ''):
                 flash('Debe ingresar un parámetro de busqueda!', category='error')
                 return redirect(url_for('busqueda'))
             conexion = obtener_conexion()
@@ -354,6 +366,8 @@ def busqueda():
                     aspirantes = buscar_alumnos_por_nombre(nombreAlumno)
                 if rutAlumno is not None and rutAlumno.strip() != '':
                     aspirantes = buscar_alumno_por_rut(rutAlumno)
+                if correoAlumno is not None and correoAlumno.strip() != '':
+                    aspirantes = buscar_alumno_por_correo(correoAlumno)
                 if aspirantes is None or not aspirantes:
                     flash('No se ha encontrado resultados!', category='error')
                     return redirect(url_for('busqueda'))
@@ -390,8 +404,6 @@ def busqueda():
 
 @app.route('/descargaCsv/<int:curso>', methods=['GET', 'POST'])
 def descargaCsv(curso):
-    global idAlumnoSearch
-    global cursoActivo
     if 'loggedin' in session:
         if request.method == 'POST':
             wb = Workbook()
@@ -415,8 +427,6 @@ def descargaCsv(curso):
 
 @app.route('/descargaCsvPagados/<int:curso>', methods=['GET', 'POST'])
 def descargaCsvPagados(curso):
-    global idAlumnoSearch
-    global cursoActivo
     codigoCurso = ''
     if 'loggedin' in session:
         if request.method == 'POST':
@@ -489,8 +499,7 @@ def guardarPago(id, curso):
         conexion.commit()
         conexion.close()
         flash('Pago guardado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -510,8 +519,7 @@ def guardarEstado(id, curso):
             # cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (%s, %s, now(), %s)', (idEstado, id, idUser,))
             # cursor.execute('UPDATE Alumno SET nombre = %s, apellido = %s, email = %s, telefono = %s WHERE id = %s', (nombresAlumno, apellidosAlumno, correoAlumno, celularAlumno,id,))x|x|
         flash('Estado guardado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -546,8 +554,7 @@ def envioCorreoAceptacion(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -580,8 +587,7 @@ def envioCorreoBienvenidaIEMCE(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -614,8 +620,7 @@ def envioCorreoBienvenidaAAMCE(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -648,8 +653,7 @@ def envioCorreoBienvenidaCBC(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -682,8 +686,7 @@ def envioCorreoBienvenidaAAC(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -711,8 +714,7 @@ def envioCorreoPago(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
+        session['cursoActivo'] = curso
         return redirect(url_for('aspirantes', page_=page_, curso=curso))
     return redirect(url_for('index'))
 
@@ -729,8 +731,7 @@ def guardarPagoSearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Pago guardado correctamente!', category='success')
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -750,8 +751,7 @@ def guardarEstadoSearch(id):
         conexion.commit()
         conexion.close()
         flash('Estado guardado correctamente!', category='success')
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -783,10 +783,8 @@ def envioCorreoAceptacionSearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch']  = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -842,10 +840,8 @@ def envioCorreoBienvenidaIEMCESearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -877,10 +873,8 @@ def envioCorreoBienvenidaAAMCESearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -912,10 +906,8 @@ def envioCorreoBienvenidaCBCSearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -947,10 +939,8 @@ def envioCorreoBienvenidaAACSearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -977,10 +967,8 @@ def envioCorreoPagoSearch(id, curso):
         conexion.commit()
         conexion.close()
         flash('Correo enviado correctamente!', category='success')
-        global cursoActivo
-        cursoActivo = curso
-        global idAlumnoSearch
-        idAlumnoSearch = id
+        session['cursoActivo'] = curso
+        session['idAlumnoSearch'] = id
         return redirect(url_for('busqueda'))
     return redirect(url_for('index'))
 
@@ -1332,6 +1320,166 @@ def hashearClaves():
         conexion.commit()
     conexion.close()
     print("Contraseñas actualizadas exitosamente.")
+
+# def build_otex_url(path: str) -> str:
+#     """
+#     Construye UrlRetoma/UrlError absolutas usando OTEC_BASE_URL (sin slash final).
+#     """
+#     return f"{OTEC_BASE_URL.rstrip('/')}{path}"
+
+# # ------------------------ LOGIN SENCE UI ------------------------------
+# @app.get("/login-sence")
+# def login_sence_form():
+#     """
+#     Muestra el formulario de login SENCE para que el alumno ingrese su RUT.
+#     Puedes pre-llenar cod_sence y codigo_curso con querystring:
+#     /login-sence?cod_sence=1234567890&codigo_curso=CURSO-0001
+#     """
+#     cod_sence = (request.args.get("cod_sence") or "").strip()
+#     codigo_curso = (request.args.get("codigo_curso") or "").strip()
+#     return render_template("loginSence.html", cod_sence=cod_sence, codigo_curso=codigo_curso)
+
+# @app.post("/login-sence")
+# def login_sence_submit():
+#     """
+#     Recibe el formulario con: run_alumno, cod_sence, codigo_curso.
+#     Valida y construye el POST hacia SENCE (auto-submit).
+#     """
+#     cod_sence = (request.form.get("cod_sence") or "").strip()
+#     codigo_curso = (request.form.get("codigo_curso") or "").strip()
+#     run_alumno_raw = (request.form.get("run_alumno") or "").strip()
+
+#     # --- VALIDACIONES BACKEND ---
+
+#     # 1️⃣ RUT chileno formato xxxxxxxx-x
+#     if not re.match(r"^[0-9]{7,8}-[0-9Kk]{1}$", run_alumno_raw):
+#         flash("RUT inválido. Debe tener el formato correcto (ej: 12345678-9).", "error")
+#         return redirect(url_for("login_sence_form"))
+
+#     # 2️⃣ Código SENCE (solo letras/números, máx 10)
+#     if not re.match(r"^[A-Za-z0-9]+$", cod_sence) or len(cod_sence) > 10:
+#         flash("Código SENCE inválido. Solo letras/números, máximo 10 caracteres.", "error")
+#         return redirect(url_for("login_sence_form"))
+
+#     # 3️⃣ Código del curso (mínimo 8, máximo 50)
+#     if not (8 <= len(codigo_curso) <= 50):
+#         flash("Código del curso inválido. Debe tener entre 8 y 50 caracteres.", "error")
+#         return redirect(url_for("login_sence_form"))
+
+
+#     # Si pasa las validaciones, continúa con el flujo normal:
+#     run_alumno = normalizar_rut_formato_envio(run_alumno_raw)
+#     id_sesion_alumno = generar_id_sesion_alumno()
+
+#     # (Opcional) Si tienes validar_rut, úsala:
+#     # from main import validar_rut  # si la tienes definida
+#     # if not validar_rut(run_alumno):
+#     #     flash("RUT inválido (DV).", "error")
+#     #     return redirect(url_for("login_sence_form", cod_sence=cod_sence, codigo_curso=codigo_curso))
+
+#     # Genera y guarda IdSesionAlumno para cotejar en el retorno
+#     id_sesion_alumno = generar_id_sesion_alumno()
+#     session["sence_id_sesion_alumno"] = id_sesion_alumno
+#     session["sence_cod_sence"] = cod_sence
+#     session["sence_codigo_curso"] = codigo_curso
+#     session["sence_run_alumno"] = run_alumno
+
+#     url_retoma = build_otex_url("/sence/callback/success")
+#     url_error = build_otex_url("/sence/callback/error")
+
+#     # Devolvemos un HTML con un form que se auto-envía por POST a SENCE
+#     html = f"""
+#     <html><body onload="document.forms[0].submit()">
+#       <p>Redirigiendo a SENCE…</p>
+#       <form action="{SENCE_LOGIN_URL}" method="POST">
+#         <input type="hidden" name="RutOtec" value="{OTEC_RUT}">
+#         <input type="hidden" name="Token" value="{OTEC_TOKEN}">
+#         <input type="hidden" name="CodSence" value="{cod_sence}">
+#         <input type="hidden" name="CodigoCurso" value="{codigo_curso}">
+#         <input type="hidden" name="LineaCapacitacion" value="{SENCE_LINEA_CAPACITACION}">
+#         <input type="hidden" name="RunAlumno" value="{run_alumno}">
+#         <input type="hidden" name="IdSesionAlumno" value="{id_sesion_alumno}">
+#         <input type="hidden" name="UrlRetoma" value="{url_retoma}">
+#         <input type="hidden" name="UrlError" value="{url_error}">
+#         <noscript><button type="submit">Continuar</button></noscript>
+#       </form>
+#     </body></html>
+#     """
+#     return render_template_string(html)
+
+# # ------------------------ CALLBACKS SENCE -----------------------------
+# def _validar_callback_basico(frm) -> tuple[bool, str]:
+#     """
+#     Valida presencia y longitud básica de campos requeridos en retorno de éxito.
+#     También coteja IdSesionAlumno con el que guardamos en session.
+#     """
+#     required = {
+#         "CodSence": 10,
+#         "CodigoCurso": 50,
+#         "IdSesionAlumno": 149,
+#         "RunAlumno": 10,
+#         "FechaHora": 19,
+#         "ZonaHoraria": 100,
+#         "LineaCapacitacion": 10,  # aunque sea entero, aquí llega como string
+#     }
+#     for k, mlen in required.items():
+#         val = (frm.get(k) or "").strip()
+#         if not validar_largo(val, mlen):
+#             return False, f"Campo {k} inválido."
+
+#     expected = session.get("sence_id_sesion_alumno")
+#     if expected and frm.get("IdSesionAlumno") != expected:
+#         return False, "La sesión del alumno no coincide (expirada o nueva ventana)."
+
+#     return True, ""
+
+# @app.post("/sence/callback/success")
+# def sence_callback_success():
+#     frm = request.form
+
+#     ok, msg = _validar_callback_basico(frm)
+#     if not ok:
+#         flash(f"Retorno SENCE inválido: {msg}", "error")
+#         return redirect(url_for(ERROR_REDIRECT_ENDPOINT))
+
+#     # Extra de éxito
+#     id_sesion_sence = (frm.get("IdSesionSence") or "").strip()
+
+#     # TODO (opcional): persistir en BD auditoría del inicio de sesión SENCE
+#     # registrar_inicio_sesion_sence(...)
+
+#     flash("¡Inicio de sesión SENCE exitoso! Ya puedes continuar con tu curso.", "success")
+#     return redirect(url_for(SUCCESS_REDIRECT_ENDPOINT))
+
+# @app.post("/sence/callback/error")
+# def sence_callback_error():
+#     frm = request.form
+
+#     # Validación básica (similar a éxito, pero sin exigir IdSesionSence)
+#     required = {
+#         "CodSence": 10,
+#         "CodigoCurso": 50,
+#         "IdSesionAlumno": 149,
+#         "RunAlumno": 10,
+#         "FechaHora": 19,
+#         "ZonaHoraria": 100,
+#         "LineaCapacitacion": 10,
+#     }
+#     for k, mlen in required.items():
+#         val = (frm.get(k) or "").strip()
+#         if not validar_largo(val, mlen):
+#             flash(f"Retorno SENCE inválido: {k} incorrecto.", "error")
+#             return redirect(url_for(ERROR_REDIRECT_ENDPOINT))
+
+#     glosa = (frm.get("GlosaError") or "").strip()
+#     mensaje = ERRORES_SENCE.get(glosa, "No fue posible iniciar sesión en SENCE. Intenta nuevamente.")
+
+#     # TODO (opcional): persistir error para auditoría
+#     # registrar_error_sence(...)
+
+#     flash(mensaje, "error")
+#     return redirect(url_for(ERROR_REDIRECT_ENDPOINT))
+
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True) 

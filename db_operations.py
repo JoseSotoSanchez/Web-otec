@@ -31,6 +31,21 @@ def verificar_postulacion_existente(rut, id_curso):
 
 def registrar_aspirante(aspiranteNew, rut):
     conexion = obtener_conexion()
+    telefono = aspiranteNew.telefono.strip()
+    if telefono.startswith("+569"):
+        telefono_final = telefono
+
+    else:
+        if len(telefono) == 8:
+            telefono_final = "+569" + telefono
+
+        elif len(telefono) == 9 and telefono.startswith("9"):
+            telefono_final = "+56" + telefono
+
+        else:
+            telefono_final = "+569" + telefono[-8:] 
+
+    aspiranteNew.telefono = telefono_final
     try:
         with conexion.cursor() as cursor:
             # Insertar alumno
@@ -295,6 +310,47 @@ def buscar_alumno_por_rut(rutAlumno):
             '''
             like_rut = f'%{rutAlumno}%'
             cursor.execute(query, (like_rut,))
+            return cursor.fetchall()
+    finally:
+        conexion.close()
+
+def buscar_alumno_por_correo(correoAlumno):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            query = '''
+                SELECT DISTINCT
+                    a.id, a.nombre, a.apellido, a.rut, a.sexo, a.edad, a.nacionalidad, a.estado_civil,
+                    a.email, a.telefono, a.profesion, a.nivel_estudios, a.situacion_laboral,
+                    a.direccion, a.region, a.fecha, c.nombre AS nombreCurso, c.codigo_curso,
+                    ea.estado, u.nick, ea.id, c.costo, a.ingreso, c.id,
+                    (SELECT SUM(p.monto)
+                     FROM Pagos p
+                     WHERE p.id_alumno = a.id AND p.id_curso = a.id_curso) AS total_pagos
+                FROM Alumno_Estado ae
+                JOIN Alumno a ON a.id = ae.id_alumno
+                JOIN Curso c ON a.id_curso = c.id
+                JOIN Estado_Alumno ea ON ae.id_estado = ea.id
+                JOIN Usuario u ON ae.id_usuario = u.id
+                WHERE ae.id_estado = (
+                        SELECT de.id_estado
+                        FROM Alumno_Estado de
+                        WHERE id_alumno = ae.id_alumno
+                        ORDER BY de.fecha DESC
+                        LIMIT 1
+                    )
+                    AND ae.fecha = (
+                        SELECT de.fecha
+                        FROM Alumno_Estado de
+                        WHERE id_alumno = ae.id_alumno
+                        ORDER BY de.fecha DESC
+                        LIMIT 1
+                    )
+                    AND a.email LIKE %s
+                ORDER BY a.id DESC
+            '''
+            like_correo = f'%{correoAlumno}%'
+            cursor.execute(query, (like_correo,))
             return cursor.fetchall()
     finally:
         conexion.close()

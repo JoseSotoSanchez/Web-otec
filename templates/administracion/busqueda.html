@@ -15,6 +15,7 @@
                             <input type="text" id="ide" name="ide" placeholder="busca por id aspirante">
                             <input type="text" id="nombreSearch" name="nombreSearch" placeholder="busca por nombre aspirante">
                             <input type="text" id="rutSearch" name="rutSearch" placeholder="busca por rut aspirante">
+                            <input type="text" id="correoSearch" name="correoSearch" placeholder="busca por correo aspirante">
                             <input id="btnBuscarAspirante"class="btn-primary" type="submit" value="Buscar">
                         </form>
                         <span class="fs-4" style="margin: 20px;" data-aos="fade-right">Total Mostrados en lista: <strong>{{total}}</strong></span>
@@ -71,7 +72,18 @@
                                       <p class="fw-bold mb-1">{{row[1]}} {{row[2]}}</p>
                                       <p class="text-muted mb-0">{{row[3]}}</p>
                                       <p class="text-muted mb-0">{{row[8]}}</p>
-                                      <p class="text-muted mb-0">{{row[9]}}</p>
+                                       {% set numero = row[9] | replace(' ', '') %}
+                                        {% if numero.startswith('+56') %}
+                                            {% set numero_final = numero | replace('+', '') %}
+                                            <a href="https://wa.me/{{ numero_final }}" target="_blank" class="text-muted mb-0">
+                                              {{ numero }}
+                                            </a>
+                                        {% else %}
+                                            {% set numero_final = numero %}
+                                            <a href="https://wa.me/{{ numero_final }}" target="_blank" class="text-muted mb-0">
+                                              {{ "+56" ~ numero }}
+                                            </a>
+                                        {% endif %}
                                       <p class="text-muted mb-0">{{row[22]}}</p>
                                     </div>
                                   </div>
