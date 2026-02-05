@@ -780,7 +780,11 @@ def envioCorreoAceptacionSearch(id, curso):
         mesFin = datosCurso[0][2].month
         nombreMesFin = obtenerMes(mesFin)
         valorCurso = locale.format_string('%d', datosCurso[0][6], grouping=True)
-        enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso)
+        if "Corredor" in datosCurso[0][0]:
+            porcentaje = "50"
+        else:
+            porcentaje = "75"
+        enviarEmailAceptacion(nombre, alumno[0][2], datosCurso[0][0], datosCurso[0][1].strftime("%d de "+nombreMes+" del %Y"), datosCurso[0][2].strftime("%d de "+nombreMesFin+" del %Y"), datosCurso[0][5], datosCurso[0][4], datosCurso[0][3], urlPago, datosUsuario[0][0], datosUsuario[0][2], datosUsuario[0][3], valorCurso, porcentaje)
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             cursor.execute('INSERT INTO Alumno_Estado(id_estado, id_alumno, fecha, id_usuario) VALUES (13, %s, now(), %s)', (id, idUser,))
