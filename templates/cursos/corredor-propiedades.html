@@ -1,7 +1,7 @@
-{% extends "base.html" %} {% block title %}Corredor de propiedades mención estudio de títulos{% endblock %} {% block content  %}
+{% extends "base.html" %} {% block title %}Corredor de propiedades{% endblock %} {% block content  %}
 <head>
-    <meta property="og:url" content="https://iccapacitacionlaboral.cl/curso-corredor-de-propiedades-y-estudio-de-titulo"/>
-    <meta property="og:title" content="Curso - Corredor de propiedades mención estudio de títulos"/>
+    <meta property="og:url" content="https://iccapacitacionlaboral.cl/corredor-propiedades"/>
+    <meta property="og:title" content="Curso - Corredor de propiedades"/>
     <meta property="og:image" content="https://iccapacitacionlaboral.cl/static/Imagenes/corretaje1.png"/>
     <meta property="og:description" content="En este curso, exploraremos los fundamentos y habilidades necesarias para convertirse 
     en un corredor de propiedades exitoso. Aprenderás sobre el mercado inmobiliario, 
@@ -12,7 +12,7 @@
 <div class="container py-4">
     <header class="pb-3 mb-4 border-bottom">
         <a  class="d-flex align-items-center titulosCurso text-decoration-none">
-          <span class="fs-4" data-aos="fade-up">Corredor de propiedades mención estudio de títulos</span>
+          <span class="fs-4" data-aos="fade-up">Corredor de propiedades</span>
         </a>
       </header>
     <div class="row featurette" data-aos="zoom-in">
@@ -28,7 +28,7 @@
         <div class="col-md-6" data-aos="fade-up">
             <div class="h-100 p-5 bg-light border rounded-3">
               <h2 class="titulosDetalle">OBJETIVO DEL CURSO</h2>
-              <p>¡Bienvenidos al curso "Corredor de Propiedades mención estudio de títulos"!</p>
+              <p>¡Bienvenidos al curso "Corredor de Propiedades"!</p>
               <p>En este curso, exploraremos los fundamentos y habilidades necesarias para convertirse 
                 en un corredor de propiedades exitoso. Aprenderás sobre el mercado inmobiliario, 
                 técnicas de venta y marketing, y cómo brindar un servicio excepcional a tus clientes.</p>
@@ -62,7 +62,7 @@
           <h2 class="titulosDetalle">Plan formativo</h2>
           <ul class="list-group list-group-flush" >
             <li class="list-group-item dtalle">Modalidad: e-learning (Clases en línea vía ZOOM©) y plataforma de aprendizaje mediante aula virtual.</li>
-            <li class="list-group-item dtalle">Duración: 40 horas académicas.</li>
+            <li class="list-group-item dtalle">Duración: 50 horas académicas.</li>
             {% for row in cursos %}
                 {% if "CDP" in row[2] %}
                     <li class="list-group-item dtalle">
@@ -93,9 +93,9 @@
                 <h2 class="titulosDetalle">COSTO DEL CURSO</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item dtalle">•	Matricula: $0.-</li>
-                    <li class="list-group-item dtalle">•	Valor del curso: $240.000.-</li>
+                    <li class="list-group-item dtalle">•	Valor del curso: $250.000.-</li>
                     <li class="list-group-item dtalle">•	Beca Subsidio Emplea ICL: 50%.</li>
-                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $119.990.-</b></li>
+                    <li class="list-group-item dtalle">•	<b>Valor final del curso: $125.000.-</b></li>
                     <li class="list-group-item dtalle">•	Forma de pago: Transferencia o Deposito Bancario. <br>Pasarela de pago FLOW (Tarjeta Debito-Credito).</li>
                   <li class="list-group-item dtalle"> <img class="imgPagos" src="static/Imagenes/webpay3.png"> <img class="img-fluid" src="static/Imagenes/red-compra.png"> 
                        <img class="imgPagos" src="static/Imagenes/cuenta-rut.jpg"></li>
@@ -110,7 +110,7 @@
                       <div class="card"  id="formularioAA">
                           <h5 class="text-center tituloRojo">POSTULA A LA BECA SOLIDARIA</h5>
                           <h5 class="text-center tituloRojo">TODOS TIENEN OPORTUNIDAD</h5>
-                          <h5 class="text-center mb-4 tituloRojo">BONO DE CAPACITACIÓN DEL 50%</h5>
+                          <h5 class="text-center mb-4 tituloRojo">BONO DE CAPACITACIÓN DEL 75%</h5>
                           <h6 class="text-center textogrey" style="
                                   font-size: larger;
                                   color: black;
@@ -120,11 +120,11 @@
                                   <img style="width: 30px; height: 30px;"src="static/Imagenes/whatsApp_icon.png" alt="wsp" class="wsp"> 
                           + 56 9 2074 2757</a></h6>
                           <h5><a style="color:#084298"class="" target="_blank" href="static/Programa/programaEmplea.pdf">Click Aquí para Ver Programa Emplea ICL</a></h5>
-                          <h6 class="text-center textogrey">A través del siguiente formulario evaluaremos los aspirantes a participar en nuestros cursos de capacitación y aspirar a descuentos especiales de hasta un 50% del valor real del curso.</h6>
+                          <h6 class="text-center textogrey">A través del siguiente formulario evaluaremos los aspirantes a participar en nuestros cursos de capacitación y aspirar a descuentos especiales de hasta un 75% del valor real del curso.</h6>
                           <h6 class="text-center textogrey">Recuerde completar los campos con información verifica.</h6>
                           <h6 class="text-center textogrey">La información recopilada es de carácter confidencial.</h6>
                           <h6 class="text-center mb-4 textogrey">Completa el formulario y dentro de 48 horas nuestro equipo se comunicará contigo para validar tu postulación.</h6>
-                          <form class="form-card" action="{{ url_for('postulacionCurso') }}" method="post" onsubmit="return validarFormulario()">
+                          <form class="form-card" action="{{ url_for('corretaje') }}" method="post">
                               <div class="row justify-content-between text-left" data-aos="fade-up">
                                   <div class="form-group col-sm-12 flex-column d-flex"> 
                                       <label class="form-control-label px-3">Curso a postular<span class="text-danger"> *</span></label> 
@@ -184,29 +184,13 @@
                                   <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                     <label class="form-control-label px-3">Correo electrónico<span class="text-danger">                                         *</span></label> 
                                           <input type="email" id="email" name="email" placeholder="Ingresa su correo" onblur="validate(8)" required> </div>
-                                 <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
-                                    <label class="form-control-label px-3">
-                                        Teléfono<span class="text-danger"> *</span>
-                                    </label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-text small-prefix">+56</span>
-                                        <input 
-                                            id="telefono" 
-                                            name="telefono" 
-                                            type="number"
-                                            class="form-control"
-                                            placeholder="Ingresa tu número (9 dígitos)"
-                                            minlength="9"
-                                            maxlength="9"
-                                            required
-                                            oninput="validarTelefono(this)"
-                                        >
-                                    </div>
-                                    <small id="telError" class="text-danger" style="display:none;">
-                                        El número debe tener exactamente 9 dígitos.
-                                    </small>
-                                </div>
+                                  <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up">
+                                       <label class="form-control-label px-3">Teléfono<span class="text-danger"> *</span></label>
+                                       <input id="telefono" name="telefono" placeholder="Ingresa tu número" 
+                                        oninput="javascript: 
+                                          if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); } 
+                                          if (this.value.indexOf('56') === 0) { this.value = ''; }"
+                                        type = "number" min="8" maxlength = "9" onblur="validate(9)"required>  </div>
                                   <div class="form-group col-sm-4 flex-column d-flex" data-aos="fade-up"> 
                                       <label class="form-control-label px-3">¿Dónde nos conoció?<span class="text-danger"> *</span></label> 
                                       <select id="ingreso" name="ingreso" type="select" onblur="validate(16)" required>
@@ -287,40 +271,6 @@
                  var elem = document.getElementById("formularioAA");
                  elem.scrollIntoView();
              }
-   function validarTelefono(input) {
-    // Mantener solo números
-    input.value = input.value.replace(/\D/g, '');
-
-    // Limitar máximo 9 dígitos
-    if (input.value.length > 9) {
-        input.value = input.value.slice(0, 9);
-    }
-    // quitar +56
-    if (input.value == '+56') {
-        input.value = '';
-    }
-    // Validación visual
-    document.getElementById("telError").style.display =
-        input.value.length === 9 ? "none" : "block";
-
-    
-}
-
-function validarFormulario() {
-    let rut = document.getElementById("rut").value.trim();
-    let celular = document.getElementById("telefono").value.trim();
-
-    if (!rut) {
-        alert("Debes ingresar un RUT");
-        return false; 
-    }
-    if (celular.length !== 9 || !/^\d{9}$/.test(celular)) {
-        alert("El número de celular debe tener 9 dígitos.");
-        return false; 
-    }
-
-    return true;
-}
  </script>
 
 {% endblock %}
