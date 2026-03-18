@@ -17,6 +17,7 @@ from itertools import cycle
 from models.aspirante import Aspirante, AspiranteJSON
 from models.curso import Curso
 from db_operations import verificar_postulacion_existente, obtener_cursos_activos, registrar_aspirante, obtener_info_curso, insertar_log_usuario, obtener_aspirantes_por_curso, obtener_cursos, obtener_datos_curso_por_id, obtener_estados_alumno,guardar_contacto, obtener_info_alumno_por_id, buscar_alumnos_por_nombre, buscar_alumno_por_rut, buscar_alumno_por_correo, obtener_aspirante_por_id, registrar_pago, actualizar_datos_alumno, registrar_estado_alumno
+from helpers import obtener_numero_coordinador
 import bcrypt
 # from flask import Flask, request, session, redirect, url_for, flash, render_template, render_template_string
 
@@ -95,7 +96,14 @@ def home():
         return render_template('home.html',
                             cursos=cursos,
                             )
-
+@app.route('/confirmacion')
+def confirmacion():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursos = obtener_cursos_activos()
+        return render_template('confirmacion.html',
+                            cursos=cursos,
+                            )
 @app.route('/nosotros')
 def nosotros():
     return render_template('nosotros.html')
@@ -116,18 +124,25 @@ def postulacionCurso():
         rut = rut.replace(".","")
         cursos = obtener_cursos_activos()
         aspirante = verificar_postulacion_existente(rut, aspiranteNew.curso)
+        curso_ = obtener_info_curso(aspiranteNew.curso)
+        nombre = aspiranteNew.nombre + ' ' + aspiranteNew.apellido
+        telefono = obtener_numero_coordinador(curso_[0][2])
         if aspirante:
             flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
-            return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
+            return render_template(
+                "confirmacion.html",
+                nombrePostulante=nombre,
+                nombreCurso=curso_[0][1],
+                telefonoCoordinador = telefono,
+                idAspirante = aspirante[1]
+            )
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
         if len(rut) < 6:
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
             return render_template('cursos/curso-asistente-de-aula.html', cursos=cursos)
-        registrar_aspirante(aspiranteNew, rut)
-        curso_ = obtener_info_curso(aspiranteNew.curso)
-        nombre = aspiranteNew.nombre + ' ' + aspiranteNew.apellido
+        resultado = registrar_aspirante(aspiranteNew, rut)
         curso = curso_[0][1]
         mes = curso_[0][3].month
         nombreMes = obtenerMes(mes)
@@ -135,6 +150,13 @@ def postulacionCurso():
         nombreMesFin = obtenerMes(mesFin)
         enviarEmail(nombre, aspiranteNew.telefono, curso, aspiranteNew.correo, curso_[0][3].strftime("%d de "+nombreMes+" del %Y") , curso_[0][4].strftime("%d de "+nombreMesFin+" del %Y"), curso_[0][2], curso_[0][5], curso_[0][6])
         flash('Postulación enviada correctamente!', category='success')
+        return render_template(
+                "confirmacion.html",
+                nombrePostulante=nombre,
+                nombreCurso=curso_[0][1],
+                telefonoCoordinador = telefono,
+                idAspirante = resultado["id_alumno"]
+            )
     else:
         cursos = obtener_cursos_activos()
         return render_template('index.html',

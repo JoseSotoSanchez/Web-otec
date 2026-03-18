@@ -23,7 +23,7 @@ def verificar_postulacion_existente(rut, id_curso):
     try:
         with conexion.cursor() as cursor:
             cursor.execute('''
-                SELECT rut FROM Alumno WHERE rut = %s AND id_curso = %s
+                SELECT rut, id FROM Alumno WHERE rut = %s AND id_curso = %s
             ''', (rut, id_curso))
             return cursor.fetchone()
     finally:
@@ -81,6 +81,11 @@ def registrar_aspirante(aspiranteNew, rut):
             ))
 
         conexion.commit()
+        return {
+            "ok": True,
+            "id_alumno": id_alumno,
+            "telefono": telefono_final
+        }
     finally:
         conexion.close()
 

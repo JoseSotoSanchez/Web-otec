@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmación{% endblock %}
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 20vh;">
+  <div class="col-md-8">
+<div class="card shadow-lg border-0" style="border-radius: 15px; overflow: hidden;">
+
+  <!-- Header azul -->
+  <div class="text-center text-white p-4" style="background: #1f6fa9;">
+    <h3 class="mb-2">BONO DE CAPACITACIÓN DEL 50%</h3>
+    <p class="mb-0">{{ nombrePostulante }} contáctate con nosotros vía WhatsApp</p>
+  </div>
+
+  <!-- Body verde -->
+  <div class="text-center text-white p-3" style="background: #00c853;">
+
+    <h4 class="mb-4">Tu postulación ha sido recibida al curso {{nombreCurso}}.</h4>
+
+    <!-- Caja amarilla -->
+    <div class="p-3 mt-3" style="background-color: #ffc107 !important; color: #000; border-radius: 10px;">
+      ⚠️ Es importante para continuar con el proceso, que le indiques a tu coordinadora que ya llenaste el formulario y le dé prioridad a tu solicitud de beca.
+    </div>
+
+    <!-- Botón WhatsApp -->
+    <a href="https://wa.me/{{telefonoCoordinador}}?text=Hola%20ya%20realicé%20mi%20postulación%20al%20curso%20{{nombreCurso}}%20y%20quiero%20continuar%20el%20proceso,%20mi%20id%20generado%20es:%20{{idAspirante}}" 
+   target="_blank"
+       class="btn btn-success btn-lg mt-3 px-4" 
+       style="border-radius: 30px; background-color: #d33c25; border: none;">
+      📱 Contáctate con nosotros
+    </a>
+
+  </div>
+
+</div>
+  </div>
+</div>
+
+{% endblock %}
