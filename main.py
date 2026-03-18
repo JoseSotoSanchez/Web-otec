@@ -127,6 +127,10 @@ def postulacionCurso():
         curso_ = obtener_info_curso(aspiranteNew.curso)
         nombre = aspiranteNew.nombre + ' ' + aspiranteNew.apellido
         telefono = obtener_numero_coordinador(curso_[0][2])
+        if "CDP" in curso_[0][2]:
+            porcentaje = 50
+        else:
+            porcentaje = 75
         if aspirante:
             flash('Usted ya ha postulado al curso!, en breve nos comunicaremos con usted.', category='error')
             return render_template(
@@ -134,7 +138,8 @@ def postulacionCurso():
                 nombrePostulante=nombre,
                 nombreCurso=curso_[0][1],
                 telefonoCoordinador = telefono,
-                idAspirante = aspirante[1]
+                idAspirante = aspirante[1],
+                porcentaje = porcentaje
             )
         if not validar_rut(rut):
             flash('Rut no válido! Favor vuelva a intentarlo', category='error')
@@ -155,7 +160,8 @@ def postulacionCurso():
                 nombrePostulante=nombre,
                 nombreCurso=curso_[0][1],
                 telefonoCoordinador = telefono,
-                idAspirante = resultado["id_alumno"]
+                idAspirante = resultado["id_alumno"],
+                porcentaje = porcentaje
             )
     else:
         cursos = obtener_cursos_activos()
