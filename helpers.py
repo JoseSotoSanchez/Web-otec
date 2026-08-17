@@ -1,6 +1,6 @@
 def obtener_numero_coordinador(codigoCurso):
     if not codigoCurso:
-        return "56920742757"
+        return "56923747213"
 
     codigoCurso = codigoCurso.upper()
 
@@ -9,7 +9,7 @@ def obtener_numero_coordinador(codigoCurso):
     elif "TEA" in codigoCurso:
         return "56931749113"
     elif "IEMCE" in codigoCurso:
-        return "56920742757"
+        return "56923747213"
     elif "CBC" in codigoCurso:
         return "56923747213"
     elif "CDP" in codigoCurso:
@@ -19,4 +19,4 @@ def obtener_numero_coordinador(codigoCurso):
     elif "AP" in codigoCurso:
         return "56923836736"
     else:
-        return "56920742757"  # número por defecto
+        return "56923747213"  # número por defecto

@@ -219,17 +219,17 @@ def corretaje():
                         cursos=cursos,
                         )
 
-@app.route('/curso-perfeccionamiento-rrhh', methods=['GET', 'POST'])
+@app.route('/curso-asistente-rrhh', methods=['GET', 'POST'])
 def rrhh():
     cursos = obtener_cursos_activos()    
-    return render_template('cursos/curso-perfeccionamiento-rrhh.html',
+    return render_template('cursos/curso-asistente-rrhh.html',
                         cursos=cursos,
                         )
     
-@app.route('/curso-asistente-en-educadora-de-parvulos', methods=['GET', 'POST'])
+@app.route('/curso-asistente-de-parvulos', methods=['GET', 'POST'])
 def asistenteParvulos():
     cursos = obtener_cursos_activos()    
-    return render_template('cursos/curso-asistente-en-educadora-de-parvulos.html',
+    return render_template('cursos/curso-asistente-de-parvulos.html',
                         cursos=cursos,
                         )
     

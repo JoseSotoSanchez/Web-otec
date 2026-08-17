@@ -43,7 +43,8 @@ def registrar_aspirante(aspiranteNew, rut):
             telefono_final = "+56" + telefono
 
         else:
-            telefono_final = "+569" + telefono[-8:] 
+            telefono_final = "+569" + telefono[:8] 
+
 
     aspiranteNew.telefono = telefono_final
     try:
